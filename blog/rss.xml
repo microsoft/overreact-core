@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0">
+    <channel>
+        <title>overreact Blog</title>
+        <link>https://microsoft.github.io/blog</link>
+        <description>overreact Blog</description>
+        <lastBuildDate>Thu, 14 Jan 2021 00:00:00 GMT</lastBuildDate>
+        <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
+        <generator>https://github.com/jpmonette/feed</generator>
+        <item>
+            <title><![CDATA[Working with OData]]></title>
+            <link>https://microsoft.github.io/overreact-core/blog/odata</link>
+            <guid>odata</guid>
+            <pubDate>Thu, 14 Jan 2021 00:00:00 GMT</pubDate>
+            <description><![CDATA[A typical usage of overreact within our team is to deal with OData from various service endpoints. Usually these endpoints already have pre-built schema packages available (such as @bingads-webui/mca-odata-schemas, and @bingads-webui/campaign-odata-schemas), from which we can extract useful information and generate overreact specs without having our developers write from scratch. Given each entity (e.g., Activity, Ad) have CRUD operations, as well as OData actions/functions attached, this could save a tremendous amount of manual effort.]]></description>
+        </item>
+    </channel>
+</rss>

@@ -1,0 +1,1 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([[34],{102:function(e){e.exports=JSON.parse('{"title":"Recent posts","items":[{"title":"Working with OData","permalink":"/overreact-core/blog/odata"}]}')}}]);
