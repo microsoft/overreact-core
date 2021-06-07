@@ -1,7 +1,7 @@
-import { Subject } from '@bingads-webui-universal/observer-pattern';
 import _ from 'underscore';
 import { Record } from './record';
 import { OVERREACT_ID_FIELD_NAME } from './consts';
+import { Subject } from '../utils/observer-pattern'
 
 export class RecordGroup extends Subject {
   constructor(schemaType) {

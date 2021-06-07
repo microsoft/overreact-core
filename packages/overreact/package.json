@@ -5,8 +5,6 @@
   "main": "dist/index",
   "license": "MIT",
   "dependencies": {
-    "@bingads-webui-universal/observer-pattern": "*",
-    "@bingads-webui-universal/primitive-utilities": "^1.4.5",
     "bluebird": "3.5.0",
     "json-stable-stringify": "*",
     "prop-types": ">=15.6.0",
@@ -17,12 +15,6 @@
     "uuid": "^3.3.3"
   },
   "devDependencies": {
-    "@bingads-webui/mca-odata-schemas": ">=1.0.0-alpha.2019091919",
-    "@bingads-webui/edm-core": ">=1.0.0",
-    "@bingads-webui/edm-odata": "^1.1.6",
-    "@bingads-webui/edm-resource-identifiers": ">=1.0.0",
-    "@bingads-webui/http-util": "^1.0.0",
-    "@bingads-webui/reflection": ">=1.0.0",
     "fetch-mock": "^9.10.1",
     "jquery": "2.2.4",
     "json-stable-stringify": "*",

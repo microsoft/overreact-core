@@ -1,5 +1,5 @@
-import { Subject } from '@bingads-webui-universal/observer-pattern';
 import _ from 'underscore';
+import { Subject } from '../../utils/observer-pattern';
 
 export class DataRef extends Subject {
   constructor(key) {

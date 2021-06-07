@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 import _ from 'underscore';
 
-import { getTimestamp } from '@bingads-webui-universal/primitive-utilities';
+import { getTimestamp } from '../../utils/primitive-utilities';
 
 export const defaultStubOptions = {
   serverErrorCodes: [-1],
