@@ -1,5 +1,7 @@
 # overreact
 
+[![Build Status](https://travis-ci.com/zlike/overreact-core.svg?branch=main)](https://travis-ci.com/zlike/overreact-core)
+
 A universial data layer for React. https://microsoft.github.io/overreact-core/
 
 ## Contributing
