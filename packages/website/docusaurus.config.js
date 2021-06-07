@@ -1,12 +1,12 @@
 module.exports = {
   title: 'overreact',
   tagline: 'A universal data layer for React',
-  url: 'https://zlike.github.io',
-  baseUrl: '/overreact-website/',
+  url: 'https://microsoft.github.io',
+  baseUrl: '/overreact-core/',
   onBrokenLinks: 'throw',
   favicon: 'img/favicon.ico',
-  organizationName: 'zlike',
-  projectName: 'overreact-website', 
+  organizationName: 'microsoft',
+  projectName: 'overreact-core', 
   themes: ['@docusaurus/theme-live-codeblock'],
   themeConfig: {
     hideableSidebar: true,
@@ -35,8 +35,8 @@ module.exports = {
         },
         {to: 'blog', label: 'Blog', position: 'left'},
         {
-          href: 'https://dev.azure.com/msasg/Bing_Ads/_git/AdsAppsCampaignUI?path=%2Fprivate%2Fclient-data%2Fpackages%2Foverreact',
-          label: 'Azure Repo',
+          href: 'https://github.com/microsoft/overreact-core',
+          label: 'GitHub',
           position: 'right',
         },
       ],
@@ -94,7 +94,7 @@ module.exports = {
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
           editUrl:
-            'https://github.com/zlike/overreact-website/edit/master/website/',
+            'https://github.com/microsoft/overreact-core/packages/website/edit/master/website/',
           showLastUpdateAuthor: true,
           showLastUpdateTime: true,
         },
@@ -102,7 +102,7 @@ module.exports = {
           showReadingTime: true,
           // Please change this to your repo.
           editUrl:
-            'https://github.com/zlike/overreact-website/edit/master/website/blog/',
+            'https://github.com/microsoft/overreact-core/packages/website/edit/master/website/blog/',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
