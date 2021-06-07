@@ -1,0 +1,23 @@
+{
+  "name": "@microsoft/overreact-core",
+  "description": "TO BE ADDED",
+  "version": "0.1.0",
+  "main": "dist/index",
+  "license": "MIT",
+  "dependencies": {
+    "bluebird": "3.5.0",
+    "json-stable-stringify": "*",
+    "prop-types": ">=15.6.0",
+    "react": ">=16.8.0",
+    "react-dom": ">=16.8.0",
+    "regenerator-runtime": "^0.13.2",
+    "underscore": "^1.10.2",
+    "uuid": "^3.3.3"
+  },
+  "devDependencies": {
+    "fetch-mock": "^9.10.1",
+    "jquery": "2.2.4",
+    "json-stable-stringify": "*",
+    "query-string": "*"
+  }
+}
