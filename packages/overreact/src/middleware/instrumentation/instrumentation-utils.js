@@ -139,7 +139,8 @@ export function errorHandler(
     }
   } else {
     instrumentationContext.requestResult = false;
-    instrumentationContext.error = `Overreact general error: [${JSON.stringify(error)}]`;
+    const errMsg = _.isError(error) ? error : JSON.stringify(error);
+    instrumentationContext.error = `Overreact general error: ${errMsg}`;
   }
 
   const logFunc = instrumentationContext.requestResult ? traceFunc : errorFunc;
