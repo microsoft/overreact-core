@@ -1,5 +1,5 @@
 {
-  "name": "root",
+  "name": "@microsoft/overreact-root",
   "private": true,
   "workspaces": [
     "packages"
