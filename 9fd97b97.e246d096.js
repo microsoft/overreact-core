@@ -1,1 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[25],{95:function(a){a.exports=JSON.parse('{"odata":{"allTagsPath":"/overreact-core/blog/tags","slug":"odata","name":"odata","count":1,"permalink":"/overreact-core/blog/tags/odata"}}')}}]);
