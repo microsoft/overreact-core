@@ -1,7 +1,7 @@
 {
   "name": "@microsoft/overreact",
   "description": "TO BE ADDED",
-  "version": "0.1.0-alpha.1",
+  "version": "0.1.0-alpha.2",
   "main": "dist/index",
   "license": "MIT",
   "scripts": {
@@ -18,10 +18,10 @@
     "uuid": "^3.3.3"
   },
   "devDependencies": {
-    "babel-loader": "^8.2.2",
     "@babel/core": "^7.14.3",
     "@babel/preset-env": "^7.14.4",
     "@babel/preset-react": "^7.13.13",
+    "babel-loader": "^8.2.2",
     "webpack": "^5.38.1",
     "webpack-cli": "^4.7.2"
   },
