@@ -4,6 +4,9 @@
   "version": "0.1.0",
   "main": "dist/index",
   "license": "MIT",
+  "scripts": {
+    "build": "webpack"
+  },
   "dependencies": {
     "bluebird": "3.5.0",
     "json-stable-stringify": "*",
@@ -13,5 +16,9 @@
     "regenerator-runtime": "^0.13.2",
     "underscore": "^1.10.2",
     "uuid": "^3.3.3"
+  },
+  "devDependencies": {
+    "webpack": "^5.38.1",
+    "webpack-cli": "^4.7.2"
   }
 }
