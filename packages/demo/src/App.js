@@ -1,25 +1,27 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import { 
+    DataFetcher,
+    Environment,
+    Store,
+} from '@microsoft/overreact';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+// Previously defined schema and network requestor
+import { networkRequestor } from './network-requestor';
+import { schema } from './schema';
+
+// React component that will talk to the TripPin service
+import { PeopleContainer } from './people-container';
+
+// define an Environment object to configure overreact
+const store = new Store();
+const tripPinEnvironment = new Environment(networkRequestor, schema, store, []);
+
+export default function App() {
+    return (
+        <div className="app-container">
+            <DataFetcher environment={tripPinEnvironment}>
+                <PeopleContainer userName="russellwhyte" />
+            </DataFetcher>
+        </div>
+    );
 }
-
-export default App;

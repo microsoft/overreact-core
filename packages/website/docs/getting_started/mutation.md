@@ -61,7 +61,7 @@ import {
     requestVerbs,
     responseTypes,
     specTypes,
-} from '@bingads-webui/overreact';
+} from '@microsoft/overreact';
 
 import { schema } from './schema';
 
@@ -125,7 +125,7 @@ import {
     useFetch,
     useMutation,
     useDataRefId,
-} from '@bingads-webui/overreact';
+} from '@microsoft/overreact';
 
 import { peopleSpec } from './people-spec';
 import { peopleCreateSpec } from './people-create-spec';

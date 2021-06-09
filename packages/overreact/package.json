@@ -11,8 +11,8 @@
     "bluebird": "3.5.0",
     "json-stable-stringify": "*",
     "prop-types": ">=15.6.0",
-    "react": ">=16.8.0",
-    "react-dom": ">=16.8.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
     "regenerator-runtime": "^0.13.2",
     "underscore": "^1.10.2",
     "uuid": "^3.3.3"
@@ -21,7 +21,7 @@
     "@babel/core": "^7.14.3",
     "@babel/preset-env": "^7.14.4",
     "@babel/preset-react": "^7.13.13",
-    "babel-loader": "^8.2.2",
+    "babel-loader": "^8.1.1",
     "webpack": "^5.38.1",
     "webpack-cli": "^4.7.2"
   },
