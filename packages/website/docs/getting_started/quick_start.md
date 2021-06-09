@@ -10,7 +10,7 @@ slug: /
 Install overreact using `yarn` or `npm`:
 
 ```sh
-yarn add @bingads-webui/overreact
+npm install @microsoft/overreact
 ```
 
 ## Setup your app
@@ -39,7 +39,7 @@ export function networkRequestor(uri, requestVerb, headers, body) {
 A [schema](/concept/schema) describes what entities are available and what name (alias) your app should call those entities internally.
 
 ```jsx title="schema.js"
-import { Schema } from '@bingads-webui/overreact';
+import { Schema } from '@microsoft/overreact';
 
 const schemaToModelMapping = {
     people: 'People',
@@ -61,7 +61,7 @@ import {
     DataFetcher,
     Environment,
     Store,
-} from '@bingads-webui/overreact';
+} from '@microsoft/overreact';
 
 // Previously defined schema and network requestor
 import { networkRequestor } from './network-requestor';
@@ -102,7 +102,7 @@ import {
     requestVerbs,
     responseTypes,
     specTypes,
-} from '@bingads-webui/overreact';
+} from '@microsoft/overreact';
 
 import { schema } from './schema';
 
@@ -110,9 +110,9 @@ function odataUriFactory(params) {
     const { variables } = params;
     const { locator } = variables;
     const { descriptor, order } = locator;
-    const { userName } = descriptor;
+    const { people } = descriptor;
 
-    return `/People(${userName})`;
+    return `/People('${people}')`;
 }
 
 const odataHeaderFactory = () => {};
@@ -149,7 +149,7 @@ import React, { useMemo } from 'react';
 import { 
     useFetch,
     useDataRefId,
-} from '@bingads-webui/overreact';
+} from '@microsoft/overreact';
 
 import { peopleSpec } from './people-spec';
 import { PeopleView } from './people-view';
@@ -167,11 +167,11 @@ export function PeopleContainer(props) {
 
     const [data] = useFetch(dataRefId, peopleSpec, variables);
 
-    return (data && <PeopleView 
+    return (data ? <PeopleView 
         firstName={data.FirstName}
         lastName={data.LastName}
         address={data.AddressInfo[0]}
-    >);
+    /> ? null);
 }
 ```
 
