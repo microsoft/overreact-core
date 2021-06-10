@@ -1,9 +1,9 @@
 {
   "name": "@microsoft/overreact-demo",
-  "version": "0.1.0-alpha.5",
+  "version": "0.1.0-alpha.6",
   "private": true,
   "dependencies": {
-    "@microsoft/overreact": "^0.1.0-alpha.5",
+    "@microsoft/overreact": "^0.1.0-alpha.6",
     "@testing-library/jest-dom": "^5.13.0",
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^13.1.9",
