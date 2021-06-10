@@ -1,8 +1,8 @@
 import React from 'react';
 import {
   DataFetcher,
-    Environment,
-    Store,
+  Environment,
+  Store,
 } from '@microsoft/overreact';
 
 // Previously defined schema and network requestor
@@ -17,11 +17,11 @@ const store = new Store();
 const tripPinEnvironment = new Environment(networkRequestor, schema, store, []);
 
 export default function App() {
-    return (
-        <div className="app-container">
-            <DataFetcher environment={tripPinEnvironment}>
-                <PeopleContainer userName="russellwhyte" />
-            </DataFetcher>
-        </div>
-    );
+  return (
+    <div className="app-container">
+      <DataFetcher environment={tripPinEnvironment}>
+        <PeopleContainer userName="russellwhyte" />
+      </DataFetcher>
+    </div>
+  );
 }
