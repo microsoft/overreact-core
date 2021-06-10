@@ -18,12 +18,12 @@ export function createFetchPolicyMiddleware(fetchPolicyMiddlewareOptions) {
     cacheExpirationDuration = DEFAULT_STORE_EXPIRATION_DURATION,
   } = fetchPolicyMiddlewareOptions || {};
 
-  return next => async (req) => {
-    const fetchPolicyInReq =
-      (req.variables && req.variables.options && req.variables.options.fetchPolicy)
+  return next => async req => {
+    const fetchPolicyInReq = (req.variables
+      && req.variables.options
+      && req.variables.options.fetchPolicy)
       || req.spec.requestContract.fetchPolicy;
-    const requestFetchPolicy =
-      getFetchPolicy(req.spec.specType, fetchPolicyInReq, fetchPolicy);
+    const requestFetchPolicy = getFetchPolicy(req.spec.specType, fetchPolicyInReq, fetchPolicy);
 
     const isStoreSecondaryPolicy = IsStoreSecondaryPolicy(requestFetchPolicy);
     let dataInStore = null;
@@ -51,7 +51,7 @@ export function createFetchPolicyMiddleware(fetchPolicyMiddlewareOptions) {
 
     if (isNetworkPolicy) {
       const res = await next(req)
-        .then((response) => {
+        .then(response => {
           updateDataRefStatus({
             store: req.store,
             spec: req.spec,
@@ -61,7 +61,7 @@ export function createFetchPolicyMiddleware(fetchPolicyMiddlewareOptions) {
           });
           return response;
         })
-        .catch((error) => {
+        .catch(error => {
           // we only try roll back to previous data if policy is networkOrStore
           // if policy is storeOrNetwork and we go here, it means we already miss the cache
           // or we decided to not trust the cache.

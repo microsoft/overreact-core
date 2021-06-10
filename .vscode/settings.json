@@ -1,0 +1,12 @@
+{
+	"editor.renderWhitespace": "all",
+	"editor.tabSize": 2,
+	"files.trimTrailingWhitespace": true,
+	"[markdown]": {
+	  "files.trimTrailingWhitespace": false,
+	},
+	"search.exclude": {
+	  "**/node_modules": true,
+	  "**/dist": true
+	}
+}

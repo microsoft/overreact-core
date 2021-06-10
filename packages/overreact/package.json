@@ -4,6 +4,10 @@
   "version": "0.1.0-alpha.5",
   "main": "dist/index",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/microsoft/overreact-core/"
+  },
   "scripts": {
     "build": "webpack --mode development"
   },
@@ -11,8 +15,8 @@
     "bluebird": "^3.7.2",
     "json-stable-stringify": "*",
     "prop-types": "^15.7.2",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
+    "react": ">=16.8.0",
+    "react-dom": ">=16.8.0",
     "regenerator-runtime": "^0.13.2",
     "underscore": "^1.10.2",
     "uuid": "^3.3.3"

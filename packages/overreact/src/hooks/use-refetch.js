@@ -52,8 +52,8 @@ export function useRefetch(dataRefId, spec, config) {
       } = parameter;
       const { options: { fetchPolicy: fetchPolicyInReq } = {} } = variables || {};
 
-      const fetchPolicy =
-        fetchPolicyInReq || requestContract.fetchPolicy || FetchPolicy.NetworkOnly;
+      const fetchPolicy = fetchPolicyInReq
+        || requestContract.fetchPolicy || FetchPolicy.NetworkOnly;
 
       const request = new OverreactRequest({
         id: dataRefId,

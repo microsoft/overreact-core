@@ -1,6 +1,6 @@
 import React from 'react';
-import { 
-    DataFetcher,
+import {
+  DataFetcher,
     Environment,
     Store,
 } from '@microsoft/overreact';

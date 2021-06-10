@@ -3,7 +3,7 @@ import { specTypes } from '../spec-types';
 import { getSideEffectCacheStoreHelpers } from './sideEffectFnHelper';
 
 export default function handler(environment, processedResponse, request) {
-  return (context) => {
+  return context => {
     const { variables, dataCb, spec } = request;
     const { locator } = variables;
     const { requestContract, sideEffectFn } = spec;

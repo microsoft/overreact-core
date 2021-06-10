@@ -1,8 +1,12 @@
 import _ from 'underscore';
-import { useRef, useReducer, useCallback, useMemo, useEffect } from 'react';
+import {
+  useRef, useReducer, useCallback, useMemo, useEffect,
+} from 'react';
 import { useEnvironment } from '../environment';
 import { useDeepEqualEffect } from './use-deep-equal-effect';
-import { getDataNode, createDataNode, getRecords, getDataRef, getRecordsById, updateDataRefWithIds } from '../store';
+import {
+  getDataNode, createDataNode, getRecords, getDataRef, getRecordsById, updateDataRefWithIds,
+} from '../store';
 import { OverreactRequest } from './overreact-request';
 import { getCacheIds } from './lookup-cache';
 import { getDataFromRecords, getLookupCacheFn } from './helper';
@@ -28,7 +32,7 @@ export function useFetch(dataRefId, spec, variables, config) {
   const { postponeRead, lookupCacheByVariables } = config || {};
   const lookupFn = useMemo(
     () => getLookupCacheFn(lookupCacheByVariables, spec, requestContract.fetchPolicy),
-    [lookupCacheByVariables, requestContract.fetchPolicy, spec]
+    [lookupCacheByVariables, requestContract.fetchPolicy, spec],
   );
 
   // TODO: dataCallback shall take a param, which is a set of

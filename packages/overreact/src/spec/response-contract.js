@@ -40,7 +40,7 @@ export class ResponseContract {
     const overreactId = createOverreactId(
       this.keySelector(entity),
       parentId,
-      this.schemaNode.parentNode.name
+      this.schemaNode.parentNode.name,
     );
 
     return {

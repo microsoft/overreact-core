@@ -47,7 +47,7 @@ export function getDataRef(store, requestContract, dataRefId) {
 
 export function updateDataRefWithIds(dataRef, ids) {
   dataRef.clear();
-  _.map(ids, (id) => {
+  _.map(ids, id => {
     dataRef.add(id);
   });
   dataRef.onUpdate(ids);

@@ -23,7 +23,7 @@ export function createInstrumentationMiddleware(instrumentationOptions) {
     return _.any(errorMappers, errorMapper => errorMapper.check(instrumentationContext));
   }
 
-  return next => async (req) => {
+  return next => async req => {
     const {
       header: {
         'x-ms-requestid': requestId = uuidv4(),
@@ -41,10 +41,10 @@ export function createInstrumentationMiddleware(instrumentationOptions) {
 
     beforeSendHandler(instrumentationContext, req, perfFunc, shouldAddHeaders);
 
-    const response = next(req).then((res) => {
+    const response = next(req).then(res => {
       successHandler(instrumentationContext, res, errorFunc, perfFunc);
       return res;
-    }).catch((error) => {
+    }).catch(error => {
       errorHandler(instrumentationContext, error, isUserError, traceFunc, errorFunc, perfFunc);
       throw error;
     });

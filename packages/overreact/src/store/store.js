@@ -1,4 +1,3 @@
-/* global Map */
 // Use the basic APIs of ES6 Map. If your site supports browsers not
 // having Map natively, you should use a polyfill
 import { RecordGroup } from './record-group';

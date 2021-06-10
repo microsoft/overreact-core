@@ -3,7 +3,7 @@ export function createSpec(
   responseContract,
   specType,
   sideEffectFn,
-  environmentLookupFn
+  environmentLookupFn,
 ) {
   // FIXME: only the basics. Need to create more based on specType
   return {

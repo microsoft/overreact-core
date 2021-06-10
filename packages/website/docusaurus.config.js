@@ -6,7 +6,7 @@ module.exports = {
   onBrokenLinks: 'throw',
   favicon: 'img/favicon.ico',
   organizationName: 'microsoft',
-  projectName: 'overreact-core', 
+  projectName: 'overreact-core',
   themes: ['@docusaurus/theme-live-codeblock'],
   themeConfig: {
     hideableSidebar: true,
@@ -33,7 +33,7 @@ module.exports = {
           label: 'Docs',
           position: 'left',
         },
-        {to: 'blog', label: 'Blog', position: 'left'},
+        { to: 'blog', label: 'Blog', position: 'left' },
         {
           href: 'https://github.com/microsoft/overreact-core',
           label: 'GitHub',
