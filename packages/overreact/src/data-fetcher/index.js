@@ -39,10 +39,10 @@ function executeRequests(environment, requests) {
     const requestor = environment.getRequestor(id, spec, variables, req.middlewareStates);
 
     requestor(uri, verb, header, payload).execute({
-      onComplete: (response) => {
+      onComplete: response => {
         responseContract.onGetResponse(environment, response, req);
       },
-      onError: (error) => {
+      onError: error => {
         responseContract.onGetError(environment, req, error);
       },
     });
@@ -86,7 +86,7 @@ export function useEnvironmentInitialization(environment) {
 }
 
 // default top-level data fetcher
-export const DataFetcher = memo((props) => {
+export const DataFetcher = memo(props => {
   const {
     environment,
     environments,

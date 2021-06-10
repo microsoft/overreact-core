@@ -11,12 +11,12 @@ export const defaultStubOptions = {
       pass: true,
     };
 
-    if (respData &&
-      respData.Errors &&
-      respData.Errors[0] &&
-      respData.Errors[0].Code &&
-      _.isArray(serverErrorCodes) &&
-      _.contains(serverErrorCodes, respData.Errors[0].Code)) {
+    if (respData
+      && respData.Errors
+      && respData.Errors[0]
+      && respData.Errors[0].Code
+      && _.isArray(serverErrorCodes)
+      && _.contains(serverErrorCodes, respData.Errors[0].Code)) {
       result.pass = false;
       result.message = respData.Errors[0].Message;
       result.impactUser = true;
@@ -33,12 +33,12 @@ export const defaultStubOptions = {
       const perf = {};
       _.each(
         ['x-ms-mte2eelapsedtimems', 'x-ms-odataapie2eelapsedtimems', 'x-ms-odataapionlye2eelapsedtimems'],
-        (header) => {
+        header => {
           const value = response.getResponseHeader(header);
           if (value) {
             perf[header] = value;
           }
-        }
+        },
       );
 
       return JSON.stringify(perf);
@@ -102,7 +102,7 @@ export function successHandler(instrumentationContext, response, errorFunc, perf
 
 export function errorHandler(
   instrumentationContext, error, isUserError,
-  traceFunc, errorFunc, perfFunc
+  traceFunc, errorFunc, perfFunc,
 ) {
   const requestTimeTaken = getTimestamp() - instrumentationContext.requestStartTime;
   instrumentationContext.requestTimeTaken = requestTimeTaken;

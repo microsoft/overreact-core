@@ -18,7 +18,7 @@ export class Schema {
 
   buildModelToSchemaMap() {
     const keys = Object.keys(this.schemaToModelMapping);
-    keys.forEach((schemaName) => {
+    keys.forEach(schemaName => {
       const modelName = this.schemaToModelMapping[schemaName];
       if (!this.modelToSchemaMapping[modelName]) {
         this.modelToSchemaMapping[modelName] = [];

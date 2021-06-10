@@ -4,7 +4,7 @@ import { OVERREACT_ID_FIELD_NAME } from '../../store/consts';
 import { getSideEffectCacheStoreHelpers } from './sideEffectFnHelper';
 
 export default function handler(environment, processedResponse, request) {
-  return (context) => {
+  return context => {
     const {
       id: dataRefId,
       variables,
@@ -47,7 +47,7 @@ export default function handler(environment, processedResponse, request) {
       if (!parentId && order.length > 0) {
         parentId = descriptor[order[order.length - 1]];
       }
-      dataWithId = processedResponse.map((entity) => {
+      dataWithId = processedResponse.map(entity => {
         const data = context.applyId(entity, parentId);
         const overreactId = data[OVERREACT_ID_FIELD_NAME];
 

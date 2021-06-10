@@ -1,8 +1,12 @@
 import _ from 'underscore';
-import { useState, useCallback, useMemo, useRef, useEffect } from 'react';
+import {
+  useState, useCallback, useMemo, useRef, useEffect,
+} from 'react';
 
 import { useEnvironment } from '../environment';
-import { getDataNode, createDataNode, getRecords, getDataRef, getRecordsById, updateDataRefWithIds } from '../store';
+import {
+  getDataNode, createDataNode, getRecords, getDataRef, getRecordsById, updateDataRefWithIds,
+} from '../store';
 import { OVERREACT_ID_FIELD_NAME } from '../store/consts';
 import { OverreactRequest } from './overreact-request';
 import { getMergedConfig } from './merge-config';
@@ -51,7 +55,7 @@ export function usePagination(dataRefId, spec, config) {
     resetInternalState();
   }
 
-  const setInternalStateOnResponse = useCallback((records) => {
+  const setInternalStateOnResponse = useCallback(records => {
     cursorIndex.current = records.length;
   }, []);
 
@@ -138,7 +142,7 @@ export function usePagination(dataRefId, spec, config) {
     return () => {};
   }, [dataObserver, dataRefId, environment, requestContract]);
 
-  const loadMore = useCallback((requestConfig) => {
+  const loadMore = useCallback(requestConfig => {
     if (loadingId.current) {
       return;
     }

@@ -24,12 +24,12 @@ export class RequestContract {
   }
 
   getSchemaNode() {
-  // schema is the root of the schema tree that current app has built
-  // need to either find an existing path in the tree,
-  // or construct a new path in the tree
+    // schema is the root of the schema tree that current app has built
+    // need to either find an existing path in the tree,
+    // or construct a new path in the tree
 
-  // note that the schema tree is only a sub-tree (or more precisely a sub-graph)
-  // of the original data schema, such as one found in OData.
+    // note that the schema tree is only a sub-tree (or more precisely a sub-graph)
+    // of the original data schema, such as one found in OData.
     return this.schema.insert(this.dataPath);
   }
 }

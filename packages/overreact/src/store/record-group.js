@@ -1,7 +1,7 @@
 import _ from 'underscore';
 import { Record } from './record';
 import { OVERREACT_ID_FIELD_NAME } from './consts';
-import { Subject } from '../utils/observer-pattern'
+import { Subject } from '../utils/observer-pattern';
 
 export class RecordGroup extends Subject {
   constructor(schemaType) {
@@ -49,8 +49,7 @@ export class RecordGroup extends Subject {
   }
 
   getRecords(ids) {
-    return ids.map(id =>
-      this.records.find(r => r.id === id));
+    return ids.map(id => this.records.find(r => r.id === id));
   }
 
   getRecordsByEntityKeys(keySelector, keys) {

@@ -3,7 +3,7 @@ import _ from 'underscore';
 import { getDataNode, createDataNode } from '../../store';
 
 export default function handler(environment, request, error) {
-  return (context) => {
+  return context => {
     const { id: dataRefId, errorCb } = request;
 
     const { store } = environment;

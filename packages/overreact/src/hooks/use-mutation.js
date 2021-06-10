@@ -1,6 +1,8 @@
 import { useCallback, useRef } from 'react';
 import { useEnvironment } from '../environment';
-import { getRecords, getDataRef, getRecordGroup, getRecordsByEntityKey } from '../store';
+import {
+  getRecords, getDataRef, getRecordGroup, getRecordsByEntityKey,
+} from '../store';
 import { specTypes } from '../spec/spec-types';
 import { OVERREACT_ID_FIELD_NAME } from '../store/consts';
 import { responseTypes } from '../spec/response-types';
@@ -11,7 +13,7 @@ function mutateRecords(
   store,
   requestContract,
   recordsBeforeMutation,
-  newRecords
+  newRecords,
 ) {
   if (store) {
     const recordGroup = getRecordGroup(store, requestContract);
@@ -24,7 +26,7 @@ function mutateRecords(
 function addRecords(
   store,
   requestContract,
-  records
+  records,
 ) {
   if (store && records && records.length > 0) {
     const recordGroup = getRecordGroup(store, requestContract);
@@ -74,7 +76,9 @@ function applyId(variables, spec, data, specType) {
     }
     const dataArr = Array.isArray(data) ? data : [data];
     return dataArr.map(entity => responseContract.applyId(entity, parentId));
-  } else if (responseContract.responseType === responseTypes.ENTITY) {
+  }
+
+  if (responseContract.responseType === responseTypes.ENTITY) {
     if (!parentId && order.length > 1) {
       parentId = descriptor[order[order.length - 2]];
     }
@@ -114,14 +118,14 @@ export function useMutation(dataRefId, spec, config) {
             store,
             requestContract,
             current,
-            processedResponse
+            processedResponse,
           );
         } else if (specType === specTypes.ADD) {
           replacePreemptiveRecords(
             store,
             requestContract,
             request,
-            processedResponse
+            processedResponse,
           );
         }
       } else if (specType === specTypes.ADD) {
@@ -131,7 +135,7 @@ export function useMutation(dataRefId, spec, config) {
           store,
           requestContract,
           [],
-          processedResponse
+          processedResponse,
         );
       }
 
@@ -166,7 +170,7 @@ export function useMutation(dataRefId, spec, config) {
           store,
           requestContract,
           dataItemsBeforeMutation.current,
-          []
+          [],
         );
       }
 
@@ -177,14 +181,14 @@ export function useMutation(dataRefId, spec, config) {
             store,
             requestContract,
             current,
-            []
+            [],
           );
         } else if (specType === specTypes.ADD) {
           replacePreemptiveRecords(
             store,
             requestContract,
             request,
-            []
+            [],
           );
         }
       }
@@ -232,7 +236,7 @@ export function useMutation(dataRefId, spec, config) {
             store,
             requestContract,
             current,
-            preemptiveResponseFn(current, mutationData)
+            preemptiveResponseFn(current, mutationData),
           );
         } else if (specType === specTypes.ADD) {
           const data = preemptiveResponseFn(mutationData);
@@ -241,7 +245,7 @@ export function useMutation(dataRefId, spec, config) {
             store,
             requestContract,
             request,
-            records
+            records,
           );
         }
       }

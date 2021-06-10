@@ -35,10 +35,10 @@ export class Environment {
 
   getRequestor(id, spec, variables, middlewareStates) {
     return (uri, verb, header, payload) => ({
-      execute: (sink) => {
+      execute: sink => {
         if (!this.middlewares || this.middlewares.length === 0) {
           this.networkRequestor(uri, verb, header, payload)
-            .then((value) => sink.onComplete(value))
+            .then(value => sink.onComplete(value))
             .catch(err => sink.onError(err));
         } else {
           const wrappedRequestor = new WrappedRequestor({
@@ -56,8 +56,8 @@ export class Environment {
           const res = requestWithMiddleware(wrappedRequestor, this.middlewares);
 
           res
-            .then((value) => { sink.onComplete(value); })
-            .catch((err) => { sink.onError(err); });
+            .then(value => sink.onComplete(value))
+            .catch(err => sink.onError(err));
         }
       },
     });

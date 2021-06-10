@@ -5,7 +5,7 @@ export function createErrorMiddleware(errorMiddlewareOptions) {
     errorProcessor = _.noop,
     errorConvertor: envErrorConverter = _.noop,
   } = errorMiddlewareOptions || {};
-  return next => async (req) => {
+  return next => async req => {
     const {
       spec: {
         responseContract: {
@@ -15,13 +15,13 @@ export function createErrorMiddleware(errorMiddlewareOptions) {
     } = req || {};
     const errorConvertor = errorConvertFn || envErrorConverter;
 
-    const response = next(req).then((res) => {
+    const response = next(req).then(res => {
       const error = errorConvertor(res);
       if (error) {
         throw error;
       }
       return res;
-    }).catch((error) => {
+    }).catch(error => {
       const processedError = errorConvertor(error) || error;
       errorProcessor(processedError);
       throw error;

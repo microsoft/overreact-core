@@ -14,11 +14,11 @@ export function getSideEffectCacheStoreHelpers(environment) {
     const recordGroup = store.getRecordGroup(modelName);
     const keysInCache = recordGroup.records.map(r => itemKeySelector(r.data));
     const itemsToAdd = _.filter(items, item => !_.include(keysInCache, itemKeySelector(item)));
-    const itemsToAddWithOverreactId = itemsToAdd.map((item) => {
+    const itemsToAddWithOverreactId = itemsToAdd.map(item => {
       const overreactId = createOverreactId(
         itemKeySelector(item),
         parentId,
-        parentSchameName
+        parentSchameName,
       );
 
       return {
@@ -31,7 +31,7 @@ export function getSideEffectCacheStoreHelpers(environment) {
     recordGroup.notify('entitiesCreated', ids);
 
     const itemsToMerge = _.filter(items, item => _.include(keysInCache, itemKeySelector(item)));
-    const itemsMerged = itemsToMerge.map((itemToMerge) => {
+    const itemsMerged = itemsToMerge.map(itemToMerge => {
       const key = itemKeySelector(itemToMerge);
       const records = recordGroup.getRecordsByEntityKeys(itemKeySelector, [key]);
 

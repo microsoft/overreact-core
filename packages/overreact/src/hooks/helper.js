@@ -9,8 +9,8 @@ export function getDataFromRecords(records, responseContract) {
 }
 
 function getDefaultLookupCacheFn(varKeySelector, dataKeySelector) {
-  return (items, variables) =>
-    _.find(items, item => dataKeySelector(item) === varKeySelector(variables));
+  return (items, variables) => _.find(items,
+    item => dataKeySelector(item) === varKeySelector(variables));
 }
 
 export function getLookupCacheFn(lookupCacheFn, spec, fetchPolicy) {

@@ -12,7 +12,7 @@ export function getCacheIds({
   const cacheRawItems = _.map(records, record => record.data);
   const cacheHit = lookupFn(cacheRawItems, variables);
   const overreactIds = _.chain(_.flatten([cacheHit], true))
-    .map((data) => {
+    .map(data => {
       const record = _.find(records, r => r.data === data);
       return record ? record.id : undefined;
     })
