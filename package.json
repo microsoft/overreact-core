@@ -5,15 +5,28 @@
     "packages"
   ],
   "devDependencies": {
+    "@babel/core": "^7.14.3",
+    "@babel/preset-env": "^7.14.4",
+    "@babel/preset-react": "^7.13.13",
     "babel-eslint": "^10.1.0",
+    "babel-loader": "^8.1.1",
+    "bluebird": "^3.7.2",
     "eslint": "^7.2.0",
     "eslint-config-airbnb": "^18.2.1",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-jsx-a11y": "^6.4.1",
     "eslint-plugin-react": "^7.21.5",
     "eslint-plugin-react-hooks": "^4.2.0",
+    "json-stable-stringify": "^1.0.1",
     "lerna": "^4.0.0",
     "prettier": "^2.3.1",
-    "react": ">= 0.13.0"
+    "prop-types": "^15.7.2",
+    "react": ">=16.8.0",
+    "react-dom": ">=16.8.0",
+    "regenerator-runtime": "^0.13.2",
+    "webpack": "^5.38.1",
+    "webpack-cli": "^4.7.2",
+    "underscore": "^1.10.2",
+    "uuid": "^3.3.3"
   }
 }
