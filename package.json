@@ -10,7 +10,6 @@
     "@babel/preset-react": "^7.13.13",
     "babel-eslint": "^10.1.0",
     "babel-loader": "^8.1.1",
-    "bluebird": "^3.7.2",
     "eslint": "^7.2.0",
     "eslint-config-airbnb": "^18.2.1",
     "eslint-plugin-import": "^2.22.1",
@@ -24,9 +23,9 @@
     "react": ">=16.8.0",
     "react-dom": ">=16.8.0",
     "regenerator-runtime": "^0.13.2",
-    "webpack": "^5.38.1",
-    "webpack-cli": "^4.7.2",
     "underscore": "^1.10.2",
-    "uuid": "^3.3.3"
+    "uuid": "^3.3.3",
+    "webpack": "^5.38.1",
+    "webpack-cli": "^4.7.2"
   }
 }

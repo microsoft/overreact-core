@@ -22,13 +22,10 @@ module.exports = {
   },
   externals: [
     {
-      'json-stable-stringify': 'json-stable-stringify',
-      'prop-types': 'prop-types',
       react: 'react',
-      'react-dom': 'react-dom',
-      'regenerator-runtime': 'regenerator-runtime',
       underscore: 'underscore',
-      uuid: 'uuid',
+      'query-string': 'query-string',
+      '@microsoft/overreact': '@microsoft/overreact',
     },
   ],
 };
