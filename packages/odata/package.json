@@ -1,0 +1,34 @@
+{
+  "name": "@microsoft/overreact-odata",
+  "version": "0.1.0-alpha.7",
+  "description": "OData binding for overreact",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "webpack --mode development",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/microsoft/overreact-core.git"
+  },
+  "keywords": [
+    "odata"
+  ],
+  "author": "Like Zhu",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/microsoft/overreact-core/issues"
+  },
+  "homepage": "https://github.com/microsoft/overreact-core#readme",
+  "dependencies": {
+    "@microsoft/overreact": "^0.1.0-alpha.7"
+  },
+  "peerDependencies": {
+    "query-string": "^7.0.1",
+    "react": ">=16.8.0",
+    "underscore": "^1.10.2"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

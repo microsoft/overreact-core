@@ -1,5 +1,4 @@
 import { useMemo } from 'react';
-import Promise from 'bluebird';
 
 export function usePromisify(actions) {
   return useMemo(() => actions.map(action => (...args) => new Promise((resolve, reject) => {
