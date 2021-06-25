@@ -1,6 +1,9 @@
 {
 	"editor.renderWhitespace": "all",
 	"editor.tabSize": 2,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
 	"files.trimTrailingWhitespace": true,
 	"[markdown]": {
 	  "files.trimTrailingWhitespace": false,
