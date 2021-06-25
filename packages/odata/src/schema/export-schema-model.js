@@ -60,7 +60,8 @@ function replacer(schema, model) {
     if (key === '$ref') {
       if (!urlRegex.test(refSchemaName)) {
         // eslint-disable-next-line no-proto
-        extension.__proto__ = model[refSchemaName];
+        // extension.__proto__ = model[refSchemaName];
+        Object.setPrototypeOf(extension, model[refSchemaName]);
       }
       if (/^Model\//.test(refSchemaName)) {
         extension.schema = model[refSchemaName];
@@ -82,9 +83,10 @@ function replacer(schema, model) {
   if (_.isArray(schema)) {
     return schema;
   }
+
   return Object.assign(
-    schema,
     extension,
+    schema,
   );
 }
 

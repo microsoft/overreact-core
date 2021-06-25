@@ -27,11 +27,9 @@ const { defineConstProperty } = require('../edm/reflection');
   const rootPropertyName = 'Customers';
   const rootPropertyModelName = 'Model/McaCustomer';
 
-  const mappedModel = {};
-
   Object.keys(model || {}).forEach(key => {
     const schema = model[key];
-    mappedModel[key] = {
+    model[key] = {
       ...schema,
       $$ref: key,
     };
@@ -55,7 +53,7 @@ const { defineConstProperty } = require('../edm/reflection');
           ],
         },
       },
-      ...mappedModel,
+      ...model,
     },
   });
 

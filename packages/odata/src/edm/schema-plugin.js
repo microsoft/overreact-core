@@ -145,8 +145,7 @@ module.exports = (edm, {
 
         Object.keys(acts[key].Parameter || {}).forEach(k => {
           const parameter = acts[key].Parameter[k];
-          // eslint-disable-next-line no-param-reassign
-          acts[key].Parameter[k] = getTypeName([], parameter);
+          parameters[k] = getTypeName([], parameter);
         });
 
         actions.push(new ActionType({
@@ -163,8 +162,7 @@ module.exports = (edm, {
 
         Object.keys(funcs[key].Parameter || {}).forEach(k => {
           const param = funcs[key].Parameter[k];
-          // eslint-disable-next-line no-param-reassign
-          funcs[key].Parameter[k] = getTypeName([], param);
+          parameters[k] = getTypeName([], param);
         });
 
         functions.push(new FunctionType({

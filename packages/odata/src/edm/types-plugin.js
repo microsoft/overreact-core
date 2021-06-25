@@ -260,7 +260,7 @@ module.exports = edm => {
 
         defineConstProperty(this, 'properties', compileProperties.call(this, properties));
         defineConstProperty(this, 'navigationPropertyNames', navigationPropertyNames.slice());
-        defineProducedProperty(this, 'navigationProperties', () => _.pick(this.properties, (property, propertyName) => _.contains(this.navigationPropertyNames, propertyName)));
+        defineProducedProperty(this, 'navigationProperties', () => _.pickBy(this.properties, (property, propertyName) => _.includes(this.navigationPropertyNames, propertyName)));
         if (baseTypeName) {
           defineConstProperty(this, 'baseTypeName', baseTypeName);
           defineProducedProperty(this, 'baseType', () => resolveType(this.baseTypeName, this.namespace));
@@ -402,6 +402,8 @@ module.exports = edm => {
         const { typeName } = parameters[name];
         ret[name] = new Parameter({ name, namespace, typeName });
       });
+
+      return ret;
     }
 
     /**
