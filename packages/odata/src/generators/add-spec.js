@@ -1,15 +1,15 @@
-import {
+const {
   createRequestContract,
   createSpec,
   requestVerbs,
   specTypes,
-} from '@microsoft/overreact';
+} = require('@microsoft/overreact');
 
-import {
+const {
   createUriFactory,
   odataHeaderFactory,
   createODataResponseContract,
-} from './shared-entity';
+} = require('./shared-entity');
 
 function createODataRequestContract(edmModel, schema, path, visitedSchemas, isColl) {
   return createRequestContract({
@@ -20,10 +20,14 @@ function createODataRequestContract(edmModel, schema, path, visitedSchemas, isCo
     headerFactoryFn: odataHeaderFactory,
   });
 }
-export function generateAddSpec(edmModel, schema, path, visitedSchemas, entitySchema, isColl) {
+function generateAddSpec(edmModel, schema, path, visitedSchemas, entitySchema, isColl) {
   const requestContract = createODataRequestContract(edmModel,
     schema, path, visitedSchemas, isColl);
   const responseContract = createODataResponseContract(requestContract, entitySchema, isColl);
 
   return createSpec(requestContract, responseContract, specTypes.ADD, null);
 }
+
+module.exports = {
+  generateAddSpec,
+};

@@ -10,6 +10,12 @@ const { EDM } = require('../edm/core');
 const { resIdsPlugin } = require('../edm/resource-identifiers');
 const { defineConstProperty } = require('../edm/reflection');
 
+const {
+  createSpec,
+  createOverreactSchema,
+} = require('../bundler/create-spec');
+const { schemaNameMapper } = require('./utils');
+
 (async () => {
   const namespaces = await generateODataSchema('http://ui.ads-int.microsoft.com/ODataApi/Mca/V1', {
     isByDefaultNullable(ref) {
@@ -24,6 +30,7 @@ const { defineConstProperty } = require('../edm/reflection');
 
   const model = exportSchemaModel(namespaces);
 
+  // TODO: these needs to be customizable
   const rootPropertyName = 'Customers';
   const rootPropertyModelName = 'Model/McaCustomer';
 
@@ -66,4 +73,16 @@ const { defineConstProperty } = require('../edm/reflection');
   defineConstProperty(edm, rootPropertyName, rootResourceIdentifier[rootPropertyName]);
 
   console.log(edm);
+
+  const overreactSchema = createOverreactSchema(edm, schemaNameMapper, {
+    // TODO: also needs to be customizable
+    disapproved_campaign: 'Model/McaCampaign',
+  });
+
+  const specs = createSpec(edm, overreactSchema, model[rootPropertyModelName], schemaNameMapper, [{
+    name: rootPropertyName,
+    schema: model[rootPropertyModelName],
+  }], {});
+
+  console.log(specs);
 })();

@@ -1,13 +1,17 @@
-import {
+const {
   useFetch,
   useDataRefId,
-} from '@microsoft/overreact';
+} = require('@microsoft/overreact');
 
-import { useSpecs } from './shared';
+const { useSpecs } = require('./shared');
 
-export function useODataAction(specs, path, sideEffectFn, variables) {
+function useODataAction(specs, path, sideEffectFn, variables) {
   const dataRefId = useDataRefId();
   const { actionSpec } = useSpecs(specs, path);
 
   return useFetch(dataRefId, actionSpec, variables);
 }
+
+module.exports = {
+  useODataAction,
+};

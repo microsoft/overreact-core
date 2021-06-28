@@ -1,9 +1,9 @@
-import { useCallback } from 'react';
+const { useCallback } = require('react');
 
-import { useDataRefId, useFetch, useMutation } from '@microsoft/overreact';
-import { useSpecs } from './shared';
+const { useDataRefId, useFetch, useMutation } = require('@microsoft/overreact');
+const { useSpecs } = require('./shared');
 
-export function useODataEntity(specs, path, variables, config = {}) {
+function useODataEntity(specs, path, variables, config = {}) {
   const dataRefId = useDataRefId();
   const { entitySpecs } = useSpecs(specs, path);
 
@@ -28,3 +28,7 @@ export function useODataEntity(specs, path, variables, config = {}) {
 
   return [{ data, error }, { update, destroy }];
 }
+
+module.exports = {
+  useODataEntity,
+};

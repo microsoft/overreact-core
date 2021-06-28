@@ -1,9 +1,9 @@
-import { useCallback, useMemo } from 'react';
-import { useDataRefId, usePagination, useMutation } from '@microsoft/overreact';
+const { useCallback, useMemo } = require('react');
+const { useDataRefId, usePagination, useMutation } = require('@microsoft/overreact');
 
-import { useSpecs } from './shared';
+const { useSpecs } = require('./shared');
 
-export function useODataCollection(specs, path, variables, config) {
+function useODataCollection(specs, path, variables, config) {
   const dataRefId = useDataRefId();
   const { collSpecs } = useSpecs(specs, path);
 
@@ -52,3 +52,7 @@ export function useODataCollection(specs, path, variables, config) {
     destroy,
   }];
 }
+
+module.exports = {
+  useODataCollection,
+};

@@ -1,17 +1,17 @@
-import {
+const {
   createRequestContract,
   createSpec,
   requestVerbs,
   FetchPolicy,
   specTypes,
-} from '@microsoft/overreact';
+} = require('@microsoft/overreact');
 
-import {
+const {
   createUriFactory,
   odataHeaderFactory,
   odataPayloadFactory,
   createODataResponseContract,
-} from './shared-entity';
+} = require('./shared-entity');
 
 function createODataRequestContract(edmModel, schema, path, visitedSchemas, isColl) {
   return createRequestContract({
@@ -24,10 +24,14 @@ function createODataRequestContract(edmModel, schema, path, visitedSchemas, isCo
     fetchPolicy: FetchPolicy.NetworkOrStore,
   });
 }
-export function generateMutationSpec(edmModel, schema, path, visitedSchemas, entitySchema, isColl) {
+function generateMutationSpec(edmModel, schema, path, visitedSchemas, entitySchema, isColl) {
   const requestContract = createODataRequestContract(edmModel,
     schema, path, visitedSchemas, isColl);
   const responseContract = createODataResponseContract(requestContract, entitySchema, isColl);
 
   return createSpec(requestContract, responseContract, specTypes.MUTATION, null);
 }
+
+module.exports = {
+  generateMutationSpec,
+};

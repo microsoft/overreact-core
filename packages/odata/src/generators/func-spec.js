@@ -1,15 +1,15 @@
-import {
+const {
   createRequestContract,
   createSpec,
   requestVerbs,
   specTypes,
-} from '@microsoft/overreact';
+} = require('@microsoft/overreact');
 
-import {
+const {
   createUriFactory,
   createODataResponseContract,
   odataHeaderFactory,
-} from './shared-call';
+} = require('./shared-call');
 
 function createODataRequestContract(edmModel, schema, path, visitedSchemas, isColl) {
   return createRequestContract({
@@ -21,10 +21,14 @@ function createODataRequestContract(edmModel, schema, path, visitedSchemas, isCo
   });
 }
 
-export function generateFuncSpec(edmModel, schema, path, visitedSchemas, func, isColl) {
+function generateFuncSpec(edmModel, schema, path, visitedSchemas, func, isColl) {
   const requestContract = createODataRequestContract(edmModel,
     schema, path, visitedSchemas, isColl);
   const responseContract = createODataResponseContract(requestContract, func, isColl);
 
   return createSpec(requestContract, responseContract, specTypes.FETCH, null);
 }
+
+module.exports = {
+  generateFuncSpec,
+};

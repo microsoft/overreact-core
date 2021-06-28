@@ -1,14 +1,14 @@
-import _ from 'underscore';
-import queryString from 'query-string';
+const _ = require('lodash');
+const queryString = require('query-string');
 
-import {
+const {
   createResponseContract,
   responseTypes,
-} from '@microsoft/overreact';
+} = require('@microsoft/overreact');
 
-import { parseSearch } from '../helpers';
+const { parseSearch } = require('../helpers/search-string-parser');
 
-export function createUriFactory(edmModel, visitedSchemas, isColl) {
+function createUriFactory(edmModel, visitedSchemas, isColl) {
   return params => {
     const { variables } = params;
     const { locator, ...rest } = variables;
@@ -68,17 +68,17 @@ export function createUriFactory(edmModel, visitedSchemas, isColl) {
   };
 }
 
-export function odataHeaderFactory(params) {
+function odataHeaderFactory(params) {
   const { headers } = params;
   return headers;
 }
 
-export function odataPayloadFactory(params) {
+function odataPayloadFactory(params) {
   const { data } = params;
   return JSON.stringify(data);
 }
 
-export function createODataResponseContract(requestContract, entitySchema, isColl) {
+function createODataResponseContract(requestContract, entitySchema, isColl) {
   const { $$ODataExtension } = entitySchema;
 
   if (!isColl) {
@@ -98,3 +98,10 @@ export function createODataResponseContract(requestContract, entitySchema, isCol
     processorFn: r => r.values,
   });
 }
+
+module.exports = {
+  createUriFactory,
+  odataHeaderFactory,
+  odataPayloadFactory,
+  createODataResponseContract,
+};

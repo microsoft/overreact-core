@@ -1,16 +1,13 @@
-import {
-  Schema,
-} from '@microsoft/overreact';
-import {
-  generateActionSpec,
-  generateFuncSpec,
-  generateFetchSpec,
-  generateMutationSpec,
-  generateDestroySpec,
-  generateAddSpec,
-} from './generators';
+const { Schema } = require('@microsoft/overreact');
 
-export function createOverreactSchema(edmModel, nameMapper, extensions) {
+const { generateActionSpec } = require('../generators/action-spec');
+const { generateFuncSpec } = require('../generators/func-spec');
+const { generateFetchSpec } = require('../generators/fetch-spec');
+const { generateMutationSpec } = require('../generators/mutation-spec');
+const { generateDestroySpec } = require('../generators/destroy-spec');
+const { generateAddSpec } = require('../generators/add-spec');
+
+function createOverreactSchema(edmModel, nameMapper, extensions) {
   let schemaToModelMapping = {
     ...extensions,
   };
@@ -109,7 +106,7 @@ function createSpecForFunction(
   }
 }
 
-export function createSpec(
+function createSpec(
   edmModel,
   overreactSchema,
   rootSchema,
@@ -218,3 +215,8 @@ export function createSpec(
 
   return generatedSpecs;
 }
+
+module.exports = {
+  createSpec,
+  createOverreactSchema,
+};

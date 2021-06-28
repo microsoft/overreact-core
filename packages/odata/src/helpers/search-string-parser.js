@@ -1,4 +1,4 @@
-import _ from 'underscore';
+const _ = require('lodash');
 // support a mongoDB like orderby object for now: { age : -1, name: 1 }
 // for backward compatibility, support array format: [['age', 'desc'], ['name', 'asc]]
 function parseOrderBy(orderby) {
@@ -81,7 +81,7 @@ function parseSelect(select, resource) {
   return parsed;
 }
 
-export function parseSearch(search, edmResource) {
+function parseSearch(search, edmResource) {
   const {
     orderby,
     filter,
@@ -102,3 +102,7 @@ export function parseSearch(search, edmResource) {
     ...nonODataSearch,
   };
 }
+
+module.exports = {
+  parseSearch,
+};

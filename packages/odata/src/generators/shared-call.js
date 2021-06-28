@@ -1,9 +1,9 @@
-import {
+const {
   createResponseContract,
   responseTypes,
-} from '@microsoft/overreact';
+} = require('@microsoft/overreact');
 
-export function createUriFactory(edmModel, visitedSchemas, isColl) {
+function createUriFactory(edmModel, visitedSchemas, isColl) {
   return params => {
     const { variables } = params;
     const { locator, ...rest } = variables;
@@ -35,17 +35,17 @@ export function createUriFactory(edmModel, visitedSchemas, isColl) {
   };
 }
 
-export function odataHeaderFactory(params) {
+function odataHeaderFactory(params) {
   const { headers } = params;
   return headers;
 }
 
-export function odataPayloadFactory(params) {
+function odataPayloadFactory(params) {
   const { data } = params;
   return JSON.stringify(data);
 }
 
-export function createODataResponseContract(requestContract, action) {
+function createODataResponseContract(requestContract, action) {
   const { ReturnType } = action;
   if (ReturnType) {
     const { type, items, schema } = ReturnType;
@@ -77,3 +77,10 @@ export function createODataResponseContract(requestContract, action) {
     processorFn: r => r,
   });
 }
+
+module.exports = {
+  createUriFactory,
+  odataHeaderFactory,
+  odataPayloadFactory,
+  createODataResponseContract,
+};

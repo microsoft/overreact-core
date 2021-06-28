@@ -1,6 +1,6 @@
-import { useRef, useEffect } from 'react';
+const { useRef, useEffect } = require('react');
 
-export function usePrevious(value) {
+function usePrevious(value) {
   const ref = useRef();
 
   useEffect(() => {
@@ -9,3 +9,7 @@ export function usePrevious(value) {
 
   return ref.current;
 }
+
+module.exports = {
+  usePrevious,
+};
