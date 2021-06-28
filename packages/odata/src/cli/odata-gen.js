@@ -35,11 +35,7 @@ const { schemaNameMapper } = require('./utils');
   const rootPropertyModelName = 'Model/McaCustomer';
 
   Object.keys(model || {}).forEach(key => {
-    const schema = model[key];
-    model[key] = {
-      ...schema,
-      $$ref: key,
-    };
+    Object.assign(model[key], { $$ref: key });
   });
 
   const edm = new EDM({
@@ -71,8 +67,6 @@ const { schemaNameMapper } = require('./utils');
   const rootResourceIdentifier = new root.ResourceIdentifier();
   defineConstProperty(edm, 'root', rootResourceIdentifier);
   defineConstProperty(edm, rootPropertyName, rootResourceIdentifier[rootPropertyName]);
-
-  console.log(edm);
 
   const overreactSchema = createOverreactSchema(edm, schemaNameMapper, {
     // TODO: also needs to be customizable
