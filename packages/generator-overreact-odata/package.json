@@ -1,13 +1,13 @@
 {
-  "name": "@microsoft/overreact-odata",
+  "name": "generator-overreact-odata",
   "version": "0.1.0-alpha.8",
-  "description": "OData binding generator for overreact",
-  "main": "index.js",
+  "description": "Yeoman generator for overreact-odata specs",
+  "main": "src/index.js",
   "keywords": [
+    "yeoman-generator",
     "odata"
   ],
   "scripts": {
-    "build": "../../node_modules/.bin/webpack --mode development",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -22,18 +22,11 @@
   "homepage": "https://github.com/microsoft/overreact-core#readme",
   "dependencies": {
     "@microsoft/overreact": "^0.1.0-alpha.8",
+    "@microsoft/overreact-odata": "^0.1.0-alpha.8",
     "json-stable-stringify": "^1.0.1",
     "lodash": "^4.17.21",
-    "node-fetch": "^2.6.1",
     "prop-types": "^15.7.2",
-    "query-string": "^7.0.1",
-    "react": ">=16.8.0",
-    "react-dom": ">=16.8.0",
-    "regenerator-runtime": "^0.13.2",
-    "stream": "^0.0.2",
-    "timers": "^0.1.1",
-    "uuid": "^3.3.3",
-    "xml2js": "^0.4.23"
+    "yeoman-generator": "^5.3.0"
   },
   "publishConfig": {
     "access": "public"

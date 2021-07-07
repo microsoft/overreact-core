@@ -5,8 +5,11 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'index.js',
-    libraryTarget: 'umd',
-    umdNamedDefine: true,
+    globalObject: 'this',
+    library: {
+      name: '@microsoft/overreact-odata',
+      type: 'umd',
+    },
   },
   devtool: 'source-map',
   module: {
@@ -22,10 +25,12 @@ module.exports = {
   },
   externals: [
     {
+      'json-stable-stringify': 'json-stable-stringify',
+      'prop-types': 'prop-types',
       react: 'react',
-      underscore: 'underscore',
-      'query-string': 'query-string',
-      '@microsoft/overreact': '@microsoft/overreact',
+      'react-dom': 'react-dom',
+      'regenerator-runtime': 'regenerator-runtime',
+      uuid: 'uuid',
     },
   ],
 };

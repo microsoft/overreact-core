@@ -1,6 +1,5 @@
-export {
-  createSpec,
-  createOverreactSchema,
-} from './src/create-spec';
+const { makeSpecs } = require('./src/odata-gen');
 
-export * from './src/hooks/index';
+module.exports = {
+  makeSpecs,
+};

@@ -1,23 +1,24 @@
-#!/usr/bin/env node
-
-const fs = require('fs');
-const path = require('path');
-const util = require('util');
-const _ = require('lodash');
-const { generateODataSchema } = require('../schema/generate-odata-schema');
-const { exportSchemaModel } = require('../schema/export-schema-model');
-const { EDM } = require('../edm/core');
-const { resIdsPlugin } = require('../edm/resource-identifiers');
-const { defineConstProperty } = require('../edm/reflection');
+const { generateODataSchema } = require('./schema/generate-odata-schema');
+const { exportSchemaModel } = require('./schema/export-schema-model');
+const { EDM } = require('./edm/core');
+const { resIdsPlugin } = require('./edm/resource-identifiers');
+const { defineConstProperty } = require('./edm/reflection');
 
 const {
   createSpec,
   createOverreactSchema,
-} = require('../bundler/create-spec');
-const { schemaNameMapper } = require('./utils');
+} = require('./bundler/create-spec');
+const { schemaNameMapper } = require('./bundler/utils');
 
-(async () => {
-  const namespaces = await generateODataSchema('http://ui.ads-int.microsoft.com/ODataApi/Mca/V1', {
+async function makeSpecs(config) {
+  const {
+    url,
+    rootPropertyName,
+    rootPropertyModelName,
+    schemaExtensions,
+  } = config;
+
+  const namespaces = await generateODataSchema(url, {
     isByDefaultNullable(ref) {
       if (ref === 'Edm/String') {
         return true;
@@ -29,10 +30,6 @@ const { schemaNameMapper } = require('./utils');
   });
 
   const model = exportSchemaModel(namespaces);
-
-  // TODO: these needs to be customizable
-  const rootPropertyName = 'Customers';
-  const rootPropertyModelName = 'Model/McaCustomer';
 
   Object.keys(model || {}).forEach(key => {
     Object.assign(model[key], { $$ref: key });
@@ -78,5 +75,9 @@ const { schemaNameMapper } = require('./utils');
     schema: model[rootPropertyModelName],
   }], {});
 
-  console.log(specs);
-})();
+  return specs;
+}
+
+module.exports = {
+  makeSpecs,
+};
