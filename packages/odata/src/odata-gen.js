@@ -5,12 +5,15 @@ const { resIdsPlugin } = require('./edm/resource-identifiers');
 const { defineConstProperty } = require('./edm/reflection');
 
 const {
-  createSpec,
+  createSpecMetadata,
   createOverreactSchema,
-} = require('./bundler/create-spec');
+
+  specMetadataScope,
+  specMetadataType,
+} = require('./bundler/create-spec-metadata');
 const { schemaNameMapper } = require('./bundler/utils');
 
-async function makeSpecs(config) {
+async function makeSpecMetadata(config) {
   const {
     url,
     rootPropertyName,
@@ -70,14 +73,24 @@ async function makeSpecs(config) {
     disapproved_campaign: 'Model/McaCampaign',
   });
 
-  const specs = createSpec(edm, overreactSchema, model[rootPropertyModelName], schemaNameMapper, [{
-    name: rootPropertyName,
-    schema: model[rootPropertyModelName],
-  }], {});
+  const specsMetadata = createSpecMetadata(
+    edm,
+    overreactSchema,
+    model[rootPropertyModelName],
+    schemaNameMapper,
+    [{
+      name: rootPropertyName,
+      schema: model[rootPropertyModelName],
+    }],
+    {},
+  );
 
-  return specs;
+  return specsMetadata;
 }
 
 module.exports = {
-  makeSpecs,
+  makeSpecMetadata,
+
+  specMetadataScope,
+  specMetadataType,
 };

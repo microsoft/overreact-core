@@ -1,6 +1,19 @@
+/* eslint-disable camelcase */
+/* eslint-disable no-underscore-dangle */
+const path = require('path');
 const Generator = require('yeoman-generator');
 
-const { makeSpecs } = require('@microsoft/overreact-odata');
+const {
+  makeSpecMetadata,
+
+  specMetadataScope,
+  specMetadataType,
+} = require('@microsoft/overreact-odata');
+
+const {
+  odataUriFactory,
+  generateDescriptorList,
+} = require('./utils/uri-factory');
 
 module.exports = class extends Generator {
   initializing() {
@@ -54,25 +67,100 @@ module.exports = class extends Generator {
   }
 
   async configuring() {
-    this.specs = await makeSpecs({
+    this.specMetadata = await makeSpecMetadata({
       ...this.answers,
       schemaExtensions: {},
     });
-
-    this.log(this.specs);
   }
 
   writing() {
-    Object.keys(this.specs).forEach(k => {
+    this.generatedSpecs = [];
+    Object.keys(this.specMetadata).forEach(k => {
       this.log(k);
 
-      // TODO: use path
-      const specPath = k.split(':').join('/');
-      const destPath = this.destinationPath('specs', specPath, 'index.js');
+      const specPath = path.join(...k.split(':'));
+      const destDir = this.destinationPath('specs', specPath, '__specs');
 
-      this.log(destPath);
+      this.log(destDir);
 
-      this.fs.copy(this.templatePath('index.js'), destPath);
+      // 4 subfolders
+      // 1 - entity
+      // 2 - coll
+      // 3 - calls
+      // 4 - hooks
+
+      const { type, scope, metadata } = this.specMetadata[k];
+
+      switch (type) {
+        case specMetadataType.MODEL:
+          this._write_entity_specs(k, metadata, destDir);
+          this._write_coll_specs(k, metadata, destDir);
+          break;
+        case specMetadataType.ACTION:
+          this._write_action_spec(k, metadata, scope, destDir);
+          break;
+        case specMetadataType.FUNC:
+          this._write_func_spec(k, metadata, scope, destDir);
+          break;
+        default:
+          break;
+      }
+
+      this.generatedSpecs.push(k);
     });
+
+    this.packageJson.set({
+      generatedSpecs: this.generatedSpecs,
+    });
+  }
+
+  _write_entity_specs(dataPath, metadata, destDir) {
+    const {
+      schemaNameMapper, visitedSchemas, rootSchema,
+    } = metadata;
+    const odataUri = odataUriFactory(visitedSchemas, schemaNameMapper, false);
+    const descriptorList = generateDescriptorList(visitedSchemas, schemaNameMapper, false);
+    const { $$ODataExtension } = rootSchema;
+
+    this.fs.copyTpl(
+      this.templatePath('entity/fetch-spec.ejs'),
+      path.join(destDir, 'entity', 'fetch-spec.js'),
+      {
+        edmLocation: './edm',
+        descriptorList,
+        odataUri,
+        dataPath,
+        key: $$ODataExtension.Key[0],
+      },
+    );
+  }
+
+  _write_coll_specs(dataPath, metadata, destDir) {
+    const {
+      schemaNameMapper, visitedSchemas, rootSchema,
+    } = metadata;
+    const odataUri = odataUriFactory(visitedSchemas, schemaNameMapper, true);
+    const descriptorList = generateDescriptorList(visitedSchemas, schemaNameMapper, true);
+    const { $$ODataExtension } = rootSchema;
+
+    this.fs.copyTpl(
+      this.templatePath(path.join('coll', 'fetch-spec.ejs')),
+      path.join(destDir, 'coll', 'fetch-spec.js'),
+      {
+        edmLocation: './edm',
+        descriptorList,
+        odataUri,
+        dataPath,
+        key: $$ODataExtension.Key[0],
+      },
+    );
+  }
+
+  _write_func_spec(dataPath, metadata, scope, destDir) {
+
+  }
+
+  _write_action_spec(dataPath, metadata, scope, destDir) {
+
   }
 };

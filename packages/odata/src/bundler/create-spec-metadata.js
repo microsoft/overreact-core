@@ -1,11 +1,17 @@
 const { Schema } = require('@microsoft/overreact');
 
-const { generateActionSpec } = require('../generators/action-spec');
-const { generateFuncSpec } = require('../generators/func-spec');
-const { generateFetchSpec } = require('../generators/fetch-spec');
-const { generateMutationSpec } = require('../generators/mutation-spec');
-const { generateDestroySpec } = require('../generators/destroy-spec');
-const { generateAddSpec } = require('../generators/add-spec');
+const { generateSpecMetadata } = require('../generators/spec-metadata');
+
+const specMetadataType = {
+  MODEL: 'MODEL',
+  FUNC: 'FUNC',
+  ACTION: 'ACTION',
+};
+
+const specMetadataScope = {
+  ENTITY: 'ENTITY',
+  COLL: 'COLL',
+};
 
 function createOverreactSchema(edmModel, nameMapper, extensions) {
   let schemaToModelMapping = {
@@ -43,9 +49,9 @@ function createPath(visited, nameMapper) {
   }).join(':');
 }
 
-const generatedSpecs = {};
+const specMetadata = {};
 
-function createSpecForAction(
+function createSpecMetadataForAction(
   edmModel,
   overreactSchema,
   schemaNameMapper,
@@ -69,13 +75,22 @@ function createSpecForAction(
 
     const callPath = createPath(visited, schemaNameMapper);
 
-    generatedSpecs[callPath] = {
-      actionSpec: generateActionSpec(edmModel, overreactSchema, callPath, visited, action, isColl),
+    specMetadata[callPath] = {
+      type: specMetadataType.ACTION,
+      scope: isColl ? specMetadataScope.COLL : specMetadataScope.ENTITY,
+      metadata: generateSpecMetadata(
+        edmModel,
+        overreactSchema,
+        schemaNameMapper,
+        callPath,
+        visited,
+        action,
+      ),
     };
   }
 }
 
-function createSpecForFunction(
+function createSpecMetadataForFunction(
   edmModel,
   overreactSchema,
   schemaNameMapper,
@@ -100,13 +115,22 @@ function createSpecForFunction(
     const callPath = createPath(visited, schemaNameMapper);
 
     // create spec for function (GET)
-    generatedSpecs[callPath] = {
-      funcSpec: generateFuncSpec(edmModel, overreactSchema, callPath, visited, func, isColl),
+    specMetadata[callPath] = {
+      type: specMetadataType.FUNC,
+      scope: isColl ? specMetadataScope.COLL : specMetadataScope.ENTITY,
+      metadata: generateSpecMetadata(
+        edmModel,
+        overreactSchema,
+        schemaNameMapper,
+        callPath,
+        visited,
+        func,
+      ),
     };
   }
 }
 
-function createSpec(
+function createSpecMetadata(
   edmModel,
   overreactSchema,
   rootSchema,
@@ -126,7 +150,8 @@ function createSpec(
 
   const path = createPath(visitedSchemas, schemaNameMapper);
 
-  generatedSpecs[path] = {
+  /*
+  specMetadata[path] = {
     entitySpecs: {
       fetch:
         generateFetchSpec(edmModel, overreactSchema, path, visitedSchemas, rootSchema, false),
@@ -151,6 +176,18 @@ function createSpec(
         generateAddSpec(edmModel, overreactSchema, path, visitedSchemas, rootSchema, true),
     },
   };
+  */
+  specMetadata[path] = {
+    type: specMetadataType.MODEL,
+    metadata: generateSpecMetadata(
+      edmModel,
+      overreactSchema,
+      schemaNameMapper,
+      path,
+      visitedSchemas,
+      rootSchema,
+    ),
+  };
 
   // Handle navigation properties
   if (NavigationProperty) {
@@ -169,7 +206,7 @@ function createSpec(
         }
 
         if (!visitedSchemas.find(p => p.name === navPropertyName)) {
-          createSpec(
+          createSpecMetadata(
             edmModel,
             overreactSchema,
             schemaObj,
@@ -189,7 +226,7 @@ function createSpec(
 
   if (Collection) {
     const { Action: CollAction, Function: CollFunc } = Collection;
-    createSpecForAction(
+    createSpecMetadataForAction(
       edmModel,
       overreactSchema,
       schemaNameMapper,
@@ -197,7 +234,7 @@ function createSpec(
       CollAction,
       true,
     );
-    createSpecForFunction(
+    createSpecMetadataForFunction(
       edmModel,
       overreactSchema,
       schemaNameMapper,
@@ -208,15 +245,28 @@ function createSpec(
   }
 
   // Actions
-  createSpecForAction(edmModel, overreactSchema, schemaNameMapper, visitedSchemas, ODataAction);
+  createSpecMetadataForAction(
+    edmModel,
+    overreactSchema,
+    schemaNameMapper,
+    visitedSchemas, ODataAction,
+  );
 
   // Functions
-  createSpecForFunction(edmModel, overreactSchema, schemaNameMapper, visitedSchemas, ODataFunction);
+  createSpecMetadataForFunction(
+    edmModel,
+    overreactSchema,
+    schemaNameMapper,
+    visitedSchemas,
+    ODataFunction,
+  );
 
-  return generatedSpecs;
+  return specMetadata;
 }
 
 module.exports = {
-  createSpec,
   createOverreactSchema,
+  createSpecMetadata,
+  specMetadataScope,
+  specMetadataType,
 };
