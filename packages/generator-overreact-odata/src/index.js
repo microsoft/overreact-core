@@ -72,6 +72,8 @@ module.exports = class extends Generator {
   }
 
   writing() {
+    this._write_env();
+
     this.generatedSpecs = [];
     Object.keys(this.specMetadata).forEach(k => {
       const specPath = path.join(...k.split(':'));
@@ -100,6 +102,16 @@ module.exports = class extends Generator {
     this.packageJson.set({
       generatedSpecs: this.generatedSpecs,
     });
+  }
+
+  _write_env() {
+    this.fs.copyTpl(
+      this.templatePath(path.join('env', 'edm.ejs')),
+      this.destinationPath('env', 'edm.js'),
+      {
+        ...this.answers,
+      },
+    );
   }
 
   _write_entity_specs(dataPath, metadata, scope, destDir) {

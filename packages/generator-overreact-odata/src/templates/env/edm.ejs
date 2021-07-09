@@ -32,7 +32,7 @@ export const edm = new EDM({
 
 resIdsPlugin(edm);
 
-odataPlugin(edm, '' /* we don't use edm to send request so make host url empty */, {});
+odataPlugin(edm, '', {});
 const root = edm.types.resolve('$ROOT');
 
 const rootResourceIdentifier = new root.ResourceIdentifier();

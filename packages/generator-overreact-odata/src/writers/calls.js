@@ -13,6 +13,11 @@ function composeSharedContext(metadata, scope) {
   const {
     schemaNameMapper, visitedSchemas, rootSchema,
   } = metadata;
+    // calculate edm.js location
+  const edmLocation = path.join(
+    ...Array(visitedSchemas.length + 3).fill('..'),
+    'env', 'edm',
+  );
 
   const isColl = scope === specMetadataScope.COLL;
 
@@ -47,6 +52,7 @@ function composeSharedContext(metadata, scope) {
   }
 
   return {
+    edmLocation,
     descriptorList,
     odataUri,
     key,
@@ -62,7 +68,6 @@ function writeActionSpec(context, dataPath, metadata, scope, destDir) {
     context.templatePath(path.join('calls', 'action-spec.ejs')),
     path.join(destDir, 'calls', 'action-spec.js'),
     {
-      edmLocation: './edm',
       dataPath,
       ...sharedContext,
     },
@@ -76,7 +81,6 @@ function writeFuncSpec(context, dataPath, metadata, scope, destDir) {
     context.templatePath(path.join('calls', 'func-spec.ejs')),
     path.join(destDir, 'calls', 'func-spec.js'),
     {
-      edmLocation: './edm',
       dataPath,
       ...sharedContext,
     },
