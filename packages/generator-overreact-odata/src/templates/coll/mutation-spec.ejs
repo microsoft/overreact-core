@@ -26,18 +26,24 @@ function odataHeaderFactory(params) {
   return headers;
 }
 
+function odataPayloadFactory(params) {
+  const { data } = params;
+  return JSON.stringify(data);
+}
+
 export const requestContract = createRequestContract({
   schema,
   dataPath: '<%= dataPath %>',
-  verb: requestVerbs.DELETE,
-  fetchPolicy: FetchPolicy.StoreOrNetwork,
+  verb: requestVerbs.PATCH,
+  fetchPolicy: FetchPolicy.NetworkOrStore,
   uriFactoryFn: odataUrlFactory,
   headerFactoryFn: odataHeaderFactory,
+	payloadFactoryFn: odataPayloadFactory,
 });
 
 export const responseContract = createResponseContract({
   requestContract,
-  responseType: responseTypes.ENTITY,
+  responseType: responseTypes.COLL,
   keySelector: r => r.<%= key %>,
-  processorFn: r => r,
+  processorFn: r => r.value,
 });

@@ -26,7 +26,7 @@ function odataHeaderFactory(params) {
   return headers;
 }
 
-export const fetchRequestContract = createRequestContract({
+export const requestContract = createRequestContract({
   schema,
   dataPath: '<%= dataPath %>',
   verb: requestVerbs.GET,
@@ -35,8 +35,8 @@ export const fetchRequestContract = createRequestContract({
   headerFactoryFn: odataHeaderFactory,
 });
 
-export const fetchResponseContract = createResponseContract({
-  fetchRequestContract,
+export const responseContract = createResponseContract({
+  requestContract,
   responseType: responseTypes.ENTITY,
   keySelector: r => r.<%= key %>,
   processorFn: r => r,

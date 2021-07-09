@@ -1,0 +1,49 @@
+import _ from 'underscore';
+import queryString from 'query-string';
+import {
+  createRequestContract,
+  createResponseContract,
+  requestVerbs,
+  responseTypes,
+  FetchPolicy,
+} from '@microsoft/overreact';
+
+import { edm } from '<%= edmLocation %>';
+
+function odataUrlFactory(params) {
+  const { variables } = params;
+  const { locator, ...rest } = variables;
+  const { descriptor } = locator;
+  const { <%- descriptorList %> } = descriptor;
+
+  const path =
+    <%- odataUri %>;
+  return path;
+}
+
+function odataHeaderFactory(params) {
+  const { headers } = params;
+  return headers;
+}
+
+function odataPayloadFactory(params) {
+  const { data } = params;
+  return JSON.stringify(data);
+}
+
+export const requestContract = createRequestContract({
+  schema,
+  dataPath: '<%= dataPath %>',
+  verb: requestVerbs.POST,
+  fetchPolicy: FetchPolicy.StoreOrNetwork,
+  uriFactoryFn: odataUrlFactory,
+  headerFactoryFn: odataHeaderFactory,
+  payloadFactoryFn: odataPayloadFactory,
+});
+
+export const responseContract = createResponseContract({
+  requestContract,
+  responseType: <%- responseType %>,
+  keySelector: <%- key %>,
+  processorFn: <%- processor %>,
+});

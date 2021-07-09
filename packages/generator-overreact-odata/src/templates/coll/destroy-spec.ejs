@@ -37,7 +37,7 @@ export const requestContract = createRequestContract({
 
 export const responseContract = createResponseContract({
   requestContract,
-  responseType: responseTypes.ENTITY,
+  responseType: responseTypes.COLL,
   keySelector: r => r.<%= key %>,
-  processorFn: r => r,
+  processorFn: r => r.value,
 });
