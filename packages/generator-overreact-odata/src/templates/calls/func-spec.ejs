@@ -9,6 +9,7 @@ import {
 } from '@microsoft/overreact';
 
 import { edm } from '<%= edmLocation %>';
+import { envLookupFn } from '<%= envLocation %>';
 
 function odataUrlFactory(params) {
   const { variables } = params;
@@ -26,19 +27,13 @@ function odataHeaderFactory(params) {
   return headers;
 }
 
-function odataPayloadFactory(params) {
-  const { data } = params;
-  return JSON.stringify(data);
-}
-
 export const requestContract = createRequestContract({
   schema,
   dataPath: '<%= dataPath %>',
-  verb: requestVerbs.POST,
+  verb: requestVerbs.GET,
   fetchPolicy: FetchPolicy.StoreOrNetwork,
   uriFactoryFn: odataUrlFactory,
   headerFactoryFn: odataHeaderFactory,
-  payloadFactoryFn: odataPayloadFactory,
 });
 
 export const responseContract = createResponseContract({
@@ -47,3 +42,11 @@ export const responseContract = createResponseContract({
   keySelector: <%- key %>,
   processorFn: <%- processor %>,
 });
+
+export const spec = createSpec(
+  requestContract,
+  responseContract,
+  specTypes.FETCH,
+  null,
+  envLookupFn,
+);

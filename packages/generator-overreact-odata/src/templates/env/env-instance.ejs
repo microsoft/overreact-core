@@ -1,0 +1,40 @@
+import {
+  Environment,
+  middlewareTypes,
+  createFetchPolicyMiddleware,
+  createErrorMiddleware,
+  Store,
+} from '@microsoft/overreact';
+import { schema } from './schema';
+
+export { getRequestor } from './requestor';
+
+export const middlewares = {
+  [middlewareTypes.FETCH_POLICY]: createFetchPolicyMiddleware(),
+  [middlewareTypes.ERROR]: createErrorMiddleware(),
+};
+
+const store = new Store();
+let env = null;
+
+export const ENVIRONMENT_TAG = <%= environmentTag ->;
+
+export function getEnvironmentInstance(requestor, customStore, customMiddleWares) {
+  if (!env) {
+    env = new Environment(
+      requestor,
+      schema,
+      customStore || store,
+      customMiddleWares || middlewares,
+      ENVIRONMENT_TAG
+    );
+  }
+  // allow caller to update requestor
+  env.networkRequestor = requestor;
+
+  return env;
+}
+
+export function environmentLookupFn(environmentTag) {
+  return environmentTag === ENVIRONMENT_TAG;
+}

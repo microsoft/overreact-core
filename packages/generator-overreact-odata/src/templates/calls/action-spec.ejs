@@ -9,6 +9,7 @@ import {
 } from '@microsoft/overreact';
 
 import { edm } from '<%= edmLocation %>';
+import { envLookupFn } from '<%= envLocation %>';
 
 function odataUrlFactory(params) {
   const { variables } = params;
@@ -47,3 +48,11 @@ export const responseContract = createResponseContract({
   keySelector: <%- key %>,
   processorFn: <%- processor %>,
 });
+
+export const spec = createSpec(
+  requestContract,
+  responseContract,
+  specTypes.MUTATION,
+  null,
+  envLookupFn,
+);

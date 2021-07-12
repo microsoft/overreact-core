@@ -1,5 +1,6 @@
 const {
   makeSpecMetadata,
+  makeSchemaModel,
 
   specMetadataScope,
   specMetadataType,
@@ -7,6 +8,7 @@ const {
 
 module.exports = {
   makeSpecMetadata,
+  makeSchemaModel,
 
   specMetadataScope,
   specMetadataType,

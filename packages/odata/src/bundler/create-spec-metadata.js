@@ -150,33 +150,6 @@ function createSpecMetadata(
 
   const path = createPath(visitedSchemas, schemaNameMapper);
 
-  /*
-  specMetadata[path] = {
-    entitySpecs: {
-      fetch:
-        generateFetchSpec(edmModel, overreactSchema, path, visitedSchemas, rootSchema, false),
-
-      mutation:
-        generateMutationSpec(edmModel, overreactSchema, path, visitedSchemas, rootSchema, false),
-
-      destroy:
-        generateDestroySpec(edmModel, overreactSchema, path, visitedSchemas, rootSchema, false),
-    },
-    collSpecs: {
-      fetch:
-        generateFetchSpec(edmModel, overreactSchema, path, visitedSchemas, rootSchema, true),
-
-      mutation:
-        generateMutationSpec(edmModel, overreactSchema, path, visitedSchemas, rootSchema, true),
-
-      destroy:
-        generateDestroySpec(edmModel, overreactSchema, path, visitedSchemas, rootSchema, true),
-
-      add:
-        generateAddSpec(edmModel, overreactSchema, path, visitedSchemas, rootSchema, true),
-    },
-  };
-  */
   specMetadata[path] = {
     type: specMetadataType.MODEL,
     metadata: generateSpecMetadata(

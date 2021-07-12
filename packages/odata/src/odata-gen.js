@@ -13,14 +13,7 @@ const {
 } = require('./bundler/create-spec-metadata');
 const { schemaNameMapper } = require('./bundler/utils');
 
-async function makeSpecMetadata(config) {
-  const {
-    url,
-    rootPropertyName,
-    rootPropertyModelName,
-    schemaExtensions,
-  } = config;
-
+async function makeSchemaModel(url) {
   const namespaces = await generateODataSchema(url, {
     isByDefaultNullable(ref) {
       if (ref === 'Edm/String') {
@@ -37,6 +30,16 @@ async function makeSpecMetadata(config) {
   Object.keys(model || {}).forEach(key => {
     Object.assign(model[key], { $$ref: key });
   });
+
+  return model;
+}
+
+function makeSpecMetadata(model, config) {
+  const {
+    rootPropertyName,
+    rootPropertyModelName,
+    schemaExtensions,
+  } = config;
 
   const edm = new EDM({
     schemas: {
@@ -89,6 +92,7 @@ async function makeSpecMetadata(config) {
 }
 
 module.exports = {
+  makeSchemaModel,
   makeSpecMetadata,
 
   specMetadataScope,

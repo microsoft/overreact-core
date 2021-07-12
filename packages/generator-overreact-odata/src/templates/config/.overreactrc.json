@@ -1,0 +1,12 @@
+{
+	"modelAliases": {
+		"customer": "Model/McaCustomer"
+	},
+	"dataPaths": [
+		"customer:account:campaign"
+	],
+	"extensions": {
+		"customer:account:campaign": {
+		}
+	}
+}
