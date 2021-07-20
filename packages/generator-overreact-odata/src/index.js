@@ -7,6 +7,8 @@ const {
   makeSpecMetadata,
   makeSchemaModel,
 
+  createSpecList,
+
   specMetadataScope,
   specMetadataType,
 } = require('@microsoft/overreact-odata');
@@ -81,7 +83,7 @@ module.exports = class extends Generator {
         ...this.packageJsonAnswers,
       });
 
-      this.overreactJsonAnswers = await this.prompt([
+      const answers = await this.prompt([
         {
           type: 'input',
           name: 'url',
@@ -89,8 +91,13 @@ module.exports = class extends Generator {
           default: this.overreactJsonConfigs.url,
         },
       ]);
+
+      this.overreactJsonConfigs = {
+        ...this.overreactJsonConfigs,
+        ...answers,
+      };
     } else if (this.stage === packageStage.MODEL_GENERATED) {
-      this.overreactJsonAnswers = await this.prompt([
+      const answers = await this.prompt([
         {
           type: 'input',
           name: 'environmentTag',
@@ -110,17 +117,22 @@ module.exports = class extends Generator {
           default: this.overreactJsonConfigs.rootPropertyModelName,
         },
       ]);
+
+      this.overreactJsonConfigs = {
+        ...this.overreactJsonConfigs,
+        ...answers,
+      };
     } else if (this.stage === packageStage.SPEC_GENERATED) {
 
     }
 
     this.overreactJson.set({
-      ...this.overreactJsonAnswers,
+      ...this.overreactJsonConfigs,
     });
   }
 
   async configuring() {
-    const { url } = this.overreactJsonAnswers;
+    const { url } = this.overreactJsonConfigs;
     try {
       this.log(`Fetching metadata from ${url}`);
       this.model = await makeSchemaModel(url);
@@ -149,6 +161,15 @@ module.exports = class extends Generator {
           modelAliases,
         });
       }
+    } else if (this.stage === packageStage.MODEL_GENERATED) {
+      const specList = createSpecList(this.model, this.overreactJsonConfigs);
+      this.log(specList);
+
+      this.overreactJson.set({
+        dataPaths: specList,
+      });
+    } else if (this.stage === packageStage.SPEC_GENERATED) {
+      this.specMetadata = makeSpecMetadata(this.model, this.overreactJsonConfigs);
     }
   }
 
@@ -201,15 +222,15 @@ module.exports = class extends Generator {
       this.templatePath(path.join('env', 'edm.ejs')),
       this.destinationPath('env', 'edm.js'),
       {
-        ...this.answers,
+        ...this.overreactJsonConfigs,
       },
     );
 
     this.fs.copyTpl(
-      this.templatePath(path.join('env', 'envLookup.ejs')),
-      this.destinationPath('env', 'envLookup.js'),
+      this.templatePath(path.join('env', 'env-instance.ejs')),
+      this.destinationPath('env', 'env-instance.js'),
       {
-        ...this.answers,
+        ...this.overreactJsonConfigs,
       },
     );
   }

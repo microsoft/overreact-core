@@ -6,5 +6,16 @@ export function networkRequestor(uri, requestVerb, headers, body) {
     method: requestVerb,
     headers,
     body: JSON.stringify(body),
-  }).then(response => response.json());
+  }).then(response => Promise.all([response.ok, response.json(), response]))
+    .then(([responseOk, responseJSON, response]) => {
+      if (responseOk) {
+        return responseJSON;
+      }
+      const error = {
+        status: response.status,
+        responseJSON,
+      };
+
+      throw error;
+    });
 }

@@ -11,6 +11,9 @@ const {
   specMetadataScope,
   specMetadataType,
 } = require('./bundler/create-spec-metadata');
+
+const { generatePath } = require('./bundler/path-generator');
+
 const { schemaNameMapper } = require('./bundler/utils');
 
 async function makeSchemaModel(url) {
@@ -34,7 +37,7 @@ async function makeSchemaModel(url) {
   return model;
 }
 
-function makeSpecMetadata(model, config) {
+function makeEdmModel(model, config) {
   const {
     rootPropertyName,
     rootPropertyModelName,
@@ -71,6 +74,18 @@ function makeSpecMetadata(model, config) {
   defineConstProperty(edm, 'root', rootResourceIdentifier);
   defineConstProperty(edm, rootPropertyName, rootResourceIdentifier[rootPropertyName]);
 
+  return edm;
+}
+
+function makeSpecMetadata(model, config) {
+  const {
+    rootPropertyName,
+    rootPropertyModelName,
+    schemaExtensions,
+  } = config;
+
+  const edm = makeEdmModel(model, config);
+
   const overreactSchema = createOverreactSchema(edm, schemaNameMapper, {
     // TODO: also needs to be customizable
     disapproved_campaign: 'Model/McaCampaign',
@@ -91,9 +106,35 @@ function makeSpecMetadata(model, config) {
   return specsMetadata;
 }
 
+function createSpecList(model, config) {
+  const {
+    rootPropertyModelName,
+    rootPropertyName,
+  } = config;
+
+  const edm = makeEdmModel(model, config);
+  const overreactSchema = createOverreactSchema(edm, schemaNameMapper, {
+    // TODO: also needs to be customizable
+    disapproved_campaign: 'Model/McaCampaign',
+  });
+
+  return generatePath(
+    edm,
+    overreactSchema,
+    model[rootPropertyModelName],
+    schemaNameMapper,
+    [{
+      name: rootPropertyName,
+      schema: model[rootPropertyModelName],
+    }],
+  );
+}
+
 module.exports = {
   makeSchemaModel,
   makeSpecMetadata,
+
+  createSpecList,
 
   specMetadataScope,
   specMetadataType,

@@ -19,6 +19,11 @@ function composeSharedContext(metadata, scope) {
     'env', 'edm',
   );
 
+  const envLocation = path.join(
+    ...Array(visitedSchemas.length + 3).fill('..'),
+    'env', 'env-instance',
+  );
+
   const isColl = scope === specMetadataScope.COLL;
 
   const odataUri = odataCallUriFactory(visitedSchemas, schemaNameMapper, isColl);
@@ -53,6 +58,7 @@ function composeSharedContext(metadata, scope) {
 
   return {
     edmLocation,
+    envLocation,
     descriptorList,
     odataUri,
     key,

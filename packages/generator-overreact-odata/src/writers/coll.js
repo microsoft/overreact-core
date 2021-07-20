@@ -20,12 +20,18 @@ function composeSharedContext(metadata, scope) {
     'env', 'edm',
   );
 
+  const envLocation = path.join(
+    ...Array(visitedSchemas.length + 3).fill('..'),
+    'env', 'env-instance',
+  );
+
   const odataUri = odataUriFactory(visitedSchemas, schemaNameMapper, true);
   const descriptorList = generateDescriptorList(visitedSchemas, schemaNameMapper, true);
   const { $$ODataExtension } = rootSchema;
 
   return {
     edmLocation,
+    envLocation,
     descriptorList,
     odataUri,
     key: $$ODataExtension.Key[0],
