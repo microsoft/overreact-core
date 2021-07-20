@@ -10,7 +10,7 @@
     "url": "https://github.com/microsoft/overreact-core/"
   },
   "scripts": {
-    "build": "webpack --mode development"
+    "build": "../../node_modules/.bin/webpack --mode development"
   },
   "peerDependencies": {
     "bluebird": "^3.7.2",
