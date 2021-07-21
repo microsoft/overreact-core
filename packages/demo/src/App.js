@@ -4,6 +4,11 @@ import {
   DataFetcher,
   Environment,
   Store,
+
+  middlewareTypes,
+  createFetchPolicyMiddleware,
+  createErrorMiddleware,
+  createInstrumentationMiddleware,
 } from '@microsoft/overreact';
 
 // Previously defined schema and network requestor
@@ -82,33 +87,29 @@ function isExpectedErrorCodes(errorResponseJson) {
   return true;
 }
 
+
 export const middlewares = {
   [middlewareTypes.FETCH_POLICY]: createFetchPolicyMiddleware(),
-  [middlewareTypes.ERROR]: createErrorMiddleware({
-    errorProcessor: error => {
-      console.log(error);
-    },
-  }),
+  [middlewareTypes.ERROR]: createErrorMiddleware(),
   [middlewareTypes.INSTRUMENTATION]: createInstrumentationMiddleware({
     pageTrackingId: '123',
     loggerFunc: {
       traceFunc: ({
-        requestId, message, api, httpMethod,
+        requestId, message, api, httpMethod, statusCode,
       }) => {
-        console.log('TRACE', message || '', api, requestId, httpMethod);
+        console.log(message || '', api, requestId, httpMethod, statusCode);
       },
       errorFunc: ({
-        requestId, api, httpMethod, message,
+        requestId, api, httpMethod, message, statusCode,
       }) => {
-        console.error(message || '', api, requestId, null /* impact user */, httpMethod);
+        console.error(message || '', api, requestId, null /* impact user */, httpMethod, statusCode);
       },
       perfFunc: ({
-        requestId, api, httpMethod, timeTaken, message, isMethodEnter,
+        requestId, api, httpMethod, timeTaken, message, isMethodEnter, statusCode,
       }) => {
         console.log(
-          'PERF',
           requestId, api, isMethodEnter,
-          httpMethod, timeTaken, null /* pass */, message,
+          httpMethod, timeTaken, null /* pass */, message, statusCode,
         );
       },
     },
@@ -128,7 +129,7 @@ export const middlewares = {
 
 // define an Environment object to configure overreact
 const store = new Store();
-const tripPinEnvironment = new Environment(networkRequestor, schema, store, []);
+const tripPinEnvironment = new Environment(networkRequestor, schema, store, middlewares);
 
 export default function App() {
   return (

@@ -9,6 +9,7 @@ export const defaultStubOptions = {
   detectError(respData, serverErrorCodes) {
     const result = {
       pass: true,
+      status: 400, // hard code to 400 for user-defined error
     };
 
     if (respData
@@ -86,6 +87,7 @@ export function successHandler(instrumentationContext, response, errorFunc, perf
       requestId: instrumentationContext.requestId,
       impactUser: result.impactUser,
       httpMethod: instrumentationContext.httpMethod,
+      statusCode: result.status,
     });
   }
 
@@ -97,6 +99,7 @@ export function successHandler(instrumentationContext, response, errorFunc, perf
     timeTaken: instrumentationContext.requestTimeTaken,
     pass: instrumentationContext.requestResult,
     message: instrumentationContext.stubOptions.getServerPerf(response),
+    statusCode: 200,
   });
 }
 
@@ -149,6 +152,7 @@ export function errorHandler(
     api: instrumentationContext.url,
     requestId: instrumentationContext.requestId,
     httpMethod: instrumentationContext.httpMethod,
+    statusCode: error.status,
   });
 
   perfFunc({
@@ -158,5 +162,6 @@ export function errorHandler(
     httpMethod: instrumentationContext.httpMethod,
     timeTaken: instrumentationContext.requestTimeTaken,
     pass: instrumentationContext.requestResult,
+    statusCode: error.status,
   });
 }
