@@ -35,7 +35,7 @@ const packageStage = {
   // MODEL_GENERATED - only "modelAliases" section is present, need to enumerate
   // possible data paths.
   // At this stage, the generator enumerates all possible data paths based on
-  // metadata, and fills the "dataPaths" section in the config file.
+  // metadata, and fills the "specList" section in the config file.
   // Once complete, the generator shall instruct the user to cherry-pick necessary
   // data paths and remove unwanted ones in the config file.
   // The generator shall stop before the edits are done. Users will be prompted to
@@ -54,13 +54,13 @@ module.exports = class extends Generator {
     this.overreactJson = this.createStorage(this.destinationPath('.overreactrc.json'));
     this.overreactJsonConfigs = this.overreactJson.getAll();
 
-    const { modelAliases, dataPaths } = this.overreactJsonConfigs;
+    const { modelAliases, specList } = this.overreactJsonConfigs;
 
     this.stage = packageStage.FIRST_RUN;
 
-    if (modelAliases && !dataPaths) {
+    if (modelAliases && !specList) {
       this.stage = packageStage.MODEL_GENERATED;
-    } else if (modelAliases && dataPaths) {
+    } else if (modelAliases && specList) {
       this.stage = packageStage.SPEC_GENERATED;
     }
   }
@@ -163,10 +163,8 @@ module.exports = class extends Generator {
       }
     } else if (this.stage === packageStage.MODEL_GENERATED) {
       const specList = createSpecList(this.model, this.overreactJsonConfigs);
-      this.log(specList);
-
       this.overreactJson.set({
-        dataPaths: specList,
+        specList,
       });
     } else if (this.stage === packageStage.SPEC_GENERATED) {
       this.specMetadata = makeSpecMetadata(this.model, this.overreactJsonConfigs);

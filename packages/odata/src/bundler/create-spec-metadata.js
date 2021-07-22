@@ -2,16 +2,7 @@ const { Schema } = require('@microsoft/overreact');
 
 const { generateSpecMetadata } = require('../generators/spec-metadata');
 
-const specMetadataType = {
-  MODEL: 'MODEL',
-  FUNC: 'FUNC',
-  ACTION: 'ACTION',
-};
-
-const specMetadataScope = {
-  ENTITY: 'ENTITY',
-  COLL: 'COLL',
-};
+const { specMetadataScope, specMetadataType } = require('./consts');
 
 function createOverreactSchema(edmModel, nameMapper, extensions) {
   let schemaToModelMapping = {

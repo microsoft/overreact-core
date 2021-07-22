@@ -1,31 +1,51 @@
-function createPath(visited, nameMapper) {
-  return visited.map(seg => {
-    const { $$ref, Name } = seg.schema;
-    if ($$ref) {
-      return nameMapper($$ref);
+const { createConfigObj } = require('./config-obj');
+
+function composePath(visited, aliasHashMap, nameMapper, isCall = false) {
+  const paths = {};
+
+  function expandPath(depth, path) {
+    if (depth === visited.length) {
+      // remove the leading ":"
+      const pathName = path.slice(1);
+
+      const configObj = createConfigObj(pathName, isCall);
+
+      paths[pathName] = configObj;
+      return;
     }
 
-    if (Name) {
-      return nameMapper(Name);
-    }
+    const { $$ref, Name } = visited[depth].schema;
 
-    return '';
-  }).join(':');
+    const modelName = $$ref || Name || '';
+
+    if (aliasHashMap[modelName]) {
+      aliasHashMap[modelName].forEach(alias => {
+        expandPath(depth + 1, `${path}:${alias}`);
+      });
+    } else {
+      expandPath(depth + 1, `${path}:${nameMapper(modelName)}`);
+    }
+  }
+
+  expandPath(0, '');
+
+  return paths;
 }
 
 function generatePathForCall(
   edmModel,
   overreactSchema,
+  aliasHashMap,
   schemaNameMapper,
   visitedSchemas,
   calls,
   // isColl = false,
 ) {
   if (!calls) {
-    return [];
+    return {};
   }
 
-  const paths = [];
+  let paths = {};
   // eslint-disable-next-line guard-for-in, no-restricted-syntax
   for (const callName in calls) {
     const call = calls[callName];
@@ -36,9 +56,12 @@ function generatePathForCall(
       { name: Name, schema: call },
     ];
 
-    const callPath = createPath(visited, schemaNameMapper);
+    const callPath = composePath(visited, aliasHashMap, schemaNameMapper, true);
 
-    paths.push(callPath);
+    paths = {
+      ...paths,
+      ...callPath,
+    };
   }
 
   return paths;
@@ -47,11 +70,12 @@ function generatePathForCall(
 function generatePath(
   edmModel,
   overreactSchema,
+  aliasHashMap,
   rootSchema,
   schemaNameMapper,
   visitedSchemas,
 ) {
-  let paths = [];
+  let paths = {};
 
   const { schemas: edmSchemas } = edmModel.schema;
 
@@ -63,9 +87,12 @@ function generatePath(
     Collection, // Action/Functions on collection
   } = $$ODataExtension;
 
-  const path = createPath(visitedSchemas, schemaNameMapper);
+  const path = composePath(visitedSchemas, aliasHashMap, schemaNameMapper);
 
-  paths.push(path);
+  paths = {
+    ...paths,
+    ...path,
+  };
 
   if (NavigationProperty) {
     NavigationProperty.forEach(navPropertyName => {
@@ -74,6 +101,12 @@ function generatePath(
 
       if (type === 'array') {
         const { $ref, schema } = property.items;
+
+        if (!aliasHashMap[$ref]) {
+          // not in alias hash map - ignore this property
+          return;
+        }
+
         let schemaObj = schema;
 
         if (!schemaObj) {
@@ -86,6 +119,7 @@ function generatePath(
           const p = generatePath(
             edmModel,
             overreactSchema,
+            aliasHashMap,
             schemaObj,
             schemaNameMapper,
             [
@@ -94,10 +128,10 @@ function generatePath(
             ],
           );
 
-          paths = [
+          paths = {
             ...paths,
             ...p,
-          ];
+          };
         }
       } else {
         console.log('UNHANDLED', property);
@@ -110,6 +144,7 @@ function generatePath(
     const pa = generatePathForCall(
       edmModel,
       overreactSchema,
+      aliasHashMap,
       schemaNameMapper,
       visitedSchemas,
       CollAction,
@@ -118,23 +153,25 @@ function generatePath(
     const pf = generatePathForCall(
       edmModel,
       overreactSchema,
+      aliasHashMap,
       schemaNameMapper,
       visitedSchemas,
       CollFunc,
       true,
     );
 
-    paths = [
+    paths = {
       ...paths,
       ...pa,
       ...pf,
-    ];
+    };
   }
 
   // Actions
   const actionPaths = generatePathForCall(
     edmModel,
     overreactSchema,
+    aliasHashMap,
     schemaNameMapper,
     visitedSchemas,
     ODataAction,
@@ -144,16 +181,17 @@ function generatePath(
   const funcPaths = generatePathForCall(
     edmModel,
     overreactSchema,
+    aliasHashMap,
     schemaNameMapper,
     visitedSchemas,
     ODataFunction,
   );
 
-  paths = [
+  paths = {
     ...paths,
     ...actionPaths,
     ...funcPaths,
-  ];
+  };
 
   return paths;
 }
