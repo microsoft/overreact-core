@@ -9,9 +9,9 @@ const {
   generateDescriptorList,
 } = require('../utils/uri-factory');
 
-function composeSharedContext(metadata, scope) {
+function composeSharedContext(metadata, scope, aliasHashMap) {
   const {
-    schemaNameMapper, visitedSchemas, rootSchema,
+    visitedSchemas, rootSchema,
   } = metadata;
     // calculate edm.js location
   const edmLocation = path.join(
@@ -26,10 +26,10 @@ function composeSharedContext(metadata, scope) {
 
   const isColl = scope === specMetadataScope.COLL;
 
-  const odataUri = odataCallUriFactory(visitedSchemas, schemaNameMapper, isColl);
-  const descriptorList = generateDescriptorList(visitedSchemas, schemaNameMapper, isColl, true);
+  const odataUri = odataCallUriFactory(visitedSchemas, aliasHashMap, isColl);
+  const descriptorList = generateDescriptorList(visitedSchemas, aliasHashMap, isColl, true);
 
-  const { ReturnType } = rootSchema;
+  const { ReturnType } = rootSchema.schema;
   let responseType = 'responseTypes.ENTITY';
   let key = 'r => r';
   let processor = 'r => r';
@@ -67,8 +67,9 @@ function composeSharedContext(metadata, scope) {
   };
 }
 
-function writeActionSpec(context, dataPath, metadata, scope, destDir) {
-  const sharedContext = composeSharedContext(metadata, scope);
+function writeActionSpec(context, dataPath, spec, aliasHashMap, destDir) {
+  const { metadata, scope, config } = spec;
+  const sharedContext = composeSharedContext(metadata, scope, aliasHashMap);
 
   context.fs.copyTpl(
     context.templatePath(path.join('calls', 'action-spec.ejs')),
@@ -80,8 +81,9 @@ function writeActionSpec(context, dataPath, metadata, scope, destDir) {
   );
 }
 
-function writeFuncSpec(context, dataPath, metadata, scope, destDir) {
-  const sharedContext = composeSharedContext(metadata, scope);
+function writeFuncSpec(context, dataPath, spec, aliasHashMap, destDir) {
+  const { metadata, scope, config } = spec;
+  const sharedContext = composeSharedContext(metadata, scope, aliasHashMap);
 
   context.fs.copyTpl(
     context.templatePath(path.join('calls', 'func-spec.ejs')),

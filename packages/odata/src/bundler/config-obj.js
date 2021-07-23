@@ -1,8 +1,10 @@
 const pluralize = require('pluralize');
 
+const { snakeToPascalCase } = require('./utils');
+
 function createConfigObj(pathName, isCall) {
   const hookName = pathName.split(':').pop();
-  const hookNameCamel = hookName.split('_').map(s => `${s[0].toUpperCase()}${s.slice(1)}`).join('');
+  const hookNameCamel = snakeToPascalCase(hookName);
 
   if (isCall) {
     return [{

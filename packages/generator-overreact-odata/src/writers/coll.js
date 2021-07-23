@@ -9,9 +9,9 @@ const {
   generateDescriptorList,
 } = require('../utils/uri-factory');
 
-function composeSharedContext(metadata, scope) {
+function composeSharedContext(metadata, scope, aliasHashMap) {
   const {
-    schemaNameMapper, visitedSchemas, rootSchema,
+    visitedSchemas, rootSchema,
   } = metadata;
 
   // calculate edm.js location
@@ -25,9 +25,9 @@ function composeSharedContext(metadata, scope) {
     'env', 'env-instance',
   );
 
-  const odataUri = odataUriFactory(visitedSchemas, schemaNameMapper, true);
-  const descriptorList = generateDescriptorList(visitedSchemas, schemaNameMapper, true);
-  const { $$ODataExtension } = rootSchema;
+  const odataUri = odataUriFactory(visitedSchemas, aliasHashMap, true);
+  const descriptorList = generateDescriptorList(visitedSchemas, aliasHashMap, true);
+  const { $$ODataExtension } = rootSchema.schema;
 
   return {
     edmLocation,
@@ -38,8 +38,9 @@ function composeSharedContext(metadata, scope) {
   };
 }
 
-function writeCollSpec(context, dataPath, metadata, scope, destDir) {
-  const sharedContext = composeSharedContext(metadata, scope);
+function writeCollSpec(context, dataPath, spec, aliasHashMap, destDir) {
+  const { metadata, scope, config } = spec;
+  const sharedContext = composeSharedContext(metadata, scope, aliasHashMap);
 
   context.fs.copyTpl(
     context.templatePath(path.join('coll', 'add-spec.ejs')),

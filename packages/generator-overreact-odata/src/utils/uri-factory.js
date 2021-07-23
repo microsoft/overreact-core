@@ -1,21 +1,15 @@
-const pascalToSnakeCase = str => str.split(/(?=[A-Z])/).join('_').toLowerCase();
+const descriptorSuffix = '_id';
 
-function descriptorNameConverter(visitedSchema, schemaNameMapper) {
+function descriptorNameConverter(visitedSchema, aliasHashMap) {
   const { $$ref, Name } = visitedSchema;
-  let candidate = '';
-  if ($$ref) {
-    candidate = $$ref;
-  }
-  if (Name) {
-    candidate = Name;
-  }
+  const candidate = $$ref || Name || '';
 
-  return `${pascalToSnakeCase(schemaNameMapper(candidate))}__id`;
+  return `${aliasHashMap[candidate][0]}${descriptorSuffix}`;
 }
 
-function generateDescriptorList(visitedSchemas, schemaNameMapper, isColl, isCall = false) {
+function generateDescriptorList(visitedSchemas, aliasHashMap, isColl, isCall = false) {
   const descriptorList = visitedSchemas
-    .map(({ schema }) => descriptorNameConverter(schema, schemaNameMapper));
+    .map(({ schema }) => descriptorNameConverter(schema, aliasHashMap));
 
   if (isColl) {
     descriptorList.pop();
@@ -28,7 +22,7 @@ function generateDescriptorList(visitedSchemas, schemaNameMapper, isColl, isCall
   return descriptorList;
 }
 
-function odataCallUriFactory(visitedSchemas, schemaNameMapper, isColl) {
+function odataCallUriFactory(visitedSchemas, aliasHashMap, isColl) {
   let edmPath = 'edm';
   for (let i = 0; i < visitedSchemas.length; i += 1) {
     const { schema: visitedSchema, name } = visitedSchemas[i];
@@ -43,7 +37,7 @@ function odataCallUriFactory(visitedSchemas, schemaNameMapper, isColl) {
         // that the action/function is bound to.
         edmPath += `.${name}`;
       } else {
-        const navId = descriptorNameConverter(visitedSchema, schemaNameMapper);
+        const navId = descriptorNameConverter(visitedSchema, aliasHashMap);
         edmPath += `.${name}.$withKey(${navId})`;
       }
     } else if (Name && Namespace) {
@@ -54,7 +48,7 @@ function odataCallUriFactory(visitedSchemas, schemaNameMapper, isColl) {
   return `${edmPath}.$call(rest).path`;
 }
 
-function odataUriFactory(visitedSchemas, schemaNameMapper, isColl) {
+function odataUriFactory(visitedSchemas, aliasHashMap, isColl) {
   // let edmResource = edmModel;
   let edmPath = 'edm';
 
@@ -64,7 +58,7 @@ function odataUriFactory(visitedSchemas, schemaNameMapper, isColl) {
       const { $$ref } = visitedSchema;
 
       if ($$ref) {
-        const navId = descriptorNameConverter(visitedSchema, schemaNameMapper);
+        const navId = descriptorNameConverter(visitedSchema, aliasHashMap);
         edmPath += `.${name}.$withKey(${navId})`;
       }
     }
@@ -79,7 +73,7 @@ function odataUriFactory(visitedSchemas, schemaNameMapper, isColl) {
       const { $$ref } = visitedSchema;
 
       if ($$ref) {
-        const navId = descriptorNameConverter(visitedSchema, schemaNameMapper);
+        const navId = descriptorNameConverter(visitedSchema, aliasHashMap);
         edmPath += `.${name}.$withKey(${navId})`;
       }
     }

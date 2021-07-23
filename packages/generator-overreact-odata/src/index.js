@@ -4,10 +4,11 @@ const path = require('path');
 const Generator = require('yeoman-generator');
 
 const {
-  makeSpecMetadata,
   makeSchemaModel,
+  makeSpecMetadataFromList,
 
   createSpecList,
+  createModelAliasHash,
 
   specMetadataScope,
   specMetadataType,
@@ -58,10 +59,13 @@ module.exports = class extends Generator {
 
     this.stage = packageStage.FIRST_RUN;
 
-    if (modelAliases && !specList) {
-      this.stage = packageStage.MODEL_GENERATED;
-    } else if (modelAliases && specList) {
-      this.stage = packageStage.SPEC_GENERATED;
+    if (modelAliases) {
+      this.aliasHashMap = createModelAliasHash(modelAliases);
+      if (!specList) {
+        this.stage = packageStage.MODEL_GENERATED;
+      } else if (specList) {
+        this.stage = packageStage.SPEC_GENERATED;
+      }
     }
   }
 
@@ -122,9 +126,9 @@ module.exports = class extends Generator {
         ...this.overreactJsonConfigs,
         ...answers,
       };
-    } else if (this.stage === packageStage.SPEC_GENERATED) {
+    } /* else if (this.stage === packageStage.SPEC_GENERATED) {
 
-    }
+    } */
 
     this.overreactJson.set({
       ...this.overreactJsonConfigs,
@@ -162,44 +166,48 @@ module.exports = class extends Generator {
         });
       }
     } else if (this.stage === packageStage.MODEL_GENERATED) {
-      const specList = createSpecList(this.model, this.overreactJsonConfigs);
+      const specList = createSpecList(this.model, this.aliasHashMap, this.overreactJsonConfigs);
       this.overreactJson.set({
         specList,
       });
     } else if (this.stage === packageStage.SPEC_GENERATED) {
-      this.specMetadata = makeSpecMetadata(this.model, this.overreactJsonConfigs);
+      this.specMetadata = makeSpecMetadataFromList(
+        this.model,
+        this.overreactJsonConfigs,
+      );
     }
   }
 
   writing() {
-    if (this.stage === packageStage.FIRST_RUN) {
-
-    } else if (this.stage === packageStage.MODEL_GENERATED) {
-
-    } else if (this.stage === packageStage.SPEC_GENERATED) {
+    if (this.stage === packageStage.SPEC_GENERATED) {
       this._write_env();
 
       this.generatedSpecs = [];
       Object.keys(this.specMetadata).forEach(k => {
         const specPath = path.join(...k.split(':'));
-        const destDir = this.destinationPath('specs', specPath, '__specs');
+        const specDestDir = this.destinationPath('specs', specPath, '__specs');
 
-        const { type, scope, metadata } = this.specMetadata[k];
+        const specMetadata = this.specMetadata[k];
 
-        switch (type) {
-          case specMetadataType.MODEL:
-            this._write_entity_specs(k, metadata, scope, destDir);
-            this._write_coll_specs(k, metadata, scope, destDir);
-            break;
-          case specMetadataType.ACTION:
-            this._write_action_spec(k, metadata, scope, destDir);
-            break;
-          case specMetadataType.FUNC:
-            this._write_func_spec(k, metadata, scope, destDir);
-            break;
-          default:
-            break;
-        }
+        specMetadata.forEach(spec => {
+          const { type, scope } = spec;
+
+          if (type === specMetadataType.MODEL) {
+            if (scope === specMetadataScope.COLL) {
+              writeCollSpec(this, k, spec, this.aliasHashMap, specDestDir);
+            }
+            if (scope === specMetadataScope.ENTITY) {
+              writeEntitySpec(this, k, spec, this.aliasHashMap, specDestDir);
+            }
+          }
+
+          if (type === specMetadataType.ACTION) {
+            writeActionSpec(this, k, spec, this.aliasHashMap, specDestDir);
+          }
+          if (type === specMetadataType.FUNC) {
+            writeFuncSpec(this, k, spec, this.aliasHashMap, specDestDir);
+          }
+        });
 
         this.generatedSpecs.push(k);
       });
@@ -210,8 +218,9 @@ module.exports = class extends Generator {
     if (this.stage === packageStage.FIRST_RUN) {
       this.log('Please modify "modelAliases" in .overreactrc.json, and run "yo overreact-odata" again.');
     } else if (this.stage === packageStage.MODEL_GENERATED) {
-
+      this.log('Please modify "specList" in .overreactrc.json, and run "yo overreact-odata" again to generate spec files.');
     } else if (this.stage === packageStage.SPEC_GENERATED) {
+      this.log('Spec files generated.');
     }
   }
 
@@ -231,21 +240,5 @@ module.exports = class extends Generator {
         ...this.overreactJsonConfigs,
       },
     );
-  }
-
-  _write_entity_specs(dataPath, metadata, scope, destDir) {
-    writeEntitySpec(this, dataPath, metadata, scope, destDir);
-  }
-
-  _write_coll_specs(dataPath, metadata, scope, destDir) {
-    writeCollSpec(this, dataPath, metadata, scope, destDir);
-  }
-
-  _write_func_spec(dataPath, metadata, scope, destDir) {
-    writeFuncSpec(this, dataPath, metadata, scope, destDir);
-  }
-
-  _write_action_spec(dataPath, metadata, scope, destDir) {
-    writeActionSpec(this, dataPath, metadata, scope, destDir);
   }
 };
