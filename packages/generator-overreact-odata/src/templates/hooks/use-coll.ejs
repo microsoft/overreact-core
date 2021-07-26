@@ -1,0 +1,51 @@
+import { useCallback, useMemo } from 'react';
+import { useDataRefId, usePagination, useMutation } from '@microsoft/overreact';
+
+import { environmentLookupFn } from '<%= envLocation %>';
+
+import { addSpec } from '../../__specs/coll/add-spec';
+import { destroySpec } from '../../__specs/coll/destroy-spec';
+import { fetchSpec, refetchSpec } from '../../__specs/coll/fetch-spec';
+import { mutationSpec } from '../../__specs/coll/mutation-spec';
+
+export function <%- hookName %>(specs, path, variables, config = {}) {
+  const dataRefId = useDataRefId(environmentLookupFn);
+
+  // FIXME: extract fetchVariables out from the config
+  const paginationConfig = useMemo(() => ({
+    fetchVariables: {
+      ...variables,
+    },
+    ...config,
+  }), [config, variables]);
+
+  const [data, methods] = usePagination(dataRefId, fetchSpec, paginationConfig);
+
+  const mutateFn = useMutation(dataRefId, mutationSpec, config);
+  const destroyFn = useMutation(dataRefId, destroySpec, config);
+  const createFn = useMutation(dataRefId, addSpec, config);
+
+  const update = useCallback((newData, ...rest) => {
+    mutateFn(variables, newData, ...rest);
+  }, [mutateFn, variables]);
+
+  // FIXME: likezh: Why would destroy need data?
+  const destroy = useCallback((newData, ...rest) => {
+    destroyFn(variables, newData, ...rest);
+  }, [destroyFn, variables]);
+
+  const create = useCallback((newData, ...rest) => {
+    createFn(variables, newData, ...rest);
+  }, [createFn, variables]);
+
+  const { loadMore, hasMore, isLoading } = methods;
+
+  return [data, {
+    loadMore,
+    hasMore,
+    isLoading,
+    create,
+    update,
+    destroy,
+  }];
+}

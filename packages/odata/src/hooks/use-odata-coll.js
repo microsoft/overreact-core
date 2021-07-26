@@ -1,7 +1,7 @@
 const { useCallback, useMemo } = require('react');
 const { useDataRefId, usePagination, useMutation } = require('@microsoft/overreact');
 
-const { useSpecs } = require('./shared');
+const { useSpecs } = require('./use-specs');
 
 function useODataCollection(specs, path, variables, config) {
   const dataRefId = useDataRefId();

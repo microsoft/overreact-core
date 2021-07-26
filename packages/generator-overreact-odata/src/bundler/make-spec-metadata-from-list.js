@@ -16,7 +16,7 @@ function makeVisitedSchemas(model, modelAliases, rootSchema, dataPathSegments) {
     } = lastVisited;
 
     if (NavigationProperty) {
-      NavigationProperty.forEach(navPropertyName => {
+      NavigationProperty.every(navPropertyName => {
         const property = properties[navPropertyName];
         const { type } = property;
 
@@ -29,8 +29,11 @@ function makeVisitedSchemas(model, modelAliases, rootSchema, dataPathSegments) {
               schema,
             };
             visitedSchemas.push(lastVisited);
+            return false;
           }
         }
+
+        return true;
       });
     }
   });
@@ -63,7 +66,7 @@ function makeSpecMetadataFromList(model, config) {
 
       let callName = null;
       if (configType === 'call') {
-      // the last segment of the data path would be the call name
+        // the last segment of the data path would be the call name
 
         // because call names are not in the model aliases map, but
         // are simply converted using the pascal-to-snake conversion,

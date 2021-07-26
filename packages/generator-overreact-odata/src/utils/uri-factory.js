@@ -22,11 +22,11 @@ function generateDescriptorList(visitedSchemas, aliasHashMap, isColl, isCall = f
   return descriptorList;
 }
 
-function odataCallUriFactory(visitedSchemas, aliasHashMap, isColl) {
+function odataCallUriFactory(visitedSchemas, rootSchema, aliasHashMap, isColl) {
   let edmPath = 'edm';
   for (let i = 0; i < visitedSchemas.length; i += 1) {
     const { schema: visitedSchema, name } = visitedSchemas[i];
-    const { $$ref, Name, Namespace } = visitedSchema;
+    const { $$ref } = visitedSchema;
 
     if ($$ref) {
       if (isColl && (i === visitedSchemas.length - 2)) {
@@ -40,10 +40,13 @@ function odataCallUriFactory(visitedSchemas, aliasHashMap, isColl) {
         const navId = descriptorNameConverter(visitedSchema, aliasHashMap);
         edmPath += `.${name}.$withKey(${navId})`;
       }
-    } else if (Name && Namespace) {
+    } /* else if (Name && Namespace) {
       edmPath += `['${Namespace}.${Name}']`;
-    }
+    } */
   }
+
+  const { schema: { Namespace, Name } } = rootSchema;
+  edmPath += `['${Namespace}.${Name}']`;
 
   return `${edmPath}.$call(rest).path`;
 }

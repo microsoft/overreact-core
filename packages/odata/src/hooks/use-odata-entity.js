@@ -1,7 +1,7 @@
 const { useCallback } = require('react');
 
 const { useDataRefId, useFetch, useMutation } = require('@microsoft/overreact');
-const { useSpecs } = require('./shared');
+const { useSpecs } = require('./use-specs');
 
 function useODataEntity(specs, path, variables, config = {}) {
   const dataRefId = useDataRefId();

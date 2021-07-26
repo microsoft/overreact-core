@@ -1,8 +1,6 @@
 const path = require('path');
 
-const {
-  specMetadataScope,
-} = require('@microsoft/overreact-odata');
+const { specMetadataScope } = require('../bundler/consts');
 
 const {
   odataUriFactory,

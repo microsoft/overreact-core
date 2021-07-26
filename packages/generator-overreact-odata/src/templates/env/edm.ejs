@@ -1,8 +1,11 @@
 import _ from 'underscore';
-import { EDM } from '@bingads-webui/edm-core';
-import { resIdsPlugin } from '@bingads-webui/edm-resource-identifiers';
+import {
+  EDM,
+  resIdsPlugin,
+  defineConstProperty,
+} from '@microsoft/overreact-odata';
+
 // import { odataPlugin } from '@bingads-webui/edm-odata';
-import { defineConstProperty } from '@bingads-webui/reflection';
 import { schemas } from '@bingads-webui/mca-odata-schemas';
 
 export const edm = new EDM({

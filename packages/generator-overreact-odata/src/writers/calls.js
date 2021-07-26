@@ -1,8 +1,6 @@
 const path = require('path');
 
-const {
-  specMetadataScope,
-} = require('@microsoft/overreact-odata');
+const { specMetadataScope } = require('../bundler/consts');
 
 const {
   odataCallUriFactory,
@@ -25,7 +23,7 @@ function composeSharedContext(metadata, scope, aliasHashMap) {
 
   const isColl = scope === specMetadataScope.COLL;
 
-  const odataUri = odataCallUriFactory(visitedSchemas, aliasHashMap, isColl);
+  const odataUri = odataCallUriFactory(visitedSchemas, rootSchema, aliasHashMap, isColl);
   const descriptorList = generateDescriptorList(visitedSchemas, aliasHashMap, isColl, true);
 
   const { ReturnType } = rootSchema.schema;
@@ -68,7 +66,7 @@ function composeSharedContext(metadata, scope, aliasHashMap) {
 }
 
 function writeActionSpec(context, dataPath, spec, aliasHashMap, destDir) {
-  const { metadata, scope, config } = spec;
+  const { metadata, scope } = spec;
   const sharedContext = composeSharedContext(metadata, scope, aliasHashMap);
 
   context.fs.copyTpl(
@@ -82,7 +80,7 @@ function writeActionSpec(context, dataPath, spec, aliasHashMap, destDir) {
 }
 
 function writeFuncSpec(context, dataPath, spec, aliasHashMap, destDir) {
-  const { metadata, scope, config } = spec;
+  const { metadata, scope } = spec;
   const sharedContext = composeSharedContext(metadata, scope, aliasHashMap);
 
   context.fs.copyTpl(

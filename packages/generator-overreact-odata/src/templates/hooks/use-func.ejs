@@ -1,0 +1,37 @@
+import { useCallback, useMemo } from 'react';
+
+import {
+  useFetch,
+  useRefetch,
+  useDataRefId,
+} from '@microsoft/overreact';
+
+import { environmentLookupFn } from '<%= envLocation %>';
+import { fetchSpec, refetchSpec } from '../../__specs/calls/func-spec';
+
+export function <%- hookName %>(dataLocator, config = {}) {
+  const dataRefId = useDataRefId(environmentLookupFn);
+
+  const defaultConfig = useMemo(() => ({
+    refetch: config.refetch || {},
+    fetch: config.fetch || {},
+  }), [config]);
+
+  const { fetch: fetchConfig, refetch: refetchConfig } = defaultConfig;
+
+  const fetch = useFetch(dataRefId, fetchSpec, dataLocator, fetchConfig);
+  const func = useRefetch(dataRefId, refetchSpec, refetchConfig);
+
+  const callFn = useCallback((param = {}, requestConfig, ...rest) => {
+    func({
+      variables: {
+        ...dataLocator,
+        ...param.variables,
+      },
+    }, requestConfig, ...rest);
+  }, [dataLocator, func]);
+
+  const [data, error] = fetch;
+
+  return [{ data, error }, { callFn }];
+}

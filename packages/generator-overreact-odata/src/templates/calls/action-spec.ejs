@@ -37,7 +37,7 @@ function odataPayloadFactory(params) {
   return JSON.stringify(data);
 }
 
-export const requestContract = createRequestContract({
+const requestContract = createRequestContract({
   schema,
   dataPath: '<%= dataPath %>',
   verb: requestVerbs.POST,
@@ -47,14 +47,22 @@ export const requestContract = createRequestContract({
   payloadFactoryFn: odataPayloadFactory,
 });
 
-export const responseContract = createResponseContract({
+const responseContract = createResponseContract({
   requestContract,
   responseType: <%- responseType %>,
   keySelector: <%- key %>,
   processorFn: <%- processor %>,
 });
 
-export const spec = createSpec(
+export const fetchSpec = createSpec(
+  requestContract,
+  responseContract,
+  specTypes.FETCH,
+  null,
+  environmentLookupFn,
+);
+
+export const actionSpec = createSpec(
   requestContract,
   responseContract,
   specTypes.MUTATION,

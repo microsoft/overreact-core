@@ -3,9 +3,9 @@ const {
   useDataRefId,
 } = require('@microsoft/overreact');
 
-const { useSpecs } = require('./shared');
+const { useSpecs } = require('./use-specs');
 
-function useODataAction(specs, path, sideEffectFn, variables) {
+function useODataCall(specs, path, sideEffectFn, variables) {
   const dataRefId = useDataRefId();
   const { actionSpec } = useSpecs(specs, path);
 
@@ -13,5 +13,5 @@ function useODataAction(specs, path, sideEffectFn, variables) {
 }
 
 module.exports = {
-  useODataAction,
+  useODataCall,
 };

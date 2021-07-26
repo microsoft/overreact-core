@@ -6,12 +6,10 @@ module.exports = {
     path: path.resolve(__dirname, 'dist'),
     filename: 'index.js',
     globalObject: 'this',
-    library: {
-      name: '@microsoft/overreact-odata',
-      type: 'umd',
-    },
+    libraryTarget: 'umd',
+    umdNamedDefine: true,
   },
-  devtool: 'source-map',
+  devtool: 'eval-source-map',
   module: {
     rules: [
       {

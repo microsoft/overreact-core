@@ -1,25 +1,24 @@
 const path = require('path');
 const Generator = require('yeoman-generator');
 
-const {
-  makeSchemaModel,
-  makeSpecMetadataFromList,
+const { makeSchemaModel } = require('./bundler/make-schema-model');
+const { makeSpecMetadataFromList } = require('./bundler/make-spec-metadata-from-list');
+const { createSpecList } = require('./bundler/create-spec-list');
+const { createModelAliasHash } = require('./bundler/create-model-alias-hash');
+const { specMetadataScope, specMetadataType } = require('./bundler/consts');
 
-  createSpecList,
-  createModelAliasHash,
-
-  specMetadataScope,
-  specMetadataType,
-} = require('@microsoft/overreact-odata');
-
-const {
-  writeActionSpec,
-  writeFuncSpec,
-} = require('./writers/calls');
+const { writeEnv } = require('./writers/env');
 
 const { writeEntitySpec } = require('./writers/entity');
 const { writeCollSpec } = require('./writers/coll');
-const { writeEnv } = require('./writers/env');
+
+const { writeActionSpec, writeFuncSpec } = require('./writers/calls');
+const {
+  writeActionHook,
+  writeFuncHook,
+  writeCollHook,
+  writeEntityHook,
+} = require('./writers/hooks');
 
 // Below defines a set of stages that the generated packages could be in.
 // The generator shall use the stage info to determine what config shall be
@@ -182,30 +181,45 @@ module.exports = class extends Generator {
       writeEnv(this, this.overreactJsonConfigs);
 
       this.generatedSpecs = [];
+      this.hookPaths = [];
       Object.keys(this.specMetadata).forEach(k => {
         const specPath = path.join(...k.split(':'));
         const specDestDir = this.destinationPath('specs', specPath, '__specs');
+        const hookDestDir = this.destinationPath('specs', specPath, '__hooks');
 
         const specMetadata = this.specMetadata[k];
-
         specMetadata.forEach(spec => {
-          const { type, scope } = spec;
+          const { type, scope, metadata: { config: { name: hookName } } } = spec;
 
+          let hookPath;
           if (type === specMetadataType.MODEL) {
             if (scope === specMetadataScope.COLL) {
               writeCollSpec(this, k, spec, this.aliasHashMap, specDestDir);
+              writeCollHook(this, k, spec, hookDestDir);
+
+              hookPath = path.join('.', 'specs', specPath, '__hooks', 'coll', 'coll-hook');
             }
             if (scope === specMetadataScope.ENTITY) {
               writeEntitySpec(this, k, spec, this.aliasHashMap, specDestDir);
+              writeEntityHook(this, k, spec, hookDestDir);
+
+              hookPath = path.join('.', 'specs', specPath, '__hooks', 'entity', 'entity-hook');
             }
           }
 
           if (type === specMetadataType.ACTION) {
             writeActionSpec(this, k, spec, this.aliasHashMap, specDestDir);
+            writeActionHook(this, k, spec, hookDestDir);
+            hookPath = path.join('.', 'specs', specPath, '__hooks', 'calls', 'action-hook');
           }
           if (type === specMetadataType.FUNC) {
             writeFuncSpec(this, k, spec, this.aliasHashMap, specDestDir);
+            writeFuncHook(this, k, spec, hookDestDir);
+            hookPath = path.join('.', 'specs', specPath, '__hooks', 'calls', 'func-hook');
           }
+          this.hookPaths.push(
+            `export { ${hookName} } from '${hookPath}';`,
+          );
         });
 
         this.generatedSpecs.push(k);
@@ -213,10 +227,18 @@ module.exports = class extends Generator {
     }
 
     this.fs.copyTpl(
-      this.templatePath(path.join('config', 'package.json')),
+      this.templatePath(path.join('root', 'package.json')),
       this.destinationPath('package.json'),
       {
         ...this.packageJsonConfigs,
+      },
+    );
+
+    this.fs.copyTpl(
+      this.templatePath(path.join('root', 'index.ejs')),
+      this.destinationPath('index.js'),
+      {
+        exports: this.hookPaths,
       },
     );
   }

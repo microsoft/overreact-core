@@ -48,10 +48,18 @@ const responseContract = createResponseContract({
   processorFn: r => r.value,
 });
 
-export const spec = createSpec(
+export const fetchSpec = createSpec(
   requestContract,
   responseContract,
   specTypes.PAGINATION,
+  null,
+  environmentLookupFn,
+);
+
+export const refetchSpec = createSpec(
+  requestContract,
+  responseContract,
+  specTypes.REFETCH,
   null,
   environmentLookupFn,
 );
