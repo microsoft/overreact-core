@@ -31,6 +31,14 @@ function writeEnv(context, config) {
       ...config,
     },
   );
+
+  context.fs.copyTpl(
+    context.templatePath(path.join('env', 'requestor.ejs')),
+    context.destinationPath('env', 'requestor.js'),
+    {
+      ...config,
+    },
+  );
 }
 
 module.exports = {

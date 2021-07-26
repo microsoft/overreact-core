@@ -1,7 +1,7 @@
 import _ from 'underscore';
 import { EDM } from '@bingads-webui/edm-core';
 import { resIdsPlugin } from '@bingads-webui/edm-resource-identifiers';
-import { odataPlugin } from '@bingads-webui/edm-odata';
+// import { odataPlugin } from '@bingads-webui/edm-odata';
 import { defineConstProperty } from '@bingads-webui/reflection';
 import { schemas } from '@bingads-webui/mca-odata-schemas';
 
@@ -32,7 +32,7 @@ export const edm = new EDM({
 
 resIdsPlugin(edm);
 
-odataPlugin(edm, '', {});
+// odataPlugin(edm, '', {});
 const root = edm.types.resolve('$ROOT');
 
 const rootResourceIdentifier = new root.ResourceIdentifier();

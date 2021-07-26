@@ -1,6 +1,8 @@
-const { EDM } = require('../edm/core');
-const { resIdsPlugin } = require('../edm/resource-identifiers');
-const { defineConstProperty } = require('../edm/reflection');
+const {
+  EDM,
+  resIdsPlugin,
+  defineConstProperty,
+} = require('@microsoft/overreact-odata');
 
 function makeEdmModel(model, config) {
   const {
