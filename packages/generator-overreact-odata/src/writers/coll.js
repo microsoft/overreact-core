@@ -9,21 +9,19 @@ const {
   generateDescriptorList,
 } = require('../utils/uri-factory');
 
+const { buildEnvRelativePath } = require('./env');
+
 function composeSharedContext(metadata, scope, aliasHashMap) {
   const {
     visitedSchemas, rootSchema,
   } = metadata;
 
   // calculate edm.js location
-  const edmLocation = path.join(
-    ...Array(visitedSchemas.length + 3).fill('..'),
-    'env', 'edm',
-  );
+  const envRelativePath = buildEnvRelativePath(visitedSchemas.length);
 
-  const envLocation = path.join(
-    ...Array(visitedSchemas.length + 3).fill('..'),
-    'env', 'env-instance',
-  );
+  const edmLocation = path.join(envRelativePath, 'edm');
+  const envLocation = path.join(envRelativePath, 'env-instance');
+  const schemaLocation = path.join(envRelativePath, 'schema');
 
   const odataUri = odataUriFactory(visitedSchemas, aliasHashMap, true);
   const descriptorList = generateDescriptorList(visitedSchemas, aliasHashMap, true);
@@ -32,6 +30,7 @@ function composeSharedContext(metadata, scope, aliasHashMap) {
   return {
     edmLocation,
     envLocation,
+    schemaLocation,
     descriptorList,
     odataUri,
     key: $$ODataExtension.Key[0],

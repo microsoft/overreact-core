@@ -1,6 +1,6 @@
 const { schemaNameMapper } = require('./utils');
 const { makeEdmModel } = require('./make-edm-model');
-const { createOverreactSchema } = require('./create-spec-metadata');
+const { createOverreactSchema } = require('./create-overreact-schema');
 const { generatePath } = require('./path-generator');
 
 // Create a spec (data path) list from a known model aliases

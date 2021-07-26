@@ -1,5 +1,3 @@
-/* eslint-disable camelcase */
-/* eslint-disable no-underscore-dangle */
 const path = require('path');
 const Generator = require('yeoman-generator');
 
@@ -21,6 +19,7 @@ const {
 
 const { writeEntitySpec } = require('./writers/entity');
 const { writeCollSpec } = require('./writers/coll');
+const { writeEnv } = require('./writers/env');
 
 // Below defines a set of stages that the generated packages could be in.
 // The generator shall use the stage info to determine what config shall be
@@ -180,7 +179,7 @@ module.exports = class extends Generator {
 
   writing() {
     if (this.stage === packageStage.SPEC_GENERATED) {
-      this._write_env();
+      writeEnv(this, this.overreactJsonConfigs);
 
       this.generatedSpecs = [];
       Object.keys(this.specMetadata).forEach(k => {
@@ -212,6 +211,14 @@ module.exports = class extends Generator {
         this.generatedSpecs.push(k);
       });
     }
+
+    this.fs.copyTpl(
+      this.templatePath(path.join('config', 'package.json')),
+      this.destinationPath('package.json'),
+      {
+        ...this.packageJsonConfigs,
+      },
+    );
   }
 
   end() {
@@ -222,23 +229,5 @@ module.exports = class extends Generator {
     } else if (this.stage === packageStage.SPEC_GENERATED) {
       this.log('Spec files generated.');
     }
-  }
-
-  _write_env() {
-    this.fs.copyTpl(
-      this.templatePath(path.join('env', 'edm.ejs')),
-      this.destinationPath('env', 'edm.js'),
-      {
-        ...this.overreactJsonConfigs,
-      },
-    );
-
-    this.fs.copyTpl(
-      this.templatePath(path.join('env', 'env-instance.ejs')),
-      this.destinationPath('env', 'env-instance.js'),
-      {
-        ...this.overreactJsonConfigs,
-      },
-    );
   }
 };

@@ -3,7 +3,9 @@ import { Schema } from '@microsoft/overreact';
 import { edm } from './edm';
 
 const schemaToModelMapping = {
-
+  <% for (const [k, v] of Object.entries(modelAliases)) { %>
+    '<%= k %>': '<%= v %>',
+  <% } %>
 };
 
 export const schema = new Schema(

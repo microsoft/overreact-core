@@ -3,13 +3,18 @@ import queryString from 'query-string';
 import {
   createRequestContract,
   createResponseContract,
+  createSpec,
+
   requestVerbs,
   responseTypes,
+  specTypes,
+
   FetchPolicy,
 } from '@microsoft/overreact';
 
 import { edm } from '<%= edmLocation %>';
-import { envLookupFn } from '<%= envLocation %>';
+import { environmentLookupFn } from '<%= envLocation %>';
+import { schema } from '<%= schemaLocation %>';
 
 function odataUrlFactory(params) {
   const { variables } = params;
@@ -48,5 +53,5 @@ export const spec = createSpec(
   responseContract,
   specTypes.DELETE,
   null,
-  envLookupFn,
+  environmentLookupFn,
 );
