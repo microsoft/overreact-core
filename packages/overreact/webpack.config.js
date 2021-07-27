@@ -6,6 +6,7 @@ module.exports = {
     path: path.resolve(__dirname, 'dist'),
     filename: 'index.js',
     libraryTarget: 'umd',
+    globalObject: 'this',
     umdNamedDefine: true,
   },
   devtool: 'eval-source-map',

@@ -1,3 +1,4 @@
+import _ from 'underscore';
 import React from 'react';
 import {
   DataFetcher,
@@ -17,9 +18,75 @@ import { schema } from './schema';
 // React component that will talk to the TripPin service
 import { PeopleContainer } from './people-container';
 
-function isExpectedErrorCodes(errors) {
-  console.log(errors);
+const errorCodes = [
+  'AUTHORIZATIONEXPIRE',
+  'BINGPREVIEWAPIERROR',
+  'CAMPAIGNINLINEEDITORIALERROR',
+  'CCMTERRORNUMBER_POSTPAYACCOUNTCANTASSOCIATEWITHPREPAIDCARD',
+  'DUPLICATEENTITY',
+  'ENTITYDOESNOTEXIST',
+  'EXCEEDACCOUNTGOALLIMIT',
+  'EXCEEDTHELIMIT',
+  'ExpandedTextAdInlineEditorialError',
+  'FACEBOOKAPIUSERERROR',
+  'GOALHAVEDUPLICATENAME',
+  'GOALHAVEDUPLICATEURLANDOPERATOR',
+  'INSUFFICIENTPERMISSIONORNEEDENABLE2FA',
+  'INVALIDACTION',
+  'INVALIDACTIONONSMARTPAGEASSOCIATEDMCACAMPAIGN',
+  'INVALIDBUSINESSNAME',
+  'INVALIDDESTINATIONGOALOPERATOR',
+  'INVALIDKEYWORDTEXT',
+  'INVALIDPARAMETER',
+  'INVALIDVALUE',
+  'INVALIDZIPCODE',
+  'KEYWORDINLINEEDITORIALERROR',
+  'LINKEDINAPIERROR',
+  'LOCATIONNOTEXIST',
+  'LOCATIONNOTSUPPORTED',
+  'MEDIASIZEEXCEEDLIMIT',
+  'NEEDADMINPERMISSION',
+  'NEEDBUSINESSADMINPERMISSION',
+  'PAYMENTNOTSET',
+  'PROFILEALREADYLINKED',
+  'SMARTPAGEINVALIDSUBDOMAIN',
+  'SMARTPAGESUBDOMAINISNOTAVAILABLE',
+  'TIMEZONENOTMATCH',
+  'TOKENEXPIRED',
+  'TOKENNOTMATCHTOPROFILE',
+  'TWITTERAPIERROR',
+  'TWITTERAPIUSERERROR',
+  'UNSUPPORTEDWEBSITEDOMAIN',
+  'URLNOTACCESSIBLE',
+];
+
+const expectedErrorCodes = _.chain(errorCodes)
+  .map(errorCode => errorCode.trim().toUpperCase())
+  .value();
+
+function isExpectedErrorCodes(errorResponseJson) {
+  if (_.isEmpty(errorResponseJson)) {
+    return false;
+  }
+  const errorCodesInResponse = _.chain(errorResponseJson)
+    .pluck('Code')
+    .compact()
+    .map(code => code.trim().toUpperCase())
+    .uniq()
+    .value();
+
+  if (_.isEmpty(errorCodesInResponse)) {
+    return false;
+  }
+
+  for (let index = 0; index < errorCodesInResponse.length; index += 1) {
+    if (!_.contains(expectedErrorCodes, errorCodesInResponse[index])) {
+      return false;
+    }
+  }
+  return true;
 }
+
 
 export const middlewares = {
   [middlewareTypes.FETCH_POLICY]: createFetchPolicyMiddleware(),

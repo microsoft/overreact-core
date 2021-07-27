@@ -1,0 +1,27 @@
+import { useCallback } from 'react';
+import { useDataRefId, useFetch, useMutation } from '@microsoft/overreact';
+
+import { environmentLookupFn } from '<%= envLocation %>';
+
+import { destroySpec } from '../../__specs/entity/destroy-spec';
+import { fetchSpec, refetchSpec } from '../../__specs/entity/fetch-spec';
+import { mutationSpec } from '../../__specs/entity/mutation-spec';
+
+export function <%- hookName %>(specs, path, variables, config = {}) {
+  const dataRefId = useDataRefId(environmentLookupFn);
+
+  const [data, error] = useFetch(dataRefId, fetchSpec, variables, config);
+  const mutateFn = useMutation(dataRefId, mutationSpec, config);
+  const destroyFn = useMutation(dataRefId, destroySpec, config);
+
+  const update = useCallback((newData, ...rest) => {
+    mutateFn(variables, newData, ...rest);
+  }, [mutateFn, variables]);
+
+  // FIXME: likezh: Why would destroy need data?
+  const destroy = useCallback((newData, ...rest) => {
+    destroyFn(variables, newData, ...rest);
+  }, [destroyFn, variables]);
+
+  return [{ data, error }, { update, destroy }];
+}

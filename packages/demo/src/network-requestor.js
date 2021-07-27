@@ -7,13 +7,13 @@ export function networkRequestor(uri, requestVerb, headers, body) {
     headers,
     body: JSON.stringify(body),
   }).then(response => Promise.all([response.ok, response.json(), response]))
-    .then(([responseOk, responseJson, response]) => {
+    .then(([responseOk, responseJSON, response]) => {
       if (responseOk) {
-        return responseJson;
+        return responseJSON;
       }
       const error = {
         status: response.status,
-        responseJson,
+        responseJSON,
       };
 
       throw error;

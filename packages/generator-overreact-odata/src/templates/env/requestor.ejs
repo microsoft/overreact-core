@@ -1,0 +1,31 @@
+import { Promise } from 'bluebird';
+
+export function getRequestor({
+  serviceRoot,
+  token,
+  applicationSource,
+}) {
+  return function networkRequestor(uri, requestVerb, headers, body) {
+    const url = `${serviceRoot}${uri}`;
+    const headerWithToken = {
+      ...headers,
+      Authorization: `CCMTSmallToken ${token}`,
+      'x-ms-applicationsource': applicationSource,
+    };
+    return fetch(url, {
+      method: requestVerb,
+      headers: headerWithToken,
+      body: JSON.stringify(body),
+    }).then(response => Promise.all([response.ok, response.json(), response]))
+      .then(([responseOk, responseJSON, response]) => {
+        if (responseOk) {
+          return responseJSON;
+        }
+        const error = {
+          status: response.status,
+          responseJSON,
+        };
+        throw error;
+      });
+  };
+}

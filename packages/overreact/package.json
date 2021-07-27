@@ -13,7 +13,6 @@
     "build": "../../node_modules/.bin/webpack --mode development"
   },
   "peerDependencies": {
-    "bluebird": "^3.7.2",
     "json-stable-stringify": "*",
     "prop-types": "^15.7.2",
     "react": ">=16.8.0",

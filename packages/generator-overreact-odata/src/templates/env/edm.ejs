@@ -1,0 +1,43 @@
+import _ from 'underscore';
+import {
+  EDM,
+  resIdsPlugin,
+  defineConstProperty,
+} from '@microsoft/overreact-odata';
+
+// import { odataPlugin } from '@bingads-webui/edm-odata';
+import { schemas } from '@bingads-webui/mca-odata-schemas';
+
+export const edm = new EDM({
+  schemas: {
+    $ROOT: {
+      $$ref: '$ROOT',
+      type: 'object',
+      properties: {
+        Customers: {
+          type: 'array',
+          items: schemas['<%= rootPropertyModelName %>'],
+        },
+      },
+      $$ODataExtension: {
+        Name: '$ROOT',
+        NavigationProperty: [
+          '<%= rootPropertyName %>',
+        ],
+      },
+    },
+    ..._.mapObject(
+      schemas,
+      (schema, name) => _.extend(schema, { $$ref: name }),
+    ),
+  },
+});
+
+resIdsPlugin(edm);
+
+// odataPlugin(edm, '', {});
+const root = edm.types.resolve('$ROOT');
+
+const rootResourceIdentifier = new root.ResourceIdentifier();
+defineConstProperty(edm, 'root', rootResourceIdentifier);
+defineConstProperty(edm, '<%= rootPropertyName %>', rootResourceIdentifier.Customers);
