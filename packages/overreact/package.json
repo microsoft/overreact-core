@@ -1,7 +1,7 @@
 {
   "name": "@microsoft/overreact",
   "description": "TO BE ADDED",
-  "version": "0.1.0-alpha.8",
+  "version": "0.1.0-alpha.10",
   "main": "dist/index.js",
   "license": "MIT",
   "homepage": "https://microsoft.github.io/overreact-core/",
