@@ -1,5 +1,4 @@
-import _ from 'underscore';
-import queryString from 'query-string';
+/* eslint-disable camelcase */
 import {
   createRequestContract,
   createResponseContract,
@@ -8,23 +7,40 @@ import {
   requestVerbs,
   responseTypes,
   specTypes,
-
-  FetchPolicy,
 } from '@microsoft/overreact';
+
+import { composeSearchString } from '@microsoft/overreact-odata';
 
 import { edm } from '<%= edmLocation %>';
 import { environmentLookupFn } from '<%= envLocation %>';
 import { schema } from '<%= schemaLocation %>';
 
+import {
+  urlDecorator,
+  headerDecorator,
+  payloadDecorator,
+  processorDecorator,
+
+  networkPolicy,
+} from './mutation-decorators';
+
 function odataUrlFactory(params) {
   const { variables } = params;
   const { locator, cursorIndex } = variables;
   const { descriptor } = locator;
-  const { <%- descriptorList %> } = descriptor;
+  const {
+<% for (const descriptor of descriptorList) { -%>
+    <%- descriptor %>,
+<% } -%>
+  } = descriptor;;
 
-  const path =
-    <%- odataUri %>;
-  return path;
+  const edmEntity = edm
+<% for (const s of odataUriSegments) { -%>
+    <%- s %>
+<% } -%>
+
+  const searchString = composeSearchString(variables, edmEntity);
+  return ${edmEntity.path}${searchString}
 }
 
 function odataHeaderFactory(params) {
@@ -41,17 +57,17 @@ const requestContract = createRequestContract({
   schema,
   dataPath: '<%= dataPath %>',
   verb: requestVerbs.PATCH,
-  fetchPolicy: FetchPolicy.NetworkOrStore,
-  uriFactoryFn: odataUrlFactory,
-  headerFactoryFn: odataHeaderFactory,
-	payloadFactoryFn: odataPayloadFactory,
+  fetchPolicy: networkPolicy,
+  uriFactoryFn: urlDecorator(odataUrlFactory),
+  headerFactoryFn: headerDecorator(odataHeaderFactory),
+  payloadFactoryFn: payloadDecorator(odataPayloadFactory),
 });
 
 const responseContract = createResponseContract({
   requestContract,
   responseType: responseTypes.ENTITY,
   keySelector: r => r.<%= key %>,
-  processorFn: r => r,
+  processorFn: processorDecorator(r => r),
 });
 
 export const mutationSpec = createSpec(

@@ -23,8 +23,8 @@ function composeSharedContext(metadata, scope, aliasHashMap) {
 
   const isColl = scope === specMetadataScope.COLL;
 
-  const odataUri = odataCallUriFactory(visitedSchemas, rootSchema, aliasHashMap, isColl);
-  const descriptorList = generateDescriptorList(visitedSchemas, aliasHashMap, isColl, true);
+  const odataUriSegments = odataCallUriFactory(visitedSchemas, rootSchema, aliasHashMap, isColl);
+  const descriptorList = generateDescriptorList(visitedSchemas, aliasHashMap, isColl);
 
   const { ReturnType } = rootSchema.schema;
   let responseType = 'responseTypes.ENTITY';
@@ -58,7 +58,7 @@ function composeSharedContext(metadata, scope, aliasHashMap) {
     envLocation,
     schemaLocation,
     descriptorList,
-    odataUri,
+    odataUriSegments,
     key,
     responseType,
     processor,
@@ -77,6 +77,11 @@ function writeActionSpec(context, dataPath, spec, aliasHashMap, destDir) {
       ...sharedContext,
     },
   );
+
+  context.fs.copy(
+    context.templatePath(path.join('shared', 'decorators.js')),
+    path.join(destDir, 'calls', 'action-decorators.js'),
+  );
 }
 
 function writeFuncSpec(context, dataPath, spec, aliasHashMap, destDir) {
@@ -90,6 +95,11 @@ function writeFuncSpec(context, dataPath, spec, aliasHashMap, destDir) {
       dataPath,
       ...sharedContext,
     },
+  );
+
+  context.fs.copy(
+    context.templatePath(path.join('shared', 'decorators.js')),
+    path.join(destDir, 'calls', 'func-decorators.js'),
   );
 }
 
