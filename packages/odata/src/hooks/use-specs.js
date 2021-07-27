@@ -1,6 +1,6 @@
-import { useMemo } from 'react';
+const { useMemo } = require('react');
 
-export function useSpecs(specs, path) {
+function useSpecs(specs, path) {
   // find the spec needed from path
   return useMemo(() => {
     const selectedSpecs = specs[path];
@@ -12,3 +12,7 @@ export function useSpecs(specs, path) {
     return selectedSpecs;
   }, [path, specs]);
 }
+
+module.exports = {
+  useSpecs,
+};

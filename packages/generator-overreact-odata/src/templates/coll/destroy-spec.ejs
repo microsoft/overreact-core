@@ -1,0 +1,57 @@
+import _ from 'underscore';
+import queryString from 'query-string';
+import {
+  createRequestContract,
+  createResponseContract,
+  createSpec,
+
+  requestVerbs,
+  responseTypes,
+  specTypes,
+
+  FetchPolicy,
+} from '@microsoft/overreact';
+
+import { edm } from '<%= edmLocation %>';
+import { environmentLookupFn } from '<%= envLocation %>';
+import { schema } from '<%= schemaLocation %>';
+
+function odataUrlFactory(params) {
+  const { variables } = params;
+  const { locator, cursorIndex } = variables;
+  const { descriptor } = locator;
+  const { <%- descriptorList %> } = descriptor;
+
+  const path =
+    <%- odataUri %>;
+  return path;
+}
+
+function odataHeaderFactory(params) {
+  const { headers } = params;
+  return headers;
+}
+
+const requestContract = createRequestContract({
+  schema,
+  dataPath: '<%= dataPath %>',
+  verb: requestVerbs.DELETE,
+  fetchPolicy: FetchPolicy.StoreOrNetwork,
+  uriFactoryFn: odataUrlFactory,
+  headerFactoryFn: odataHeaderFactory,
+});
+
+const responseContract = createResponseContract({
+  requestContract,
+  responseType: responseTypes.COLL,
+  keySelector: r => r.<%= key %>,
+  processorFn: r => r.value,
+});
+
+export const destroySpec = createSpec(
+  requestContract,
+  responseContract,
+  specTypes.DELETE,
+  null,
+  environmentLookupFn,
+);

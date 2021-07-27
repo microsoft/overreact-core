@@ -1,19 +1,19 @@
 {
   "name": "@microsoft/overreact-odata",
   "version": "0.1.0-alpha.8",
-  "description": "OData binding for overreact",
-  "main": "dist/index.js",
+  "description": "OData binding generator for overreact",
+  "main": "index.js",
+  "keywords": [
+    "odata"
+  ],
   "scripts": {
-    "build": "webpack --mode development",
+    "build": "../../node_modules/.bin/webpack --mode development",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/microsoft/overreact-core.git"
   },
-  "keywords": [
-    "odata"
-  ],
   "author": "Like Zhu",
   "license": "MIT",
   "bugs": {
@@ -22,14 +22,16 @@
   "homepage": "https://github.com/microsoft/overreact-core#readme",
   "dependencies": {
     "@microsoft/overreact": "^0.1.0-alpha.8",
+    "json-stable-stringify": "^1.0.1",
     "lodash": "^4.17.21",
-    "node-fetch": "^2.6.1",
-    "xml2js": "^0.4.23"
-  },
-  "peerDependencies": {
+    "prop-types": "^15.7.2",
     "query-string": "^7.0.1",
     "react": ">=16.8.0",
-    "underscore": "^1.10.2"
+    "react-dom": ">=16.8.0",
+    "regenerator-runtime": "^0.13.2",
+    "stream": "^0.0.2",
+    "timers": "^0.1.1",
+    "uuid": "^3.3.3"
   },
   "publishConfig": {
     "access": "public"

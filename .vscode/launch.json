@@ -5,13 +5,29 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
+			"args": [
+				"${workspaceFolder}/packages/generator-overreact-odata",
+				"--local-only"
+			],
+			"name": "Yeoman generator",
+			"console": "integratedTerminal",
+			"internalConsoleOptions": "neverOpen",
+			"program": "~/.nvm/versions/node/v14.17.1/lib/node_modules/yo/lib/cli.js",
+			"request": "launch",
+			"skipFiles": [
+				"<node_internals>/**"
+			],
+			"type": "pwa-node",
+			"cwd": "${workspaceFolder}/packages/test",
+		},
+		{
 			"type": "pwa-node",
 			"request": "launch",
 			"name": "Launch Program",
 			"skipFiles": [
 				"<node_internals>/**"
 			],
-			"program": "${workspaceFolder}/packages/odata/src/cli/odata-gen.js"
+			"program": "${workspaceFolder}/packages/generator-overreact-odata/src/cli/odata-gen.js"
 		}
 	]
 }

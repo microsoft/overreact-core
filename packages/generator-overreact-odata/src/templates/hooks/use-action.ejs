@@ -1,0 +1,40 @@
+import { useCallback, useMemo } from 'react';
+
+import {
+  useFetch,
+  useMutation,
+  useDataRefId,
+} from '@microsoft/overreact';
+
+import { environmentLookupFn } from '<%= envLocation %>';
+import { fetchSpec, actionSpec } from '../../__specs/calls/action-spec';
+
+export function <%- hookName %>(dataLocator, config = {}) {
+  const dataRefId = useDataRefId(environmentLookupFn);
+
+  const defaultConfig = useMemo(() => ({
+    mutation: config.mutation || {},
+    fetch: config.fetch || {},
+  }), [config]);
+
+  const { fetch: fetchConfig, mutation: mutationConfig } = defaultConfig;
+
+  const fetch = useFetch(dataRefId, fetchSpec, dataLocator, fetchConfig);
+  const action = useMutation(dataRefId, actionSpec, mutationConfig);
+
+  const callFn = useCallback((param = {}, requestConfig, ...rest) => {
+    action({
+      variables: {
+        ...dataLocator,
+        ...param.variables,
+      },
+      payload: {
+        ...param.payload,
+      },
+    }, requestConfig, ...rest);
+  }, [dataLocator, action]);
+
+  const [data, error] = fetch;
+
+  return [{ data, error }, { callFn }];
+}

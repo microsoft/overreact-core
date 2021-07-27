@@ -348,3 +348,5 @@ MigrationBackup/
 *.orig
 
 dist/
+
+packages/test/

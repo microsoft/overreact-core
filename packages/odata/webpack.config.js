@@ -5,10 +5,11 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'index.js',
+    globalObject: 'this',
     libraryTarget: 'umd',
     umdNamedDefine: true,
   },
-  devtool: 'source-map',
+  devtool: 'eval-source-map',
   module: {
     rules: [
       {
@@ -22,10 +23,12 @@ module.exports = {
   },
   externals: [
     {
+      'json-stable-stringify': 'json-stable-stringify',
+      'prop-types': 'prop-types',
       react: 'react',
-      underscore: 'underscore',
-      'query-string': 'query-string',
-      '@microsoft/overreact': '@microsoft/overreact',
+      'react-dom': 'react-dom',
+      'regenerator-runtime': 'regenerator-runtime',
+      uuid: 'uuid',
     },
   ],
 };
