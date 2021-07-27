@@ -31,7 +31,7 @@ function odataUrlFactory(params) {
 <% for (const descriptor of descriptorList) { -%>
     <%- descriptor %>,
 <% } -%>
-} = descriptor;
+  } = descriptor;
 
   const edmEntity = edm
 <% for (const s of odataUriSegments) { -%>
@@ -39,7 +39,7 @@ function odataUrlFactory(params) {
 <% } -%>
 
   const searchString = composeSearchString(variables, edmEntity);
-  return ${edmEntity.path}${searchString};
+  return `${edmEntity.path}${searchString}`;
 }
 
 function odataHeaderFactory(params) {
@@ -78,4 +78,3 @@ export const refetchSpec = createSpec(
   null,
   environmentLookupFn,
 );
-

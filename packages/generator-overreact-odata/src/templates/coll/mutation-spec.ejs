@@ -40,7 +40,7 @@ function odataUrlFactory(params) {
 <% } -%>
 
   const searchString = composeSearchString(variables, edmEntity);
-  return ${edmEntity.path}${searchString}
+  return `${edmEntity.path}${searchString}`;
 }
 
 function odataHeaderFactory(params) {
