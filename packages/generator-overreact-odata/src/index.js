@@ -164,10 +164,8 @@ module.exports = class extends Generator {
         });
       }
     } else if (this.stage === packageStage.MODEL_GENERATED) {
-      const specList = createSpecList(this.model, this.aliasHashMap, this.overreactJsonConfigs);
-      this.overreactJson.set({
-        specList,
-      });
+      const specList = createSpecList(this.model, this.overreactJsonConfigs);
+      this.overreactJson.set({ specList });
     } else if (this.stage === packageStage.SPEC_GENERATED) {
       this.specMetadata = makeSpecMetadataFromList(
         this.model,
@@ -177,6 +175,16 @@ module.exports = class extends Generator {
   }
 
   writing() {
+    if (this.stage === packageStage.FIRST_RUN) {
+      this.fs.copyTpl(
+        this.templatePath(path.join('root', 'package.json')),
+        this.destinationPath('package.json'),
+        {
+          ...this.packageJsonConfigs,
+        },
+      );
+    }
+
     if (this.stage === packageStage.SPEC_GENERATED) {
       writeEnv(this, this.overreactJsonConfigs);
 
@@ -197,50 +205,42 @@ module.exports = class extends Generator {
               writeCollSpec(this, k, spec, this.aliasHashMap, specDestDir);
               writeCollHook(this, k, spec, hookDestDir);
 
-              hookPath = path.join('.', 'specs', specPath, '__hooks', 'coll', 'coll-hook');
+              hookPath = path.join('specs', specPath, '__hooks', 'coll', 'coll-hook');
             }
             if (scope === specMetadataScope.ENTITY) {
               writeEntitySpec(this, k, spec, this.aliasHashMap, specDestDir);
               writeEntityHook(this, k, spec, hookDestDir);
 
-              hookPath = path.join('.', 'specs', specPath, '__hooks', 'entity', 'entity-hook');
+              hookPath = path.join('specs', specPath, '__hooks', 'entity', 'entity-hook');
             }
           }
 
           if (type === specMetadataType.ACTION) {
             writeActionSpec(this, k, spec, this.aliasHashMap, specDestDir);
             writeActionHook(this, k, spec, hookDestDir);
-            hookPath = path.join('.', 'specs', specPath, '__hooks', 'calls', 'action-hook');
+            hookPath = path.join('specs', specPath, '__hooks', 'calls', 'action-hook');
           }
           if (type === specMetadataType.FUNC) {
             writeFuncSpec(this, k, spec, this.aliasHashMap, specDestDir);
             writeFuncHook(this, k, spec, hookDestDir);
-            hookPath = path.join('.', 'specs', specPath, '__hooks', 'calls', 'func-hook');
+            hookPath = path.join('specs', specPath, '__hooks', 'calls', 'func-hook');
           }
           this.hookPaths.push(
-            `export { ${hookName} } from '${hookPath}';`,
+            `export { ${hookName} } from './${hookPath}';`,
           );
         });
 
         this.generatedSpecs.push(k);
       });
+
+      this.fs.copyTpl(
+        this.templatePath(path.join('root', 'index.ejs')),
+        this.destinationPath('index.js'),
+        {
+          exports: this.hookPaths,
+        },
+      );
     }
-
-    this.fs.copyTpl(
-      this.templatePath(path.join('root', 'package.json')),
-      this.destinationPath('package.json'),
-      {
-        ...this.packageJsonConfigs,
-      },
-    );
-
-    this.fs.copyTpl(
-      this.templatePath(path.join('root', 'index.ejs')),
-      this.destinationPath('index.js'),
-      {
-        exports: this.hookPaths,
-      },
-    );
   }
 
   end() {

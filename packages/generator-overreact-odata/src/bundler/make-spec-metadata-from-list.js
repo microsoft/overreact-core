@@ -1,10 +1,14 @@
-const { specMetadataType, specMetadataScope } = require('./consts');
-const { snakeToPascalCase, schemaNameMapper } = require('./utils');
+const pluralize = require('pluralize');
 
-function makeVisitedSchemas(model, modelAliases, rootSchema, dataPathSegments) {
+const { specMetadataType, specMetadataScope } = require('./consts');
+const { snakeToPascalCase, pascalToSnakeCase } = require('./utils');
+
+function makeVisitedSchemas(rootSchema, dataPathSegments) {
   const visitedSchemas = [rootSchema];
   let lastVisited = rootSchema;
 
+  // each data path segment is in the form of singluar, snake-cased names
+  // find the model behind each segment and construct visited schema from them
   dataPathSegments.forEach(seg => {
     const {
       schema: {
@@ -17,20 +21,17 @@ function makeVisitedSchemas(model, modelAliases, rootSchema, dataPathSegments) {
 
     if (NavigationProperty) {
       NavigationProperty.every(navPropertyName => {
-        const property = properties[navPropertyName];
-        const { type } = property;
+        const segmentName = pascalToSnakeCase(pluralize.singular(navPropertyName));
+        if (segmentName === seg) {
+          const property = properties[navPropertyName];
+          const { items: { schema } } = property;
 
-        if (type === 'array') {
-          const { $ref, schema } = property.items;
-          const modelName = modelAliases[seg];
-          if ($ref === modelName) {
-            lastVisited = {
-              name: navPropertyName,
-              schema,
-            };
-            visitedSchemas.push(lastVisited);
-            return false;
-          }
+          lastVisited = {
+            name: navPropertyName,
+            schema,
+          };
+          visitedSchemas.push(lastVisited);
+          return false;
         }
 
         return true;
@@ -44,7 +45,6 @@ function makeVisitedSchemas(model, modelAliases, rootSchema, dataPathSegments) {
 // Creates spec metadata from a list of spec data paths
 function makeSpecMetadataFromList(model, config) {
   const {
-    modelAliases,
     rootPropertyModelName,
     rootPropertyName,
     specList,
@@ -67,16 +67,12 @@ function makeSpecMetadataFromList(model, config) {
       let callName = null;
       if (configType === 'call') {
         // the last segment of the data path would be the call name
-
-        // because call names are not in the model aliases map, but
-        // are simply converted using the pascal-to-snake conversion,
+        // which is simply converted using the pascal-to-snake conversion,
         // we'll need to revert it back to pascal casing.
         callName = snakeToPascalCase(dataPathSegments.pop());
       }
 
       const visitedSchemas = makeVisitedSchemas(
-        model,
-        modelAliases,
         {
           name: rootPropertyName,
           schema: model[rootPropertyModelName],
@@ -156,7 +152,6 @@ function makeSpecMetadataFromList(model, config) {
         scope: specScope,
         metadata: {
           path: dataPath,
-          schemaNameMapper,
           visitedSchemas,
           rootSchema,
           config: cfg,

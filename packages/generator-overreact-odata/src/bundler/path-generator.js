@@ -1,7 +1,37 @@
-const { createConfigObj } = require('./config-obj');
+const pluralize = require('pluralize');
+const { snakeToPascalCase, pascalToSnakeCase } = require('./utils');
 
-function composePath(visited, aliasHashMap, nameMapper, isCall = false) {
+const usedHookNames = {};
+function composePath(visited, isCall = false) {
   const paths = {};
+
+  function createConfigObj(pathName) {
+    const pathNames = pathName.split(':');
+    let hookName = '';
+    for (let i = pathNames.length - 1; i >= 0; i -= 1) {
+      hookName = `${snakeToPascalCase(pathNames[i])}${hookName}`;
+      if (!usedHookNames[hookName]) {
+        // not used
+        usedHookNames[hookName] = 1;
+        break;
+      }
+    }
+
+    if (isCall) {
+      return [{
+        type: 'call',
+        name: `use${hookName}`,
+      }];
+    }
+
+    return [{
+      type: 'entity',
+      name: `use${hookName}`,
+    }, {
+      type: 'coll',
+      name: `use${pluralize(hookName)}`,
+    }];
+  }
 
   function expandPath(depth, path) {
     if (depth === visited.length) {
@@ -14,17 +44,14 @@ function composePath(visited, aliasHashMap, nameMapper, isCall = false) {
       return;
     }
 
-    const { $$ref, Name } = visited[depth].schema;
+    const { name: navigationName } = visited[depth];
 
-    const modelName = $$ref || Name || '';
-
-    if (aliasHashMap[modelName]) {
-      aliasHashMap[modelName].forEach(alias => {
-        expandPath(depth + 1, `${path}:${alias}`);
-      });
-    } else {
-      expandPath(depth + 1, `${path}:${nameMapper(modelName)}`);
+    let segmentName = pascalToSnakeCase(pluralize.singular(navigationName));
+    if (isCall && depth === visited.length - 1) {
+      segmentName = pascalToSnakeCase(navigationName);
     }
+
+    expandPath(depth + 1, `${path}:${segmentName}`);
   }
 
   expandPath(0, '');
@@ -32,15 +59,7 @@ function composePath(visited, aliasHashMap, nameMapper, isCall = false) {
   return paths;
 }
 
-function generatePathForCall(
-  edmModel,
-  overreactSchema,
-  aliasHashMap,
-  schemaNameMapper,
-  visitedSchemas,
-  calls,
-  // isColl = false,
-) {
+function composePathForCall(visitedSchemas, calls) {
   if (!calls) {
     return {};
   }
@@ -56,12 +75,9 @@ function generatePathForCall(
       { name: Name, schema: call },
     ];
 
-    const callPath = composePath(visited, aliasHashMap, schemaNameMapper, true);
+    const callPath = composePath(visited, true);
 
-    paths = {
-      ...paths,
-      ...callPath,
-    };
+    paths = { ...paths, ...callPath };
   }
 
   return paths;
@@ -69,129 +85,97 @@ function generatePathForCall(
 
 function generatePath(
   edmModel,
-  overreactSchema,
-  aliasHashMap,
+  rootPropertyName,
   rootSchema,
-  schemaNameMapper,
-  visitedSchemas,
 ) {
   let paths = {};
 
-  const { schemas: edmSchemas } = edmModel.schema;
+  function producePath(visited) {
+    const lastVisitedSchema = visited[visited.length - 1];
 
-  const { $$ODataExtension, properties } = rootSchema;
-  const {
-    NavigationProperty,
-    Function: ODataFunction,
-    Action: ODataAction,
-    Collection, // Action/Functions on collection
-  } = $$ODataExtension;
+    const path = composePath(visited);
 
-  const path = composePath(visitedSchemas, aliasHashMap, schemaNameMapper);
+    paths = { ...paths, ...path };
 
-  paths = {
-    ...paths,
-    ...path,
-  };
+    const { $$ODataExtension } = lastVisitedSchema.schema;
+    const {
+      Function: ODataFunction,
+      Action: ODataAction,
+      Collection, // Action/Functions on collection
+    } = $$ODataExtension;
 
-  if (NavigationProperty) {
-    NavigationProperty.forEach(navPropertyName => {
-      const property = properties[navPropertyName];
-      const { type } = property;
+    if (Collection) {
+      const { Action: CollAction, Function: CollFunc } = Collection;
+      const pa = composePathForCall(visited, CollAction);
+      const pf = composePathForCall(visited, CollFunc);
 
-      if (type === 'array') {
-        const { $ref, schema } = property.items;
+      paths = { ...paths, ...pa, ...pf };
+    }
 
-        if (!aliasHashMap[$ref]) {
-          // not in alias hash map - ignore this property
-          return;
-        }
+    // Actions
+    const actionPaths = composePathForCall(visited, ODataAction);
 
-        let schemaObj = schema;
+    // Functions
+    const funcPaths = composePathForCall(visited, ODataFunction);
 
-        if (!schemaObj) {
-          // some metadata doesn't include schema node,
-          // try to locate one from schema collection instead
-          schemaObj = edmSchemas[$ref];
-        }
+    paths = { ...paths, ...actionPaths, ...funcPaths };
+  }
 
-        if (!visitedSchemas.find(p => p.name === navPropertyName)) {
-          const p = generatePath(
-            edmModel,
-            overreactSchema,
-            aliasHashMap,
-            schemaObj,
-            schemaNameMapper,
-            [
-              ...visitedSchemas,
-              { name: navPropertyName, schema: schemaObj },
-            ],
-          );
+  function searchPaths() {
+    const searched = [[{
+      name: rootPropertyName,
+      schema: rootSchema,
+    }]];
 
-          paths = {
-            ...paths,
-            ...p,
-          };
-        }
-      } else {
-        console.log('UNHANDLED', property);
+    let start = 0;
+
+    const { schemas: edmSchemas } = edmModel.schema;
+
+    while (start < searched.length) {
+      const visited = searched[start];
+      start += 1;
+
+      // TODO: process visited
+      producePath(visited);
+
+      const lastVisitedSchema = visited[visited.length - 1];
+      const { $$ODataExtension, properties } = lastVisitedSchema.schema;
+      const { NavigationProperty } = $$ODataExtension;
+
+      if (NavigationProperty) {
+        NavigationProperty.forEach(navPropertyName => {
+          const property = properties[navPropertyName];
+          const { type } = property;
+
+          if (type === 'array') {
+            const { $ref, schema } = property.items;
+
+            let schemaObj = schema;
+
+            if (!schemaObj) {
+            // some metadata doesn't include schema node,
+            // try to locate one from schema collection instead
+              schemaObj = edmSchemas[$ref];
+            }
+
+            if (!visited.find(p => p.name === navPropertyName)) {
+              searched.push([
+                ...visited,
+                {
+                  name: navPropertyName,
+                  schema: schemaObj,
+                },
+              ]);
+            }
+          } else {
+            console.log('UNHANDLED', property);
+          }
+        });
       }
-    });
+    }
   }
 
-  if (Collection) {
-    const { Action: CollAction, Function: CollFunc } = Collection;
-    const pa = generatePathForCall(
-      edmModel,
-      overreactSchema,
-      aliasHashMap,
-      schemaNameMapper,
-      visitedSchemas,
-      CollAction,
-      true,
-    );
-    const pf = generatePathForCall(
-      edmModel,
-      overreactSchema,
-      aliasHashMap,
-      schemaNameMapper,
-      visitedSchemas,
-      CollFunc,
-      true,
-    );
-
-    paths = {
-      ...paths,
-      ...pa,
-      ...pf,
-    };
-  }
-
-  // Actions
-  const actionPaths = generatePathForCall(
-    edmModel,
-    overreactSchema,
-    aliasHashMap,
-    schemaNameMapper,
-    visitedSchemas,
-    ODataAction,
-  );
-
-  // Functions
-  const funcPaths = generatePathForCall(
-    edmModel,
-    overreactSchema,
-    aliasHashMap,
-    schemaNameMapper,
-    visitedSchemas,
-    ODataFunction,
-  );
-
-  paths = {
-    ...paths,
-    ...actionPaths,
-    ...funcPaths,
-  };
+  searchPaths();
 
   return paths;
 }
