@@ -18,7 +18,6 @@ import { schema } from '<%= schemaLocation %>';
 import {
   urlDecorator,
   headerDecorator,
-  payloadDecorator,
   processorDecorator,
 
   networkPolicy,
@@ -26,8 +25,7 @@ import {
 
 function odataUrlFactory(params) {
   const { variables } = params;
-  const { locator, cursorIndex } = variables;
-  const { descriptor } = locator;
+  const { locator: { descriptor } } = variables;
   const {
 <% for (const descriptor of descriptorList) { -%>
     <%- descriptor %>,

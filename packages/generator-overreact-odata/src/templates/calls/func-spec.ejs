@@ -25,8 +25,7 @@ import {
 
 function odataUrlFactory(params) {
   const { variables } = params;
-  const { locator, ...rest } = variables;
-  const { descriptor } = locator;
+  const { locator: { descriptor }, ...rest } = variables;
   const {
 <% for (const descriptor of descriptorList) { -%>
     <%- descriptor %>,

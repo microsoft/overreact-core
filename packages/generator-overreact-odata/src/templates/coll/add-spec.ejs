@@ -26,8 +26,7 @@ import {
 
 function odataUrlFactory(params) {
   const { variables } = params;
-  const { locator, cursorIndex } = variables;
-  const { descriptor } = locator;
+  const { locator: { descriptor } } = variables;
   const {
 <% for (const descriptor of descriptorList) { -%>
     <%- descriptor %>,
@@ -48,6 +47,11 @@ function odataHeaderFactory(params) {
   return headers;
 }
 
+function odataPayloadFactory(params) {
+  const { data } = params;
+  return JSON.stringify(data);
+}
+
 const requestContract = createRequestContract({
   schema,
   dataPath: '<%= dataPath %>',
@@ -55,6 +59,7 @@ const requestContract = createRequestContract({
   fetchPolicy: networkPolicy,
   uriFactoryFn: urlDecorator(odataUrlFactory),
   headerFactoryFn: headerDecorator(odataHeaderFactory),
+  payloadFactoryFn: payloadDecorator(odataPayloadFactory),
 });
 
 const responseContract = createResponseContract({
