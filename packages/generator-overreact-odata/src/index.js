@@ -72,7 +72,7 @@ module.exports = class extends Generator {
       this.log('Looks like this is the first time you\'re generating this package.');
       this.log('Let\'s start with gathering some basic information.');
 
-      this.packageJsonAnswers = await this.prompt([
+      const packageJsonAnswers = await this.prompt([
         {
           type: 'input',
           name: 'name',
@@ -81,9 +81,10 @@ module.exports = class extends Generator {
         },
       ]);
 
-      this.packageJson.set({
-        ...this.packageJsonAnswers,
-      });
+      this.packageJsonConfigs = {
+        ...this.packageJsonConfigs,
+        ...packageJsonAnswers,
+      };
 
       const answers = await this.prompt([
         {
@@ -146,6 +147,8 @@ module.exports = class extends Generator {
     this.log('Metadata fetched.');
 
     if (this.stage === packageStage.FIRST_RUN) {
+      this.packageJson.set(this.packageJsonConfigs);
+
       const MODEL_PREFIX = 'Model/';
       const pascalToSnakeCase = str => str.split(/(?=[A-Z])/).join('_').toLowerCase();
       const modelAliases = {};

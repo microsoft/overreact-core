@@ -1,7 +1,5 @@
 const path = require('path');
 
-const { specMetadataScope } = require('../bundler/consts');
-
 const {
   odataUriFactory,
   generateDescriptorList,
@@ -21,7 +19,7 @@ function composeSharedContext(metadata, scope, aliasHashMap) {
   const envLocation = path.join(envRelativePath, 'env-instance');
   const schemaLocation = path.join(envRelativePath, 'schema');
 
-  const odataUri = odataUriFactory(visitedSchemas, aliasHashMap, false);
+  const odataUriSegments = odataUriFactory(visitedSchemas, aliasHashMap, false);
   const descriptorList = generateDescriptorList(visitedSchemas, aliasHashMap, false);
   const { $$ODataExtension } = rootSchema.schema;
 
@@ -30,13 +28,13 @@ function composeSharedContext(metadata, scope, aliasHashMap) {
     envLocation,
     schemaLocation,
     descriptorList,
-    odataUri,
+    odataUriSegments,
     key: $$ODataExtension.Key[0],
   };
 }
 
 function writeEntitySpec(context, dataPath, spec, aliasHashMap, destDir) {
-  const { metadata, scope, config } = spec;
+  const { metadata, scope } = spec;
   const sharedContext = composeSharedContext(metadata, scope, aliasHashMap);
 
   context.fs.copyTpl(
@@ -48,6 +46,11 @@ function writeEntitySpec(context, dataPath, spec, aliasHashMap, destDir) {
     },
   );
 
+  context.fs.copy(
+    context.templatePath(path.join('shared', 'decorators.js')),
+    path.join(destDir, 'entity', 'fetch-decorators.js'),
+  );
+
   context.fs.copyTpl(
     context.templatePath(path.join('entity', 'destroy-spec.ejs')),
     path.join(destDir, 'entity', 'destroy-spec.js'),
@@ -57,6 +60,11 @@ function writeEntitySpec(context, dataPath, spec, aliasHashMap, destDir) {
     },
   );
 
+  context.fs.copy(
+    context.templatePath(path.join('shared', 'decorators.js')),
+    path.join(destDir, 'entity', 'destroy-decorators.js'),
+  );
+
   context.fs.copyTpl(
     context.templatePath(path.join('entity', 'mutation-spec.ejs')),
     path.join(destDir, 'entity', 'mutation-spec.js'),
@@ -64,6 +72,11 @@ function writeEntitySpec(context, dataPath, spec, aliasHashMap, destDir) {
       dataPath,
       ...sharedContext,
     },
+  );
+
+  context.fs.copy(
+    context.templatePath(path.join('shared', 'decorators.js')),
+    path.join(destDir, 'entity', 'mutation-decorators.js'),
   );
 }
 

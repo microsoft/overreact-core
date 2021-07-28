@@ -7,7 +7,7 @@ function descriptorNameConverter(visitedSchema, aliasHashMap) {
   return `${aliasHashMap[candidate][0]}${descriptorSuffix}`;
 }
 
-function generateDescriptorList(visitedSchemas, aliasHashMap, isColl, isCall = false) {
+function generateDescriptorList(visitedSchemas, aliasHashMap, isColl) {
   const descriptorList = visitedSchemas
     .map(({ schema }) => descriptorNameConverter(schema, aliasHashMap));
 
@@ -15,15 +15,11 @@ function generateDescriptorList(visitedSchemas, aliasHashMap, isColl, isCall = f
     descriptorList.pop();
   }
 
-  if (isCall) {
-    descriptorList.pop();
-  }
-
   return descriptorList;
 }
 
 function odataCallUriFactory(visitedSchemas, rootSchema, aliasHashMap, isColl) {
-  let edmPath = 'edm';
+  const edmPathSegments = [];
   for (let i = 0; i < visitedSchemas.length; i += 1) {
     const { schema: visitedSchema, name } = visitedSchemas[i];
     const { $$ref } = visitedSchema;
@@ -35,25 +31,23 @@ function odataCallUriFactory(visitedSchemas, rootSchema, aliasHashMap, isColl) {
         // an entity. Instead, we'll navigate directly from
         // the second to last schema, which is the entity collection
         // that the action/function is bound to.
-        edmPath += `.${name}`;
+        edmPathSegments.push(`.${name}`);
       } else {
         const navId = descriptorNameConverter(visitedSchema, aliasHashMap);
-        edmPath += `.${name}.$withKey(${navId})`;
+        edmPathSegments.push(`.${name}.$withKey(${navId})`);
       }
-    } /* else if (Name && Namespace) {
-      edmPath += `['${Namespace}.${Name}']`;
-    } */
+    }
   }
 
   const { schema: { Namespace, Name } } = rootSchema;
-  edmPath += `['${Namespace}.${Name}']`;
+  edmPathSegments[edmPathSegments.length - 1] += `['${Namespace}.${Name}']`;
+  edmPathSegments.push('.$call(rest);');
 
-  return `${edmPath}.$call(rest).path`;
+  return edmPathSegments;
 }
 
 function odataUriFactory(visitedSchemas, aliasHashMap, isColl) {
-  // let edmResource = edmModel;
-  let edmPath = 'edm';
+  const edmPathSegments = [];
 
   if (isColl) {
     for (let i = 0; i < visitedSchemas.length - 1; i += 1) {
@@ -62,12 +56,12 @@ function odataUriFactory(visitedSchemas, aliasHashMap, isColl) {
 
       if ($$ref) {
         const navId = descriptorNameConverter(visitedSchema, aliasHashMap);
-        edmPath += `.${name}.$withKey(${navId})`;
+        edmPathSegments.push(`.${name}.$withKey(${navId})`);
       }
     }
 
     const { name } = visitedSchemas[visitedSchemas.length - 1];
-    edmPath += `.${name}`;
+    edmPathSegments.push(`.${name};`);
   } else {
     // entity
 
@@ -77,11 +71,13 @@ function odataUriFactory(visitedSchemas, aliasHashMap, isColl) {
 
       if ($$ref) {
         const navId = descriptorNameConverter(visitedSchema, aliasHashMap);
-        edmPath += `.${name}.$withKey(${navId})`;
+        edmPathSegments.push(`.${name}.$withKey(${navId})`);
       }
     }
+
+    edmPathSegments[edmPathSegments.length - 1] += ';';
   }
-  return `${edmPath}.path`;
+  return edmPathSegments;
 
   /*
   let search = {};

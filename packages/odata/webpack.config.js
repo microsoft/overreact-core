@@ -23,12 +23,7 @@ module.exports = {
   },
   externals: [
     {
-      'json-stable-stringify': 'json-stable-stringify',
-      'prop-types': 'prop-types',
       react: 'react',
-      'react-dom': 'react-dom',
-      'regenerator-runtime': 'regenerator-runtime',
-      uuid: 'uuid',
     },
   ],
 };

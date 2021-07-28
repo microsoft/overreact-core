@@ -6,6 +6,8 @@ const { useODataCall } = require('./src/hooks/use-odata-call');
 const { useODataCollection } = require('./src/hooks/use-odata-coll');
 const { useODataEntity } = require('./src/hooks/use-odata-entity');
 
+const { composeSearchString } = require('./src/helpers/compose-search-string');
+
 module.exports = {
   EDM,
   resIdsPlugin,
@@ -14,4 +16,6 @@ module.exports = {
   useODataCall,
   useODataCollection,
   useODataEntity,
+
+  composeSearchString,
 };

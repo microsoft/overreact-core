@@ -22,14 +22,13 @@
   "homepage": "https://github.com/microsoft/overreact-core#readme",
   "dependencies": {
     "@microsoft/overreact": "^0.1.0-alpha.10",
-    "lodash": "^4.17.21",
     "node-fetch": "^2.6.1",
+    "query-string": "^7.0.1",
     "xml2js": "^0.4.23"
   },
   "peerDependencies": {
-    "query-string": "^7.0.1",
-    "react": ">=16.8.0",
-    "underscore": "^1.10.2"
+    "lodash": "^4.17.21",
+    "react": ">=16.8.0"
   },
   "publishConfig": {
     "access": "public"

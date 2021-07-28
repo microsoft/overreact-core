@@ -1,5 +1,4 @@
-import _ from 'underscore';
-import queryString from 'query-string';
+/* eslint-disable camelcase */
 import {
   createRequestContract,
   createResponseContract,
@@ -8,23 +7,38 @@ import {
   requestVerbs,
   responseTypes,
   specTypes,
-
-  FetchPolicy,
 } from '@microsoft/overreact';
+
+import { composeSearchString } from '@microsoft/overreact-odata';
 
 import { edm } from '<%= edmLocation %>';
 import { environmentLookupFn } from '<%= envLocation %>';
 import { schema } from '<%= schemaLocation %>';
 
+import {
+  urlDecorator,
+  headerDecorator,
+  processorDecorator,
+
+  networkPolicy,
+} from './func-decorators';
+
 function odataUrlFactory(params) {
   const { variables } = params;
-  const { locator, ...rest } = variables;
-  const { descriptor } = locator;
-  const { <%- descriptorList %> } = descriptor;
+  const { locator: { descriptor }, ...rest } = variables;
+  const {
+<% for (const descriptor of descriptorList) { -%>
+    <%- descriptor %>,
+<% } -%>
+  } = descriptor;
 
-  const path =
-    <%- odataUri %>;
-  return path;
+  const edmEntity = edm
+<% for (const s of odataUriSegments) { -%>
+    <%- s %>
+<% } -%>
+
+  const searchString = composeSearchString(variables, edmEntity);
+  return `${edmEntity.path}${searchString}`;
 }
 
 function odataHeaderFactory(params) {
@@ -36,16 +50,16 @@ const requestContract = createRequestContract({
   schema,
   dataPath: '<%= dataPath %>',
   verb: requestVerbs.GET,
-  fetchPolicy: FetchPolicy.StoreOrNetwork,
-  uriFactoryFn: odataUrlFactory,
-  headerFactoryFn: odataHeaderFactory,
+  fetchPolicy: networkPolicy,
+  uriFactoryFn: urlDecorator(odataUrlFactory),
+  headerFactoryFn: headerDecorator(odataHeaderFactory),
 });
 
 const responseContract = createResponseContract({
   requestContract,
   responseType: <%- responseType %>,
   keySelector: <%- key %>,
-  processorFn: <%- processor %>,
+  processorFn: processorDecorator(<%- processor %>),
 });
 
 export const fetchSpec = createSpec(
@@ -63,4 +77,3 @@ export const refetchSpec = createSpec(
   null,
   environmentLookupFn,
 );
-
