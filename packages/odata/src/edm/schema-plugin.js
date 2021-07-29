@@ -3,6 +3,7 @@
  */
 
 const _ = require('underscore');
+const { get } = require('./lodash');
 const { Registry } = require('./registry');
 const {
   defineConstProperty,
@@ -141,12 +142,10 @@ module.exports = (edm, {
 
       _.each(_.keys(acts), key => {
         const typeName = getCallableTypeName(key);
-        const parameters = {};
-
-        Object.keys(acts[key].Parameter || {}).forEach(k => {
-          const parameter = acts[key].Parameter[k];
-          parameters[k] = getTypeName([], parameter);
-        });
+        const parameters = _.mapObject(
+          acts[key].Parameter,
+          parameter => getTypeName([], parameter),
+        );
 
         actions.push(new ActionType({
           name: typeName,
@@ -158,12 +157,10 @@ module.exports = (edm, {
 
       _.each(_.keys(funcs), key => {
         const typeName = getCallableTypeName(key);
-        const parameters = {};
-
-        Object.keys(funcs[key].Parameter || {}).forEach(k => {
-          const param = funcs[key].Parameter[k];
-          parameters[k] = getTypeName([], param);
-        });
+        const parameters = _.mapObject(
+          funcs[key].Parameter,
+          parameter => getTypeName([], parameter),
+        );
 
         functions.push(new FunctionType({
           name: typeName,
@@ -191,14 +188,9 @@ module.exports = (edm, {
 
       if (!edm.types.resolve(qualifiedName)) {
         const dependencies = [];
-        const properties = {};
-
-        Object.keys(schema.properties || {}).forEach(key => {
-          const typeInfo = schema.properties[key];
-          properties[key] = {
-            typeName: getTypeName(dependencies, typeInfo),
-          };
-        });
+        const properties = _.mapObject(schema.properties, typeInfo => ({
+          typeName: getTypeName(dependencies, typeInfo),
+        }));
 
         const type = new EntityType({
           name: qualifiedName,
@@ -212,14 +204,14 @@ module.exports = (edm, {
 
         _.each(dependencies, defineSchemaType);
 
-        const entityActions = _.get(schema, '$$ODataExtension.Action', null);
-        const entityFunctions = _.get(schema, '$$ODataExtension.Function', null);
+        const entityActions = get(schema, '$$ODataExtension.Action', null);
+        const entityFunctions = get(schema, '$$ODataExtension.Function', null);
 
         if (entityActions || entityFunctions) {
           defineCallableOnType(entityActions, entityFunctions, type, qualifiedName);
         }
 
-        const collCallable = _.get(schema, '$$ODataExtension.Collection', null);
+        const collCallable = get(schema, '$$ODataExtension.Collection', null);
 
         if (collCallable) {
           defineCallableOnType(

@@ -219,18 +219,13 @@ module.exports = edm => {
     function compileProperties(properties) {
       const { namespace } = this;
 
-      const ret = {};
-
-      Object.keys(properties || {}).forEach(name => {
-        const { typeName } = properties[name];
-        ret[name] = new Property({
-          name,
-          typeName,
-          namespace,
-        });
-      });
-
-      return ret;
+      return _.mapObject(properties, ({
+        typeName,
+      }, name) => new Property({
+        name,
+        typeName,
+        namespace,
+      }));
     }
 
     /**
@@ -397,13 +392,10 @@ module.exports = edm => {
     function compileParameters(parameters) {
       const { namespace } = this;
 
-      const ret = {};
-      Object.keys(parameters || {}).forEach(name => {
-        const { typeName } = parameters[name];
-        ret[name] = new Parameter({ name, namespace, typeName });
-      });
-
-      return ret;
+      return _.mapObject(
+        parameters,
+        ({ typeName }, name) => new Parameter({ name, namespace, typeName }),
+      );
     }
 
     /**
