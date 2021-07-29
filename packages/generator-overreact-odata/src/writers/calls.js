@@ -26,6 +26,10 @@ function composeSharedContext(metadata, scope, aliasHashMap) {
   const odataUriSegments = odataCallUriFactory(visitedSchemas, rootSchema, aliasHashMap, isColl);
   const descriptorList = generateDescriptorList(visitedSchemas, aliasHashMap, isColl);
 
+  // note that for action/function, the "parent" is the _last_
+  // element of the descriptor list
+  const parentKey = descriptorList[descriptorList.length - 1];
+
   const { ReturnType } = rootSchema.schema;
   let responseType = 'responseTypes.ENTITY';
   let key = 'r => r';
@@ -62,6 +66,7 @@ function composeSharedContext(metadata, scope, aliasHashMap) {
     key,
     responseType,
     processor,
+    parentKey,
   };
 }
 

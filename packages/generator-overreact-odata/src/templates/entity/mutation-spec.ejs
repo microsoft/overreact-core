@@ -61,6 +61,7 @@ const requestContract = createRequestContract({
   uriFactoryFn: urlDecorator(odataUrlFactory),
   headerFactoryFn: headerDecorator(odataHeaderFactory),
   payloadFactoryFn: payloadDecorator(odataPayloadFactory),
+  parentKeySelector: variables => variables.locator.descriptor.<%- parentKey %>,
 });
 
 const responseContract = createResponseContract({
