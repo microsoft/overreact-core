@@ -135,6 +135,7 @@ module.exports = class extends Generator {
   }
 
   async configuring() {
+    this.packageJson.set(this.packageJsonConfigs);
     const { url } = this.overreactJsonConfigs;
     try {
       this.log(`Fetching metadata from ${url}`);
@@ -147,8 +148,6 @@ module.exports = class extends Generator {
     this.log('Metadata fetched.');
 
     if (this.stage === packageStage.FIRST_RUN) {
-      this.packageJson.set(this.packageJsonConfigs);
-
       const MODEL_PREFIX = 'Model/';
       const pascalToSnakeCase = str => str.split(/(?=[A-Z])/).join('_').toLowerCase();
       const modelAliases = {};

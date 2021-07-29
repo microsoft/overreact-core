@@ -21,6 +21,7 @@ import {
   payloadDecorator,
   processorDecorator,
   keySelectorDecorator,
+  sideEffects,
 
   networkPolicy,
 } from './add-decorators';
@@ -75,6 +76,6 @@ export const addSpec = createSpec(
   requestContract,
   responseContract,
   specTypes.ADD,
-  null,
+  sideEffects.add,
   environmentLookupFn,
 );

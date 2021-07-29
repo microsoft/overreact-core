@@ -20,6 +20,7 @@ import {
   headerDecorator,
   processorDecorator,
   keySelectorDecorator,
+  sideEffects,
 
   networkPolicy,
 } from './destroy-decorators';
@@ -68,6 +69,6 @@ export const destroySpec = createSpec(
   requestContract,
   responseContract,
   specTypes.DELETE,
-  null,
+  sideEffects.destroy,
   environmentLookupFn,
 );

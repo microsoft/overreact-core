@@ -20,6 +20,7 @@ import {
   headerDecorator,
   processorDecorator,
   keySelectorDecorator,
+  sideEffects,
 
   networkPolicy,
 } from './func-decorators';
@@ -68,7 +69,7 @@ export const fetchSpec = createSpec(
   requestContract,
   responseContract,
   specTypes.FETCH,
-  null,
+  sideEffects.fetch,
   environmentLookupFn,
 );
 
@@ -76,6 +77,6 @@ export const refetchSpec = createSpec(
   requestContract,
   responseContract,
   specTypes.REFETCH,
-  null,
+  sideEffects.refetch,
   environmentLookupFn,
 );

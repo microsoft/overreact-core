@@ -21,6 +21,7 @@ import {
   payloadDecorator,
   processorDecorator,
   keySelectorDecorator,
+  sideEffects,
 
   networkPolicy,
 } from './action-decorators';
@@ -75,7 +76,7 @@ export const fetchSpec = createSpec(
   requestContract,
   responseContract,
   specTypes.FETCH,
-  null,
+  sideEffects.fetch,
   environmentLookupFn,
 );
 
@@ -83,6 +84,6 @@ export const actionSpec = createSpec(
   requestContract,
   responseContract,
   specTypes.MUTATION,
-  null,
+  sideEffects.mutation,
   environmentLookupFn,
 );

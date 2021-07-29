@@ -1,4 +1,5 @@
 import { useCallback, useMemo } from 'react';
+import stringify from 'json-stable-stringify';
 
 import {
   useFetch,
@@ -9,8 +10,9 @@ import {
 import { environmentLookupFn } from '<%= envLocation %>';
 import { fetchSpec, refetchSpec } from '../../__specs/calls/func-spec';
 
-export function <%- hookName %>(dataLocator, config = {}) {
-  const dataRefId = useDataRefId(environmentLookupFn);
+export function <%- hookName %>(variables, config = {}) {
+  const { dataLocator } = variables;
+  const dataRefId = useDataRefId(`call_${stringify(dataLocator)}`, environmentLookupFn);
 
   const defaultConfig = useMemo(() => ({
     refetch: config.refetch || {},
@@ -23,12 +25,16 @@ export function <%- hookName %>(dataLocator, config = {}) {
   const func = useRefetch(dataRefId, refetchSpec, refetchConfig);
 
   const callFn = useCallback((param = {}, requestConfig, ...rest) => {
-    func({
-      variables: {
-        ...dataLocator,
-        ...param.variables,
+    func(
+      {
+        variables: {
+          ...dataLocator,
+          ...param.variables,
+        },
       },
-    }, requestConfig, ...rest);
+      requestConfig,
+      ...rest
+    );
   }, [dataLocator, func]);
 
   const [data, error] = fetch;

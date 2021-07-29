@@ -1,5 +1,12 @@
-import { useCallback } from 'react';
-import { useDataRefId, useFetch, useMutation } from '@microsoft/overreact';
+import { useCallback, useMemo } from 'react';
+import stringify from 'json-stable-stringify';
+
+import {
+  useDataRefId,
+  useFetch,
+  useMutation,
+  useRefetch,
+} from '@microsoft/overreact';
 
 import { environmentLookupFn } from '<%= envLocation %>';
 
@@ -7,12 +14,28 @@ import { destroySpec } from '../../__specs/entity/destroy-spec';
 import { fetchSpec, refetchSpec } from '../../__specs/entity/fetch-spec';
 import { mutationSpec } from '../../__specs/entity/mutation-spec';
 
-export function <%- hookName %>(specs, path, variables, config = {}) {
-  const dataRefId = useDataRefId(environmentLookupFn);
+export function <%- hookName %>(variables, config = {}) {
+  const { dataLocator } = variables;
+  const dataRefId = useDataRefId(`entity_${stringify(dataLocator)}`, environmentLookupFn);
 
-  const [data, error] = useFetch(dataRefId, fetchSpec, variables, config);
-  const mutateFn = useMutation(dataRefId, mutationSpec, config);
-  const destroyFn = useMutation(dataRefId, destroySpec, config);
+  const defaultConfig = useMemo(() => ({
+    fetch: config.fetch || {},
+    refetch: config.refetch || {},
+    mutation: config.mutation || {},
+    destroy: config.destroy || {},
+  }), [config]);
+
+  const {
+    fetch: fetchConfig,
+    refetch: refetchConfig,
+    mutation: mutationConfig,
+    destroy: destroyConfig,
+  } = defaultConfig;
+
+  const [data, error] = useFetch(dataRefId, fetchSpec, variables, fetchConfig);
+  const mutateFn = useMutation(dataRefId, mutationSpec, mutationConfig);
+  const destroyFn = useMutation(dataRefId, destroySpec, destroyConfig);
+  const refetchFn = useRefetch(dataRefId, refetchSpec, refetchConfig);
 
   const update = useCallback((newData, ...rest) => {
     mutateFn(variables, newData, ...rest);
@@ -23,5 +46,19 @@ export function <%- hookName %>(specs, path, variables, config = {}) {
     destroyFn(variables, newData, ...rest);
   }, [destroyFn, variables]);
 
-  return [{ data, error }, { update, destroy }];
+  const refetch = useCallback((parameter, ...rest) => {
+    refetchFn(
+      {
+        variables: {
+          ...dataLocator,
+          ...parameter.variables,
+        },
+        payload: parameter.payload,
+      },
+      refetchConfig,
+      ...rest
+    );
+  }, [refetchFn, refetchConfig, dataLocator]);
+
+  return [{ data, error }, { update, destroy, refetch }];
 }

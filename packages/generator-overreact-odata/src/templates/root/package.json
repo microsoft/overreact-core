@@ -9,6 +9,7 @@
     "@microsoft/overreact": "^0.1.0-alpha.9",
     "@microsoft/overreact-odata": "^0.1.0-alpha.9",
     "bluebird": "^3.7.2",
+    "json-stable-stringify": "^1.0.1",
     "query-string": "^7.0.1",
     "react": ">=16.8.0",
     "underscore": "^1.13.1"

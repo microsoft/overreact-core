@@ -21,6 +21,7 @@ import {
   payloadDecorator,
   processorDecorator,
   keySelectorDecorator,
+  sideEffects,
 
   networkPolicy,
 } from './mutation-decorators';
@@ -75,6 +76,6 @@ export const mutationSpec = createSpec(
   requestContract,
   responseContract,
   specTypes.MUTATION,
-  null,
+  sideEffects.mutation,
   environmentLookupFn,
 );

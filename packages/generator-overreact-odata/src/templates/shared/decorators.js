@@ -46,3 +46,12 @@ export function processorDecorator(fn) {
 
   return (response, request) => decorator(response, request, fn(response, request));
 }
+
+export const sideEffects = {
+  fetch: null,
+  refetch: null,
+  mutation: null,
+  pagination: null,
+  add: null,
+  destroy: null,
+};
