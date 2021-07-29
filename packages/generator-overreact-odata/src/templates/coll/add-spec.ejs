@@ -20,6 +20,7 @@ import {
   headerDecorator,
   payloadDecorator,
   processorDecorator,
+  keySelectorDecorator,
 
   networkPolicy,
 } from './add-decorators';
@@ -65,7 +66,7 @@ const requestContract = createRequestContract({
 const responseContract = createResponseContract({
   requestContract,
   responseType: responseTypes.COLL,
-  keySelector: r => r.<%= key %>,
+  keySelector: keySelectorDecorator(r => r.<%= key %>),
   processorFn: processorDecorator(r => r.value),
 });
 

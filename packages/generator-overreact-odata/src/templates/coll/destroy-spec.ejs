@@ -19,6 +19,7 @@ import {
   urlDecorator,
   headerDecorator,
   processorDecorator,
+  keySelectorDecorator,
 
   networkPolicy,
 } from './destroy-decorators';
@@ -58,7 +59,7 @@ const requestContract = createRequestContract({
 const responseContract = createResponseContract({
   requestContract,
   responseType: responseTypes.COLL,
-  keySelector: r => r.<%= key %>,
+  keySelector: keySelectorDecorator(r => r.<%= key %>),
   processorFn: processorDecorator(r => r.value),
 });
 

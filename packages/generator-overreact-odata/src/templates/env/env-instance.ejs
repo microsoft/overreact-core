@@ -17,7 +17,7 @@ export const middlewares = {
 const store = new Store();
 let env = null;
 
-export const ENVIRONMENT_TAG = <%= environmentTag %>;
+export const ENVIRONMENT_TAG = '<%= environmentTag %>';
 
 export function getEnvironmentInstance(requestor, customStore, customMiddleWares) {
   if (!env) {

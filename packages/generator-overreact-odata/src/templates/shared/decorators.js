@@ -29,11 +29,20 @@ export function payloadDecorator(fn) {
   return params => decorator(params, fn(params));
 }
 
-export function processorDecorator(fn) {
-  function decorator(response, originValue) {
+export function keySelectorDecorator(fn) {
+  function decorator(obj, originValue) {
     // TODO: Add decoration
     return originValue;
   }
 
-  return response => decorator(response, fn(response));
+  return obj => decorator(obj, fn(obj));
+}
+
+export function processorDecorator(fn) {
+  function decorator(response, request, originValue) {
+    // TODO: Add decoration
+    return originValue;
+  }
+
+  return (response, request) => decorator(response, request, fn(response, request));
 }

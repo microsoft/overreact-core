@@ -24,14 +24,11 @@ export function <%- hookName %>(dataLocator, config = {}) {
 
   const callFn = useCallback((param = {}, requestConfig, ...rest) => {
     action({
-      variables: {
-        ...dataLocator,
-        ...param.variables,
-      },
-      payload: {
-        ...param.payload,
-      },
-    }, requestConfig, ...rest);
+      ...dataLocator,
+      ...param.variables,
+    },
+    param.payload,
+    requestConfig, ...rest);
   }, [dataLocator, action]);
 
   const [data, error] = fetch;
