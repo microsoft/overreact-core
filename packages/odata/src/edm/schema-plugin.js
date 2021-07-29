@@ -2,7 +2,7 @@
  * the schema plugin module
  */
 
-const _ = require('lodash');
+const _ = require('underscore');
 const { Registry } = require('./registry');
 const {
   defineConstProperty,

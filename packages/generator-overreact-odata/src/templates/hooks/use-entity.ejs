@@ -15,8 +15,8 @@ import { fetchSpec, refetchSpec } from '../../__specs/entity/fetch-spec';
 import { mutationSpec } from '../../__specs/entity/mutation-spec';
 
 export function <%- hookName %>(variables, config = {}) {
-  const { dataLocator } = variables;
-  const dataRefId = useDataRefId(`entity_${stringify(dataLocator)}`, environmentLookupFn);
+  const { locator } = variables;
+  const dataRefId = useDataRefId(`entity_${stringify(locator)}`, environmentLookupFn);
 
   const defaultConfig = useMemo(() => ({
     fetch: config.fetch || {},
@@ -50,7 +50,7 @@ export function <%- hookName %>(variables, config = {}) {
     refetchFn(
       {
         variables: {
-          ...dataLocator,
+          ...variables,
           ...parameter.variables,
         },
         payload: parameter.payload,
@@ -58,7 +58,7 @@ export function <%- hookName %>(variables, config = {}) {
       refetchConfig,
       ...rest
     );
-  }, [refetchFn, refetchConfig, dataLocator]);
+  }, [refetchFn, refetchConfig, variables]);
 
   return [{ data, error }, { update, destroy, refetch }];
 }

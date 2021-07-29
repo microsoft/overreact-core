@@ -1,4 +1,4 @@
-const _ = require('lodash');
+const _ = require('underscore');
 const queryString = require('query-string');
 
 const { parseSearch } = require('./parse-search');
@@ -16,7 +16,7 @@ function composeSearchString(variables, edmEntity) {
   };
 
   const parsedSearch = parseSearch(search, edmEntity);
-  const searchCompact = _.omitBy(parsedSearch, x => _.isNull(x) || _.isUndefined(x));
+  const searchCompact = _.omit(parsedSearch, x => _.isNull(x) || _.isUndefined(x));
   const searchString = _.isEmpty(searchCompact) ? '' : `?${queryString.stringify(searchCompact)}`;
 
   return searchString;

@@ -1,6 +1,6 @@
 /* eslint-disable max-classes-per-file */
 
-const _ = require('lodash');
+const _ = require('underscore');
 
 const { Registry } = require('./registry');
 const {

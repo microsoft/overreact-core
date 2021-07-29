@@ -1,7 +1,7 @@
 /**
  * the reflection module for property defintions
  */
-const _ = require('lodash');
+const _ = require('underscore');
 
 /**
 * Define a const property

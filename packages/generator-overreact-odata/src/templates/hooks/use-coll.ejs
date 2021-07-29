@@ -16,8 +16,8 @@ import { fetchSpec, refetchSpec } from '../../__specs/coll/fetch-spec';
 import { mutationSpec } from '../../__specs/coll/mutation-spec';
 
 export function <%- hookName %>(variables, config = {}) {
-  const { dataLocator } = variables;
-  const dataRefId = useDataRefId(`coll_${stringify(dataLocator)}`, environmentLookupFn);
+  const { locator } = variables;
+  const dataRefId = useDataRefId(`coll_${stringify(locator)}`, environmentLookupFn);
 
   const defaultConfig = useMemo(() => ({
     refetch: config.refetch || {},
@@ -42,23 +42,23 @@ export function <%- hookName %>(variables, config = {}) {
   const refetchFn = useRefetch(dataRefId, refetchSpec, refetchConfig);
 
   const update = useCallback((newData, ...rest) => {
-    mutateFn({ ...dataLocator }, newData, ...rest);
-  }, [mutateFn, dataLocator]);
+    mutateFn({ ...locator }, newData, ...rest);
+  }, [mutateFn, locator]);
 
   // FIXME: likezh: Why would destroy need data?
   const destroy = useCallback((newData, ...rest) => {
-    destroyFn({ ...dataLocator }, newData, ...rest);
-  }, [destroyFn, dataLocator]);
+    destroyFn({ ...locator }, newData, ...rest);
+  }, [destroyFn, locator]);
 
   const create = useCallback((newData, ...rest) => {
-    createFn({ ...dataLocator }, newData, ...rest);
-  }, [createFn, dataLocator]);
+    createFn({ ...locator }, newData, ...rest);
+  }, [createFn, locator]);
 
   const refetch = useCallback((parameter, ...rest) => {
     refetchFn(
       {
         variables: {
-          ...dataLocator,
+          ...variables,
           ...parameter.variables,
         },
         payload: parameter.payload,
@@ -66,7 +66,7 @@ export function <%- hookName %>(variables, config = {}) {
       refetchConfig,
       ...rest
     );
-  }, [refetchFn, refetchConfig, dataLocator]);
+  }, [refetchFn, refetchConfig, variables]);
 
   const { loadMore, hasMore, isLoading } = paginationMethods;
 

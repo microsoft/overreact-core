@@ -27,7 +27,7 @@
     "xml2js": "^0.4.23"
   },
   "peerDependencies": {
-    "lodash": "^4.17.21",
+    "underscore": "^1.10.2",
     "react": ">=16.8.0"
   },
   "publishConfig": {

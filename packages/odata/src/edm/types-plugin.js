@@ -1,6 +1,6 @@
 /* eslint-disable max-classes-per-file */
 
-const _ = require('lodash');
+const _ = require('underscore');
 const { Registry } = require('./registry');
 const {
   defineConstProperty,
@@ -260,7 +260,7 @@ module.exports = edm => {
 
         defineConstProperty(this, 'properties', compileProperties.call(this, properties));
         defineConstProperty(this, 'navigationPropertyNames', navigationPropertyNames.slice());
-        defineProducedProperty(this, 'navigationProperties', () => _.pickBy(this.properties, (property, propertyName) => _.includes(this.navigationPropertyNames, propertyName)));
+        defineProducedProperty(this, 'navigationProperties', () => _.pick(this.properties, (property, propertyName) => _.contains(this.navigationPropertyNames, propertyName)));
         if (baseTypeName) {
           defineConstProperty(this, 'baseTypeName', baseTypeName);
           defineProducedProperty(this, 'baseType', () => resolveType(this.baseTypeName, this.namespace));
