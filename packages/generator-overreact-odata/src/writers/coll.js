@@ -6,6 +6,7 @@ const {
 } = require('../utils/uri-factory');
 
 const { buildEnvRelativePath } = require('./env');
+const { writeDecorator } = require('./decorator');
 
 function composeSharedContext(metadata, scope, aliasHashMap) {
   const {
@@ -51,10 +52,7 @@ function writeCollSpec(context, dataPath, spec, aliasHashMap, destDir) {
     },
   );
 
-  context.fs.copy(
-    context.templatePath(path.join('shared', 'decorators.js')),
-    path.join(destDir, 'coll', 'add-decorators.js'),
-  );
+  writeDecorator(context, destDir, 'coll', 'add-decorators.js');
 
   context.fs.copyTpl(
     context.templatePath(path.join('coll', 'fetch-spec.ejs')),
@@ -65,10 +63,7 @@ function writeCollSpec(context, dataPath, spec, aliasHashMap, destDir) {
     },
   );
 
-  context.fs.copy(
-    context.templatePath(path.join('shared', 'decorators.js')),
-    path.join(destDir, 'coll', 'fetch-decorators.js'),
-  );
+  writeDecorator(context, destDir, 'coll', 'fetch-decorators.js');
 
   context.fs.copyTpl(
     context.templatePath(path.join('coll', 'destroy-spec.ejs')),
@@ -79,10 +74,7 @@ function writeCollSpec(context, dataPath, spec, aliasHashMap, destDir) {
     },
   );
 
-  context.fs.copy(
-    context.templatePath(path.join('shared', 'decorators.js')),
-    path.join(destDir, 'coll', 'destroy-decorators.js'),
-  );
+  writeDecorator(context, destDir, 'coll', 'destroy-decorators.js');
 
   context.fs.copyTpl(
     context.templatePath(path.join('coll', 'mutation-spec.ejs')),
@@ -93,10 +85,7 @@ function writeCollSpec(context, dataPath, spec, aliasHashMap, destDir) {
     },
   );
 
-  context.fs.copy(
-    context.templatePath(path.join('shared', 'decorators.js')),
-    path.join(destDir, 'coll', 'mutation-decorators.js'),
-  );
+  writeDecorator(context, destDir, 'coll', 'mutation-decorators.js');
 }
 
 module.exports = {

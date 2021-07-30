@@ -8,6 +8,7 @@ const {
 } = require('../utils/uri-factory');
 
 const { buildEnvRelativePath } = require('./env');
+const { writeDecorator } = require('./decorator');
 
 function composeSharedContext(metadata, scope, aliasHashMap) {
   const {
@@ -83,10 +84,7 @@ function writeActionSpec(context, dataPath, spec, aliasHashMap, destDir) {
     },
   );
 
-  context.fs.copy(
-    context.templatePath(path.join('shared', 'decorators.js')),
-    path.join(destDir, 'calls', 'action-decorators.js'),
-  );
+  writeDecorator(context, destDir, 'calls', 'action-decorators.js');
 }
 
 function writeFuncSpec(context, dataPath, spec, aliasHashMap, destDir) {
@@ -102,10 +100,7 @@ function writeFuncSpec(context, dataPath, spec, aliasHashMap, destDir) {
     },
   );
 
-  context.fs.copy(
-    context.templatePath(path.join('shared', 'decorators.js')),
-    path.join(destDir, 'calls', 'func-decorators.js'),
-  );
+  writeDecorator(context, destDir, 'calls', 'func-decorators.js');
 }
 
 module.exports = {
