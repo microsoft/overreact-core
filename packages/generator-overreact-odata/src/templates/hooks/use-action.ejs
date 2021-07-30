@@ -1,4 +1,5 @@
 import { useCallback, useMemo } from 'react';
+import stringify from 'json-stable-stringify';
 
 import {
   useFetch,
@@ -9,8 +10,9 @@ import {
 import { environmentLookupFn } from '<%= envLocation %>';
 import { fetchSpec, actionSpec } from '../../__specs/calls/action-spec';
 
-export function <%- hookName %>(dataLocator, config = {}) {
-  const dataRefId = useDataRefId(environmentLookupFn);
+export function <%- hookName %>(variables, config = {}) {
+  const { locator } = variables;
+  const dataRefId = useDataRefId(`call_${stringify(locator)}`, environmentLookupFn);
 
   const defaultConfig = useMemo(() => ({
     mutation: config.mutation || {},
@@ -19,20 +21,20 @@ export function <%- hookName %>(dataLocator, config = {}) {
 
   const { fetch: fetchConfig, mutation: mutationConfig } = defaultConfig;
 
-  const fetch = useFetch(dataRefId, fetchSpec, dataLocator, fetchConfig);
+  const fetch = useFetch(dataRefId, fetchSpec, locator, fetchConfig);
   const action = useMutation(dataRefId, actionSpec, mutationConfig);
 
   const callFn = useCallback((param = {}, requestConfig, ...rest) => {
-    action({
-      variables: {
-        ...dataLocator,
+    action(
+      {
+        ...variables,
         ...param.variables,
       },
-      payload: {
-        ...param.payload,
-      },
-    }, requestConfig, ...rest);
-  }, [dataLocator, action]);
+      param.payload,
+      requestConfig,
+      ...rest
+    );
+  }, [variables, action]);
 
   const [data, error] = fetch;
 

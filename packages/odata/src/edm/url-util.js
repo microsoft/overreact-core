@@ -1,4 +1,4 @@
-const _ = require('lodash');
+const _ = require('underscore');
 
 function join(first, ...frags) {
   return frags.reduce((memo, frag) => {

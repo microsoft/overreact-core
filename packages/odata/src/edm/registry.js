@@ -1,7 +1,7 @@
 /* eslint-disable max-classes-per-file */
 /* eslint-disable no-mixed-operators */
 /* eslint no-param-reassign: 0 */
-const _ = require('lodash');
+const _ = require('underscore');
 
 /** Class representing a namespace */
 class Namespace {

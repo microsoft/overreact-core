@@ -1,6 +1,6 @@
 /* eslint-disable max-classes-per-file */
 
-const _ = require('lodash');
+const _ = require('underscore');
 const { Registry } = require('./registry');
 const {
   defineConstProperty,
@@ -219,18 +219,13 @@ module.exports = edm => {
     function compileProperties(properties) {
       const { namespace } = this;
 
-      const ret = {};
-
-      Object.keys(properties || {}).forEach(name => {
-        const { typeName } = properties[name];
-        ret[name] = new Property({
-          name,
-          typeName,
-          namespace,
-        });
-      });
-
-      return ret;
+      return _.mapObject(properties, ({
+        typeName,
+      }, name) => new Property({
+        name,
+        typeName,
+        namespace,
+      }));
     }
 
     /**
@@ -260,7 +255,7 @@ module.exports = edm => {
 
         defineConstProperty(this, 'properties', compileProperties.call(this, properties));
         defineConstProperty(this, 'navigationPropertyNames', navigationPropertyNames.slice());
-        defineProducedProperty(this, 'navigationProperties', () => _.pickBy(this.properties, (property, propertyName) => _.includes(this.navigationPropertyNames, propertyName)));
+        defineProducedProperty(this, 'navigationProperties', () => _.pick(this.properties, (property, propertyName) => _.contains(this.navigationPropertyNames, propertyName)));
         if (baseTypeName) {
           defineConstProperty(this, 'baseTypeName', baseTypeName);
           defineProducedProperty(this, 'baseType', () => resolveType(this.baseTypeName, this.namespace));
@@ -397,13 +392,10 @@ module.exports = edm => {
     function compileParameters(parameters) {
       const { namespace } = this;
 
-      const ret = {};
-      Object.keys(parameters || {}).forEach(name => {
-        const { typeName } = parameters[name];
-        ret[name] = new Parameter({ name, namespace, typeName });
-      });
-
-      return ret;
+      return _.mapObject(
+        parameters,
+        ({ typeName }, name) => new Parameter({ name, namespace, typeName }),
+      );
     }
 
     /**

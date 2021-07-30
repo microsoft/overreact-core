@@ -1,4 +1,4 @@
-const _ = require('lodash');
+const _ = require('underscore');
 // support a mongoDB like orderby object for now: { age : -1, name: 1 }
 // for backward compatibility, support array format: [['age', 'desc'], ['name', 'asc]]
 function parseOrderBy(orderby) {

@@ -19,6 +19,8 @@ import {
   urlDecorator,
   headerDecorator,
   processorDecorator,
+  keySelectorDecorator,
+  sideEffects,
 
   networkPolicy,
 } from './fetch-decorators';
@@ -53,12 +55,13 @@ const requestContract = createRequestContract({
   fetchPolicy: networkPolicy,
   uriFactoryFn: urlDecorator(odataUrlFactory),
   headerFactoryFn: headerDecorator(odataHeaderFactory),
+  parentKeySelector: variables => variables.locator.descriptor.<%- parentKey %>,
 });
 
 const responseContract = createResponseContract({
   requestContract,
   responseType: responseTypes.COLL,
-  keySelector: r => r.<%= key %>,
+  keySelector: keySelectorDecorator(r => r.<%= key %>),
   processorFn: processorDecorator(r => r.value),
 });
 
@@ -66,7 +69,7 @@ export const fetchSpec = createSpec(
   requestContract,
   responseContract,
   specTypes.PAGINATION,
-  null,
+  sideEffects.pagination,
   environmentLookupFn,
 );
 
@@ -74,6 +77,6 @@ export const refetchSpec = createSpec(
   requestContract,
   responseContract,
   specTypes.REFETCH,
-  null,
+  sideEffects.refetch,
   environmentLookupFn,
 );

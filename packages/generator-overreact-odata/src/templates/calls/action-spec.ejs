@@ -20,6 +20,8 @@ import {
   headerDecorator,
   payloadDecorator,
   processorDecorator,
+  keySelectorDecorator,
+  sideEffects,
 
   networkPolicy,
 } from './action-decorators';
@@ -60,12 +62,13 @@ const requestContract = createRequestContract({
   uriFactoryFn: urlDecorator(odataUrlFactory),
   headerFactoryFn: headerDecorator(odataHeaderFactory),
   payloadFactoryFn: payloadDecorator(odataPayloadFactory),
+  parentKeySelector: variables => variables.locator.descriptor.<%- parentKey %>,
 });
 
 const responseContract = createResponseContract({
   requestContract,
   responseType: <%- responseType %>,
-  keySelector: <%- key %>,
+  keySelector: keySelectorDecorator(<%- key %>),
   processorFn: processorDecorator(<%- processor %>),
 });
 
@@ -73,7 +76,7 @@ export const fetchSpec = createSpec(
   requestContract,
   responseContract,
   specTypes.FETCH,
-  null,
+  sideEffects.fetch,
   environmentLookupFn,
 );
 
@@ -81,6 +84,6 @@ export const actionSpec = createSpec(
   requestContract,
   responseContract,
   specTypes.MUTATION,
-  null,
+  sideEffects.mutation,
   environmentLookupFn,
 );

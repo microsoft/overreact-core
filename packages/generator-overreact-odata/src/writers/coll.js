@@ -23,6 +23,10 @@ function composeSharedContext(metadata, scope, aliasHashMap) {
   const descriptorList = generateDescriptorList(visitedSchemas, aliasHashMap, true);
   const { $$ODataExtension } = rootSchema.schema;
 
+  const parentKey = descriptorList.length > 1
+    ? descriptorList[descriptorList.length - 2]
+    : descriptorList[0];
+
   return {
     edmLocation,
     envLocation,
@@ -30,6 +34,7 @@ function composeSharedContext(metadata, scope, aliasHashMap) {
     descriptorList,
     odataUriSegments,
     key: $$ODataExtension.Key[0],
+    parentKey,
   };
 }
 

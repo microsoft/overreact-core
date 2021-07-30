@@ -19,6 +19,8 @@ import {
   urlDecorator,
   headerDecorator,
   processorDecorator,
+  keySelectorDecorator,
+  sideEffects,
 
   networkPolicy,
 } from './destroy-decorators';
@@ -53,12 +55,13 @@ const requestContract = createRequestContract({
   fetchPolicy: networkPolicy,
   uriFactoryFn: urlDecorator(odataUrlFactory),
   headerFactoryFn: headerDecorator(odataHeaderFactory),
+  parentKeySelector: variables => variables.locator.descriptor.<%- parentKey %>,
 });
 
 const responseContract = createResponseContract({
   requestContract,
   responseType: responseTypes.ENTITY,
-  keySelector: r => r.<%= key %>,
+  keySelector: keySelectorDecorator(r => r.<%= key %>),
   processorFn: processorDecorator(r => r),
 });
 
@@ -66,6 +69,6 @@ export const destroySpec = createSpec(
   requestContract,
   responseContract,
   specTypes.DELETE,
-  null,
+  sideEffects.destroy,
   environmentLookupFn,
 );

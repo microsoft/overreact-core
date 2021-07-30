@@ -1,5 +1,12 @@
 import { useCallback, useMemo } from 'react';
-import { useDataRefId, usePagination, useMutation } from '@microsoft/overreact';
+import stringify from 'json-stable-stringify';
+
+import {
+  useDataRefId,
+  usePagination,
+  useMutation,
+  useRefetch,
+} from '@microsoft/overreact';
 
 import { environmentLookupFn } from '<%= envLocation %>';
 
@@ -8,37 +15,60 @@ import { destroySpec } from '../../__specs/coll/destroy-spec';
 import { fetchSpec, refetchSpec } from '../../__specs/coll/fetch-spec';
 import { mutationSpec } from '../../__specs/coll/mutation-spec';
 
-export function <%- hookName %>(specs, path, variables, config = {}) {
-  const dataRefId = useDataRefId(environmentLookupFn);
+export function <%- hookName %>(variables, config = {}) {
+  const { locator } = variables;
+  const dataRefId = useDataRefId(`coll_${stringify(locator)}`, environmentLookupFn);
 
-  // FIXME: extract fetchVariables out from the config
-  const paginationConfig = useMemo(() => ({
-    fetchVariables: {
-      ...variables,
-    },
-    ...config,
-  }), [config, variables]);
+  const defaultConfig = useMemo(() => ({
+    refetch: config.refetch || {},
+    mutation: config.mutation || {},
+    destroy: config.destroy || {},
+    pagination: config.pagination || {},
+    create: config.add || {},
+  }), [config]);
 
-  const [data, methods] = usePagination(dataRefId, fetchSpec, paginationConfig);
+  const {
+    refetch: refetchConfig,
+    mutation: mutationConfig,
+    destroy: destroyConfig,
+    pagination: paginationConfig,
+    create: createConfig,
+  } = defaultConfig;
 
-  const mutateFn = useMutation(dataRefId, mutationSpec, config);
-  const destroyFn = useMutation(dataRefId, destroySpec, config);
-  const createFn = useMutation(dataRefId, addSpec, config);
+  const [data, paginationMethods] = usePagination(dataRefId, fetchSpec, paginationConfig);
+  const mutateFn = useMutation(dataRefId, mutationSpec, mutationConfig);
+  const destroyFn = useMutation(dataRefId, destroySpec, destroyConfig);
+  const createFn = useMutation(dataRefId, addSpec, createConfig);
+  const refetchFn = useRefetch(dataRefId, refetchSpec, refetchConfig);
 
   const update = useCallback((newData, ...rest) => {
-    mutateFn(variables, newData, ...rest);
-  }, [mutateFn, variables]);
+    mutateFn({ ...locator }, newData, ...rest);
+  }, [mutateFn, locator]);
 
   // FIXME: likezh: Why would destroy need data?
   const destroy = useCallback((newData, ...rest) => {
-    destroyFn(variables, newData, ...rest);
-  }, [destroyFn, variables]);
+    destroyFn({ ...locator }, newData, ...rest);
+  }, [destroyFn, locator]);
 
   const create = useCallback((newData, ...rest) => {
-    createFn(variables, newData, ...rest);
-  }, [createFn, variables]);
+    createFn({ ...locator }, newData, ...rest);
+  }, [createFn, locator]);
 
-  const { loadMore, hasMore, isLoading } = methods;
+  const refetch = useCallback((parameter, ...rest) => {
+    refetchFn(
+      {
+        variables: {
+          ...variables,
+          ...parameter.variables,
+        },
+        payload: parameter.payload,
+      },
+      refetchConfig,
+      ...rest
+    );
+  }, [refetchFn, refetchConfig, variables]);
+
+  const { loadMore, hasMore, isLoading } = paginationMethods;
 
   return [data, {
     loadMore,
@@ -47,5 +77,6 @@ export function <%- hookName %>(specs, path, variables, config = {}) {
     create,
     update,
     destroy,
+    refetch,
   }];
 }
