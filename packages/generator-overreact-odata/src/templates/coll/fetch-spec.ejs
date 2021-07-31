@@ -70,7 +70,7 @@ export const fetchSpec = createSpec(
   responseContract,
   specTypes.PAGINATION,
   sideEffects.pagination,
-  environmentLookupFn,
+  environmentLookupFn
 );
 
 export const refetchSpec = createSpec(
@@ -78,5 +78,5 @@ export const refetchSpec = createSpec(
   responseContract,
   specTypes.REFETCH,
   sideEffects.refetch,
-  environmentLookupFn,
+  environmentLookupFn
 );
