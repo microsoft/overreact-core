@@ -77,7 +77,7 @@ export const fetchSpec = createSpec(
   responseContract,
   specTypes.FETCH,
   sideEffects.fetch,
-  environmentLookupFn,
+  environmentLookupFn
 );
 
 export const actionSpec = createSpec(
@@ -85,5 +85,5 @@ export const actionSpec = createSpec(
   responseContract,
   specTypes.MUTATION,
   sideEffects.mutation,
-  environmentLookupFn,
+  environmentLookupFn
 );

@@ -54,7 +54,7 @@ export function <%- hookName %>(variables, config = {}) {
     createFn({ ...locator }, newData, ...rest);
   }, [createFn, locator]);
 
-  const refetch = useCallback((parameter, ...rest) => {
+  const refetch = useCallback((parameter = {}, ...rest) => {
     refetchFn(
       {
         variables: {

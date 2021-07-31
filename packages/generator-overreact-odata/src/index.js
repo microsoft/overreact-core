@@ -47,6 +47,14 @@ const packageStage = {
   SPEC_GENERATED: 'SPEC_GENERATED',
 };
 module.exports = class extends Generator {
+  constructor(args, opts) {
+    super(args, opts);
+
+    this.option('decorator', { default: true });
+
+    this.generateDecorators = this.options.decorators;
+  }
+
   initializing() {
     this.packageJsonConfigs = this.packageJson.getAll();
 
