@@ -46,7 +46,7 @@ export function <%- hookName %>(variables, config = {}) {
     destroyFn(variables, newData, ...rest);
   }, [destroyFn, variables]);
 
-  const refetch = useCallback((parameter, ...rest) => {
+  const refetch = useCallback((parameter = {}, ...rest) => {
     refetchFn(
       {
         variables: {
