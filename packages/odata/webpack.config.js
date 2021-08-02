@@ -5,11 +5,10 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'index.js',
-    globalObject: 'this',
     libraryTarget: 'umd',
     umdNamedDefine: true,
   },
-  devtool: 'eval-source-map',
+  devtool: 'source-map',
   module: {
     rules: [
       {
@@ -24,6 +23,8 @@ module.exports = {
   externals: [
     {
       react: 'react',
+      underscore: 'underscore',
+      '@microsoft/overreact': '@microsoft/overreact',
     },
   ],
 };
