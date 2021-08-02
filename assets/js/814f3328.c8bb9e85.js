@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunk_microsoft_overreact_website=self.webpackChunk_microsoft_overreact_website||[]).push([[535],{5641:function(e){e.exports=JSON.parse('{"title":"Recent posts","items":[{"title":"Working with OData","permalink":"/overreact-core/blog/odata"}]}')}}]);
