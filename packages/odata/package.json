@@ -1,10 +1,10 @@
 {
   "name": "@microsoft/overreact-odata",
-  "version": "0.1.0-alpha.12",
+  "version": "0.1.0-alpha.13",
   "description": "OData binding generator for overreact",
   "main": "dist/index.js",
   "scripts": {
-    "build": "../../node_modules/.bin/webpack --mode development",
+    "build": "../../node_modules/.bin/webpack",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -21,10 +21,8 @@
   },
   "homepage": "https://github.com/microsoft/overreact-core#readme",
   "dependencies": {
-    "@microsoft/overreact": "^0.1.0-alpha.12",
-    "node-fetch": "^2.6.1",
-    "query-string": "^7.0.1",
-    "xml2js": "^0.4.23"
+    "@microsoft/overreact": "^0.1.0-alpha.13",
+    "query-string": "^7.0.1"
   },
   "peerDependencies": {
     "react": ">=16.8.0",
