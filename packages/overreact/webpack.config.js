@@ -6,9 +6,10 @@ module.exports = {
     path: path.resolve(__dirname, 'dist'),
     filename: 'index.js',
     libraryTarget: 'umd',
-    umdNamedDefine: true,
+    globalObject: "(typeof self !== 'undefined' ? self: this)",
   },
-  devtool: 'source-map',
+  mode: 'none',
+  devtool: 'eval-source-map',
   module: {
     rules: [
       {

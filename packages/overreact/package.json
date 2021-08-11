@@ -10,7 +10,7 @@
     "url": "https://github.com/microsoft/overreact-core/"
   },
   "scripts": {
-    "build": "../../node_modules/.bin/webpack --mode production"
+    "build": "../../node_modules/.bin/webpack"
   },
   "peerDependencies": {
     "json-stable-stringify": "*",
