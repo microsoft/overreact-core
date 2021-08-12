@@ -1,12 +1,13 @@
 {
   "name": "@microsoft/overreact-demo",
-  "version": "0.1.0-alpha.14",
+  "version": "0.1.0-alpha.15",
   "private": true,
   "dependencies": {
-    "@microsoft/overreact": "^0.1.0-alpha.14",
+    "@microsoft/overreact": "^0.1.0-alpha.15",
     "@testing-library/jest-dom": "^5.13.0",
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^13.1.9",
+    "bluebird": "^3.7.2",
     "fetch-mock": "^9.11.0",
     "react": ">=16.8.0",
     "react-dom": ">=16.8.0",

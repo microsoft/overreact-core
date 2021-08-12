@@ -1,7 +1,7 @@
 {
   "name": "@microsoft/overreact",
   "description": "TO BE ADDED",
-  "version": "0.1.0-alpha.14",
+  "version": "0.1.0-alpha.15",
   "main": "dist/index.js",
   "license": "MIT",
   "homepage": "https://microsoft.github.io/overreact-core/",
@@ -13,6 +13,7 @@
     "build": "../../node_modules/.bin/webpack"
   },
   "peerDependencies": {
+    "bluebird": "^3.7.2",
     "json-stable-stringify": "*",
     "prop-types": "^15.7.2",
     "react": ">=16.8.0",
