@@ -23,6 +23,7 @@ module.exports = {
   },
   externals: [
     {
+      bluebird: 'bluebird',
       'json-stable-stringify': 'json-stable-stringify',
       'prop-types': 'prop-types',
       react: 'react',
