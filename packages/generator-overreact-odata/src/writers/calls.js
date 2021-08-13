@@ -68,6 +68,7 @@ function composeSharedContext(metadata, scope, aliasHashMap) {
     responseType,
     processor,
     parentKey,
+    isColl,
   };
 }
 

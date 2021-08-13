@@ -5,15 +5,20 @@ const { parseSearch } = require('./parse-search');
 
 const DEFAULT_PAGE_SIZE = 20;
 
-function composeSearchString(variables, edmEntity) {
+function composeSearchString(variables, edmEntity, isColl = true) {
   const { cursorIndex } = variables;
-  const initialSearch = _.omit(variables, ['locator', 'cursorIndex', 'skip']);
-  const search = {
+  const initialSearch = _.omit(variables, ['locator', 'cursorIndex', 'skip', 'options']);
+  let search = {
     top: DEFAULT_PAGE_SIZE,
     count: true,
     skip: cursorIndex,
     ...initialSearch,
   };
+
+  if (!isColl) {
+    // $filter, $orderby, $count, $skip, and $top are only valid for collections.
+    search = _.omit(search, ['filter', 'orderby', 'count', 'skip', 'top']);
+  }
 
   const parsedSearch = parseSearch(search, edmEntity);
   const searchCompact = _.omit(parsedSearch, x => _.isNull(x) || _.isUndefined(x));
