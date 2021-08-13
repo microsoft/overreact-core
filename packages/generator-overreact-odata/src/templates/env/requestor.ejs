@@ -1,20 +1,16 @@
 import { Promise } from 'bluebird';
 
-export function getRequestor({
-  serviceRoot,
-  token,
-  applicationSource,
-}) {
+export function getRequestor(serviceRoot, additionalHeader) {
   return function networkRequestor(uri, requestVerb, headers, body) {
     const url = `${serviceRoot}${uri}`;
-    const headerWithToken = {
+    const requestHeader = {
+      ...additionalHeader,
       ...headers,
-      Authorization: `CCMTSmallToken ${token}`,
-      'x-ms-applicationsource': applicationSource,
     };
+
     return fetch(url, {
       method: requestVerb,
-      headers: headerWithToken,
+      headers: requestHeader,
       body: JSON.stringify(body),
     }).then(response => Promise.all([response.ok, response.json(), response]))
       .then(([responseOk, responseJSON, response]) => {
