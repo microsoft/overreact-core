@@ -42,17 +42,17 @@ export function <%- hookName %>(variables, config = {}) {
   const refetchFn = useRefetch(dataRefId, refetchSpec, refetchConfig);
 
   const update = useCallback((newData, ...rest) => {
-    mutateFn({ ...locator }, newData, ...rest);
-  }, [mutateFn, locator]);
+    mutateFn(variables, newData, ...rest);
+  }, [mutateFn, variables]);
 
   // FIXME: likezh: Why would destroy need data?
   const destroy = useCallback((newData, ...rest) => {
-    destroyFn({ ...locator }, newData, ...rest);
-  }, [destroyFn, locator]);
+    destroyFn(variables, newData, ...rest);
+  }, [destroyFn, variables]);
 
   const create = useCallback((newData, ...rest) => {
-    createFn({ ...locator }, newData, ...rest);
-  }, [createFn, locator]);
+    createFn(variables, newData, ...rest);
+  }, [createFn, variables]);
 
   const refetch = useCallback((parameter = {}, ...rest) => {
     refetchFn(
