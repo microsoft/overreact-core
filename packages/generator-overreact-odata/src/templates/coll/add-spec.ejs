@@ -45,13 +45,11 @@ function odataUrlFactory(params) {
 }
 
 function odataHeaderFactory(params) {
-  const { headers } = params;
-  return headers;
+  return params.headers;
 }
 
 function odataPayloadFactory(params) {
-  const { data } = params;
-  return JSON.stringify(data);
+  return params.data;
 }
 
 const requestContract = createRequestContract({
