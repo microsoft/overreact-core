@@ -35,7 +35,14 @@ export function <%- hookName %>(variables, config = {}) {
     create: createConfig,
   } = defaultConfig;
 
-  const [data, paginationMethods] = usePagination(dataRefId, fetchSpec, paginationConfig);
+  const expandedPaginationConfig = useMemo(() => ({
+    fetchVariables: {
+      ...variables,
+    },
+    ...paginationConfig,
+  }), [variables, paginationConfig]);
+
+  const [data, paginationMethods] = usePagination(dataRefId, fetchSpec, expandedPaginationConfig);
   const mutateFn = useMutation(dataRefId, mutationSpec, mutationConfig);
   const destroyFn = useMutation(dataRefId, destroySpec, destroyConfig);
   const createFn = useMutation(dataRefId, addSpec, createConfig);
