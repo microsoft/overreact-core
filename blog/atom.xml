@@ -13,5 +13,9 @@
         <link href="https://microsoft.github.io/overreact-core/blog/odata"/>
         <updated>2021-01-14T00:00:00.000Z</updated>
         <summary type="html"><![CDATA[A typical usage of overreact within our team is to deal with OData from various service endpoints. Usually these endpoints already have pre-built schema packages available (such as @bingads-webui/mca-odata-schemas, and @bingads-webui/campaign-odata-schemas), from which we can extract useful information and generate overreact specs without having our developers write from scratch. Given each entity (e.g., Activity, Ad) have CRUD operations, as well as OData actions/functions attached, this could save a tremendous amount of manual effort.]]></summary>
+        <author>
+            <name>zlike</name>
+            <uri>https://github.com/zlike</uri>
+        </author>
     </entry>
 </feed>
