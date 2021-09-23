@@ -1,5 +1,4 @@
 import { useCallback, useMemo } from 'react';
-import stringify from 'json-stable-stringify';
 
 import {
   useFetch,
@@ -10,9 +9,11 @@ import {
 import { environmentLookupFn } from '<%= envLocation %>';
 import { fetchSpec, actionSpec } from '../../__specs/calls/action-spec';
 
+import { dataRefIdDecorator } from './hook-decorators';
+
 export function <%- hookName %>(variables, config = {}) {
   const { locator } = variables;
-  const dataRefId = useDataRefId(`call_${stringify(locator)}`, environmentLookupFn);
+  const dataRefId = useDataRefId(dataRefIdDecorator('call', locator), environmentLookupFn);
 
   const defaultConfig = useMemo(() => ({
     mutation: config.mutation || {},

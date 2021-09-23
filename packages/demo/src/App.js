@@ -16,7 +16,8 @@ import { networkRequestor } from './network-requestor';
 import { schema } from './schema';
 
 // React component that will talk to the TripPin service
-import { PeopleContainer } from './people-container';
+import { PeopleContainer } from './components/people-container';
+import { CruiseContainer } from './components/cruise-container';
 
 const errorCodes = [
   'AUTHORIZATIONEXPIRE',
@@ -87,7 +88,6 @@ function isExpectedErrorCodes(errorResponseJson) {
   return true;
 }
 
-
 export const middlewares = {
   [middlewareTypes.FETCH_POLICY]: createFetchPolicyMiddleware(),
   [middlewareTypes.ERROR]: createErrorMiddleware(),
@@ -136,6 +136,7 @@ export default function App() {
     <div className="app-container">
       <DataFetcher environment={tripPinEnvironment}>
         <PeopleContainer userName="russellwhyte" />
+        <CruiseContainer name="Princess" />
       </DataFetcher>
     </div>
   );

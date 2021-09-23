@@ -55,14 +55,15 @@ const requestContract = createRequestContract({
   fetchPolicy: networkPolicy,
   uriFactoryFn: urlDecorator(odataUrlFactory),
   headerFactoryFn: headerDecorator(odataHeaderFactory),
+  keySelector: variables => variables.locator.descriptor.<%- keySelector %>,
   parentKeySelector: variables => variables.locator.descriptor.<%- parentKey %>,
 });
 
 const responseContract = createResponseContract({
   requestContract,
-  responseType: responseTypes.COLL,
+  responseType: responseTypes.ENTITY,
   keySelector: keySelectorDecorator(r => r.<%= key %>),
-  processorFn: processorDecorator(r => r.value),
+  processorFn: processorDecorator(r => r),
 });
 
 export const destroySpec = createSpec(

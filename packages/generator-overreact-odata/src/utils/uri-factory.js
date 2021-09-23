@@ -7,15 +7,9 @@ function descriptorNameConverter(visitedSchema, aliasHashMap) {
   return `${aliasHashMap[candidate][0]}${descriptorSuffix}`;
 }
 
-function generateDescriptorList(visitedSchemas, aliasHashMap, isColl) {
-  const descriptorList = visitedSchemas
+function generateDescriptorList(visitedSchemas, aliasHashMap) {
+  return visitedSchemas
     .map(({ schema }) => descriptorNameConverter(schema, aliasHashMap));
-
-  if (isColl) {
-    descriptorList.pop();
-  }
-
-  return descriptorList;
 }
 
 function odataCallUriFactory(visitedSchemas, rootSchema, aliasHashMap, isColl) {

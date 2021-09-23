@@ -21,8 +21,12 @@ function composeSharedContext(metadata, scope, aliasHashMap) {
   const schemaLocation = path.join(envRelativePath, 'schema');
 
   const odataUriSegments = odataUriFactory(visitedSchemas, aliasHashMap, false);
-  const descriptorList = generateDescriptorList(visitedSchemas, aliasHashMap, false);
+  const descriptorList = generateDescriptorList(visitedSchemas, aliasHashMap);
   const { $$ODataExtension } = rootSchema.schema;
+
+  const keySelector = descriptorList.length > 0
+    ? descriptorList[descriptorList.length - 1]
+    : descriptorList[0];
 
   const parentKey = descriptorList.length > 1
     ? descriptorList[descriptorList.length - 2]
@@ -35,6 +39,7 @@ function composeSharedContext(metadata, scope, aliasHashMap) {
     descriptorList,
     odataUriSegments,
     key: $$ODataExtension.Key[0],
+    keySelector,
     parentKey,
   };
 }
