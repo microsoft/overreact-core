@@ -1,6 +1,6 @@
 {
   "name": "generator-overreact-odata",
-  "version": "0.1.0-alpha.21",
+  "version": "0.1.0-alpha.22",
   "description": "Yeoman generator for overreact-odata specs",
   "main": "generator/index.js",
   "keywords": [
@@ -21,8 +21,8 @@
   },
   "homepage": "https://github.com/microsoft/overreact-core#readme",
   "dependencies": {
-    "@microsoft/overreact": "^0.1.0-alpha.21",
-    "@microsoft/overreact-odata": "^0.1.0-alpha.21",
+    "@microsoft/overreact": "^0.1.0-alpha.22",
+    "@microsoft/overreact-odata": "^0.1.0-alpha.22",
     "json-stable-stringify": "^1.0.1",
     "lodash": "^4.17.21",
     "node-fetch": "^2.6.1",
