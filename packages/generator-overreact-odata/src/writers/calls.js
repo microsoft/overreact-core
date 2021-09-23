@@ -25,11 +25,17 @@ function composeSharedContext(metadata, scope, aliasHashMap) {
   const isColl = scope === specMetadataScope.COLL;
 
   const odataUriSegments = odataCallUriFactory(visitedSchemas, rootSchema, aliasHashMap, isColl);
-  const descriptorList = generateDescriptorList(visitedSchemas, aliasHashMap, isColl);
+  const descriptorList = generateDescriptorList(visitedSchemas, aliasHashMap);
 
   // note that for action/function, the "parent" is the _last_
   // element of the descriptor list
-  const parentKey = descriptorList[descriptorList.length - 1];
+
+  const parentKey = descriptorList.length > 1
+    ? descriptorList[descriptorList.length - 2]
+    : descriptorList[0];
+  const keySelector = descriptorList.length > 0
+    ? descriptorList[descriptorList.length - 1]
+    : descriptorList[0];
 
   const { ReturnType } = rootSchema.schema;
   let responseType = 'responseTypes.ENTITY';
@@ -68,6 +74,7 @@ function composeSharedContext(metadata, scope, aliasHashMap) {
     responseType,
     processor,
     parentKey,
+    keySelector,
     isColl,
   };
 }

@@ -4,7 +4,7 @@ import {
   useDataRefId,
 } from '@microsoft/overreact';
 
-import { peopleSpec } from './people-spec';
+import { peopleSpec } from '../hooks/people-spec';
 import { PeopleView } from './people-view';
 
 export function PeopleContainer(props) {

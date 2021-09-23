@@ -21,15 +21,18 @@ function composePath(visited, isCall = false) {
       return [{
         type: 'call',
         name: `use${hookName}`,
+        dataPath: pathName,
       }];
     }
 
     return [{
       type: 'entity',
       name: `use${hookName}`,
+      dataPath: pathName,
     }, {
       type: 'coll',
       name: `use${pluralize(hookName)}`,
+      dataPath: pathName,
     }];
   }
 

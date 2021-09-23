@@ -55,6 +55,7 @@ const requestContract = createRequestContract({
   fetchPolicy: networkPolicy,
   uriFactoryFn: urlDecorator(odataUrlFactory),
   headerFactoryFn: headerDecorator(odataHeaderFactory),
+  keySelector: variables => variables.locator.descriptor.<%- keySelector %>,
   parentKeySelector: variables => variables.locator.descriptor.<%- parentKey %>,
 });
 

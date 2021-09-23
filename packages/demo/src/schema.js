@@ -4,6 +4,7 @@ const schemaToModelMapping = {
   people: 'People',
   trip: 'Trip',
   airline: 'Airline',
+  cruise: 'Cruise',
   // more entities go here ...
 };
 

@@ -8,7 +8,7 @@ import {
   specTypes,
 } from '@microsoft/overreact';
 
-import { schema } from './schema';
+import { schema } from '../schema';
 
 function odataUriFactory(params) {
   const { variables } = params;
@@ -27,6 +27,7 @@ const requestContract = createRequestContract({
   verb: requestVerbs.GET,
   uriFactoryFn: odataUriFactory,
   headerFactoryFn: odataHeaderFactory,
+
   keySelector: p => p.UserName,
 });
 

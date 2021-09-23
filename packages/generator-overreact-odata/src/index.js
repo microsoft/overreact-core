@@ -207,32 +207,40 @@ module.exports = class extends Generator {
 
         const specMetadata = this.specMetadata[k];
         specMetadata.forEach(spec => {
-          const { type, scope, metadata: { config: { name: hookName } } } = spec;
+          const {
+            type,
+            scope,
+            metadata: {
+              config: { name: hookName, dataPath: hookDataPath },
+            },
+          } = spec;
+
+          const actualDataPath = hookDataPath ?? k;
 
           let hookPath;
           if (type === specMetadataType.MODEL) {
             if (scope === specMetadataScope.COLL) {
-              writeCollSpec(this, k, spec, this.aliasHashMap, specDestDir);
-              writeCollHook(this, k, spec, hookDestDir);
+              writeCollSpec(this, actualDataPath, spec, this.aliasHashMap, specDestDir);
+              writeCollHook(this, actualDataPath, spec, hookDestDir);
 
               hookPath = path.join('specs', specPath, '__hooks', 'coll', 'coll-hook');
             }
             if (scope === specMetadataScope.ENTITY) {
-              writeEntitySpec(this, k, spec, this.aliasHashMap, specDestDir);
-              writeEntityHook(this, k, spec, hookDestDir);
+              writeEntitySpec(this, actualDataPath, spec, this.aliasHashMap, specDestDir);
+              writeEntityHook(this, actualDataPath, spec, hookDestDir);
 
               hookPath = path.join('specs', specPath, '__hooks', 'entity', 'entity-hook');
             }
           }
 
           if (type === specMetadataType.ACTION) {
-            writeActionSpec(this, k, spec, this.aliasHashMap, specDestDir);
-            writeActionHook(this, k, spec, hookDestDir);
+            writeActionSpec(this, actualDataPath, spec, this.aliasHashMap, specDestDir);
+            writeActionHook(this, actualDataPath, spec, hookDestDir);
             hookPath = path.join('specs', specPath, '__hooks', 'calls', 'action-hook');
           }
           if (type === specMetadataType.FUNC) {
-            writeFuncSpec(this, k, spec, this.aliasHashMap, specDestDir);
-            writeFuncHook(this, k, spec, hookDestDir);
+            writeFuncSpec(this, actualDataPath, spec, this.aliasHashMap, specDestDir);
+            writeFuncHook(this, actualDataPath, spec, hookDestDir);
             hookPath = path.join('specs', specPath, '__hooks', 'calls', 'func-hook');
           }
           this.hookPaths.push(

@@ -23,6 +23,19 @@ function composeSharedContext(spec, isCall) {
   };
 }
 
+function writeHookDecorator(context, destDir, folder) {
+  if (context.generateDecorators) {
+    const decoFile = path.join(destDir, folder, 'hook-decorators.js');
+
+    if (!context.fs.exists(decoFile)) {
+      context.fs.copy(
+        context.templatePath(path.join('shared', 'hook-decorators.js')),
+        decoFile,
+      );
+    }
+  }
+}
+
 function writeActionHook(context, dataPath, spec, destDir) {
   const sharedContext = composeSharedContext(spec, true);
 
@@ -34,6 +47,8 @@ function writeActionHook(context, dataPath, spec, destDir) {
       ...sharedContext,
     },
   );
+
+  writeHookDecorator(context, destDir, 'calls');
 }
 
 function writeFuncHook(context, dataPath, spec, destDir) {
@@ -47,6 +62,8 @@ function writeFuncHook(context, dataPath, spec, destDir) {
       ...sharedContext,
     },
   );
+
+  writeHookDecorator(context, destDir, 'calls');
 }
 
 function writeCollHook(context, dataPath, spec, destDir) {
@@ -60,6 +77,8 @@ function writeCollHook(context, dataPath, spec, destDir) {
       ...sharedContext,
     },
   );
+
+  writeHookDecorator(context, destDir, 'coll');
 }
 
 function writeEntityHook(context, dataPath, spec, destDir) {
@@ -73,6 +92,8 @@ function writeEntityHook(context, dataPath, spec, destDir) {
       ...sharedContext,
     },
   );
+
+  writeHookDecorator(context, destDir, 'entity');
 }
 
 module.exports = {
