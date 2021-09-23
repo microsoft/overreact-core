@@ -1,4 +1,3 @@
-const path = require('path');
 const Generator = require('yeoman-generator');
 
 const { makeSchemaModel } = require('./bundler/make-schema-model');
@@ -6,6 +5,8 @@ const { makeSpecMetadataFromList } = require('./bundler/make-spec-metadata-from-
 const { createSpecList } = require('./bundler/create-spec-list');
 const { createModelAliasHash } = require('./bundler/create-model-alias-hash');
 const { specMetadataScope, specMetadataType } = require('./bundler/consts');
+
+const { pathJoin } = require('./utils/path-join');
 
 const { writeEnv } = require('./writers/env');
 
@@ -187,7 +188,7 @@ module.exports = class extends Generator {
   writing() {
     if (this.stage === packageStage.FIRST_RUN) {
       this.fs.copyTpl(
-        this.templatePath(path.join('root', 'package.json')),
+        this.templatePath(pathJoin('root', 'package.json')),
         this.destinationPath('package.json'),
         {
           ...this.packageJsonConfigs,
@@ -201,7 +202,7 @@ module.exports = class extends Generator {
       this.generatedSpecs = [];
       this.hookPaths = [];
       Object.keys(this.specMetadata).forEach(k => {
-        const specPath = path.join(...k.split(':'));
+        const specPath = pathJoin(...k.split(':'));
         const specDestDir = this.destinationPath('specs', specPath, '__specs');
         const hookDestDir = this.destinationPath('specs', specPath, '__hooks');
 
@@ -223,25 +224,25 @@ module.exports = class extends Generator {
               writeCollSpec(this, actualDataPath, spec, this.aliasHashMap, specDestDir);
               writeCollHook(this, actualDataPath, spec, hookDestDir);
 
-              hookPath = path.join('specs', specPath, '__hooks', 'coll', 'coll-hook');
+              hookPath = pathJoin('specs', specPath, '__hooks', 'coll', 'coll-hook');
             }
             if (scope === specMetadataScope.ENTITY) {
               writeEntitySpec(this, actualDataPath, spec, this.aliasHashMap, specDestDir);
               writeEntityHook(this, actualDataPath, spec, hookDestDir);
 
-              hookPath = path.join('specs', specPath, '__hooks', 'entity', 'entity-hook');
+              hookPath = pathJoin('specs', specPath, '__hooks', 'entity', 'entity-hook');
             }
           }
 
           if (type === specMetadataType.ACTION) {
             writeActionSpec(this, actualDataPath, spec, this.aliasHashMap, specDestDir);
             writeActionHook(this, actualDataPath, spec, hookDestDir);
-            hookPath = path.join('specs', specPath, '__hooks', 'calls', 'action-hook');
+            hookPath = pathJoin('specs', specPath, '__hooks', 'calls', 'action-hook');
           }
           if (type === specMetadataType.FUNC) {
             writeFuncSpec(this, actualDataPath, spec, this.aliasHashMap, specDestDir);
             writeFuncHook(this, actualDataPath, spec, hookDestDir);
-            hookPath = path.join('specs', specPath, '__hooks', 'calls', 'func-hook');
+            hookPath = pathJoin('specs', specPath, '__hooks', 'calls', 'func-hook');
           }
           this.hookPaths.push(
             `export { ${hookName} } from './${hookPath}';`,
@@ -252,7 +253,7 @@ module.exports = class extends Generator {
       });
 
       this.fs.copyTpl(
-        this.templatePath(path.join('root', 'index.ejs')),
+        this.templatePath(pathJoin('root', 'index.ejs')),
         this.destinationPath('index.js'),
         {
           exports: this.hookPaths,

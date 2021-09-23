@@ -1,4 +1,4 @@
-const path = require('path');
+const { pathJoin } = require('../utils/path-join');
 
 const {
   odataUriFactory,
@@ -16,9 +16,9 @@ function composeSharedContext(metadata, scope, aliasHashMap) {
   // calculate edm.js location
   const envRelativePath = buildEnvRelativePath(visitedSchemas.length);
 
-  const edmLocation = path.join(envRelativePath, 'edm');
-  const envLocation = path.join(envRelativePath, 'env-instance');
-  const schemaLocation = path.join(envRelativePath, 'schema');
+  const edmLocation = pathJoin(envRelativePath, 'edm');
+  const envLocation = pathJoin(envRelativePath, 'env-instance');
+  const schemaLocation = pathJoin(envRelativePath, 'schema');
 
   const odataUriSegments = odataUriFactory(visitedSchemas, aliasHashMap, false);
   const descriptorList = generateDescriptorList(visitedSchemas, aliasHashMap);
@@ -49,8 +49,8 @@ function writeEntitySpec(context, dataPath, spec, aliasHashMap, destDir) {
   const sharedContext = composeSharedContext(metadata, scope, aliasHashMap);
 
   context.fs.copyTpl(
-    context.templatePath(path.join('entity', 'fetch-spec.ejs')),
-    path.join(destDir, 'entity', 'fetch-spec.js'),
+    context.templatePath(pathJoin('entity', 'fetch-spec.ejs')),
+    pathJoin(destDir, 'entity', 'fetch-spec.js'),
     {
       dataPath,
       ...sharedContext,
@@ -60,8 +60,8 @@ function writeEntitySpec(context, dataPath, spec, aliasHashMap, destDir) {
   writeDecorator(context, destDir, 'entity', 'fetch-decorators.js');
 
   context.fs.copyTpl(
-    context.templatePath(path.join('entity', 'destroy-spec.ejs')),
-    path.join(destDir, 'entity', 'destroy-spec.js'),
+    context.templatePath(pathJoin('entity', 'destroy-spec.ejs')),
+    pathJoin(destDir, 'entity', 'destroy-spec.js'),
     {
       dataPath,
       ...sharedContext,
@@ -71,8 +71,8 @@ function writeEntitySpec(context, dataPath, spec, aliasHashMap, destDir) {
   writeDecorator(context, destDir, 'entity', 'destroy-decorators.js');
 
   context.fs.copyTpl(
-    context.templatePath(path.join('entity', 'mutation-spec.ejs')),
-    path.join(destDir, 'entity', 'mutation-spec.js'),
+    context.templatePath(pathJoin('entity', 'mutation-spec.ejs')),
+    pathJoin(destDir, 'entity', 'mutation-spec.js'),
     {
       dataPath,
       ...sharedContext,

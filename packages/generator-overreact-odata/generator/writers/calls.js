@@ -1,4 +1,4 @@
-const path = require('path');
+const { pathJoin } = require('../utils/path-join');
 
 const { specMetadataScope } = require('../bundler/consts');
 
@@ -18,9 +18,9 @@ function composeSharedContext(metadata, scope, aliasHashMap) {
   // calculate edm.js location
   const envRelativePath = buildEnvRelativePath(visitedSchemas.length + 1);
 
-  const edmLocation = path.join(envRelativePath, 'edm');
-  const envLocation = path.join(envRelativePath, 'env-instance');
-  const schemaLocation = path.join(envRelativePath, 'schema');
+  const edmLocation = pathJoin(envRelativePath, 'edm');
+  const envLocation = pathJoin(envRelativePath, 'env-instance');
+  const schemaLocation = pathJoin(envRelativePath, 'schema');
 
   const isColl = scope === specMetadataScope.COLL;
 
@@ -84,8 +84,8 @@ function writeActionSpec(context, dataPath, spec, aliasHashMap, destDir) {
   const sharedContext = composeSharedContext(metadata, scope, aliasHashMap);
 
   context.fs.copyTpl(
-    context.templatePath(path.join('calls', 'action-spec.ejs')),
-    path.join(destDir, 'calls', 'action-spec.js'),
+    context.templatePath(pathJoin('calls', 'action-spec.ejs')),
+    pathJoin(destDir, 'calls', 'action-spec.js'),
     {
       dataPath,
       ...sharedContext,
@@ -100,8 +100,8 @@ function writeFuncSpec(context, dataPath, spec, aliasHashMap, destDir) {
   const sharedContext = composeSharedContext(metadata, scope, aliasHashMap);
 
   context.fs.copyTpl(
-    context.templatePath(path.join('calls', 'func-spec.ejs')),
-    path.join(destDir, 'calls', 'func-spec.js'),
+    context.templatePath(pathJoin('calls', 'func-spec.ejs')),
+    pathJoin(destDir, 'calls', 'func-spec.js'),
     {
       dataPath,
       ...sharedContext,
