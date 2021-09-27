@@ -1,4 +1,4 @@
-const path = require('path');
+const { pathJoin } = require('../utils/path-join');
 
 const { buildEnvRelativePath } = require('./env');
 
@@ -15,7 +15,7 @@ function composeSharedContext(spec, isCall) {
   const envRelativePath = buildEnvRelativePath(
     isCall ? visitedSchemas.length + 1 : visitedSchemas.length,
   );
-  const envLocation = path.join(envRelativePath, 'env-instance');
+  const envLocation = pathJoin(envRelativePath, 'env-instance');
 
   return {
     envLocation,
@@ -25,11 +25,11 @@ function composeSharedContext(spec, isCall) {
 
 function writeHookDecorator(context, destDir, folder) {
   if (context.generateDecorators) {
-    const decoFile = path.join(destDir, folder, 'hook-decorators.js');
+    const decoFile = pathJoin(destDir, folder, 'hook-decorators.js');
 
     if (!context.fs.exists(decoFile)) {
       context.fs.copy(
-        context.templatePath(path.join('shared', 'hook-decorators.js')),
+        context.templatePath(pathJoin('shared', 'hook-decorators.js')),
         decoFile,
       );
     }
@@ -40,8 +40,8 @@ function writeActionHook(context, dataPath, spec, destDir) {
   const sharedContext = composeSharedContext(spec, true);
 
   context.fs.copyTpl(
-    context.templatePath(path.join('hooks', 'use-action.ejs')),
-    path.join(destDir, 'calls', 'action-hook.js'),
+    context.templatePath(pathJoin('hooks', 'use-action.ejs')),
+    pathJoin(destDir, 'calls', 'action-hook.js'),
     {
       dataPath,
       ...sharedContext,
@@ -55,8 +55,8 @@ function writeFuncHook(context, dataPath, spec, destDir) {
   const sharedContext = composeSharedContext(spec, true);
 
   context.fs.copyTpl(
-    context.templatePath(path.join('hooks', 'use-func.ejs')),
-    path.join(destDir, 'calls', 'func-hook.js'),
+    context.templatePath(pathJoin('hooks', 'use-func.ejs')),
+    pathJoin(destDir, 'calls', 'func-hook.js'),
     {
       dataPath,
       ...sharedContext,
@@ -70,8 +70,8 @@ function writeCollHook(context, dataPath, spec, destDir) {
   const sharedContext = composeSharedContext(spec, false);
 
   context.fs.copyTpl(
-    context.templatePath(path.join('hooks', 'use-coll.ejs')),
-    path.join(destDir, 'coll', 'coll-hook.js'),
+    context.templatePath(pathJoin('hooks', 'use-coll.ejs')),
+    pathJoin(destDir, 'coll', 'coll-hook.js'),
     {
       dataPath,
       ...sharedContext,
@@ -85,8 +85,8 @@ function writeEntityHook(context, dataPath, spec, destDir) {
   const sharedContext = composeSharedContext(spec, false);
 
   context.fs.copyTpl(
-    context.templatePath(path.join('hooks', 'use-entity.ejs')),
-    path.join(destDir, 'entity', 'entity-hook.js'),
+    context.templatePath(pathJoin('hooks', 'use-entity.ejs')),
+    pathJoin(destDir, 'entity', 'entity-hook.js'),
     {
       dataPath,
       ...sharedContext,

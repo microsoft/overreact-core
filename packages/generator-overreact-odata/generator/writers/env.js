@@ -1,7 +1,7 @@
-const path = require('path');
+const { pathJoin } = require('../utils/path-join');
 
 function buildEnvRelativePath(length) {
-  return path.join(
+  return pathJoin(
     ...Array(length + 3).fill('..'),
     'env',
   );
@@ -9,7 +9,7 @@ function buildEnvRelativePath(length) {
 
 function writeEnv(context, config) {
   context.fs.copyTpl(
-    context.templatePath(path.join('env', 'edm.ejs')),
+    context.templatePath(pathJoin('env', 'edm.ejs')),
     context.destinationPath('env', 'edm.js'),
     {
       ...config,
@@ -17,7 +17,7 @@ function writeEnv(context, config) {
   );
 
   context.fs.copyTpl(
-    context.templatePath(path.join('env', 'env-instance.ejs')),
+    context.templatePath(pathJoin('env', 'env-instance.ejs')),
     context.destinationPath('env', 'env-instance.js'),
     {
       ...config,
@@ -25,7 +25,7 @@ function writeEnv(context, config) {
   );
 
   context.fs.copyTpl(
-    context.templatePath(path.join('env', 'schema.ejs')),
+    context.templatePath(pathJoin('env', 'schema.ejs')),
     context.destinationPath('env', 'schema.js'),
     {
       ...config,
@@ -33,7 +33,7 @@ function writeEnv(context, config) {
   );
 
   context.fs.copyTpl(
-    context.templatePath(path.join('env', 'requestor.ejs')),
+    context.templatePath(pathJoin('env', 'requestor.ejs')),
     context.destinationPath('env', 'requestor.js'),
     {
       ...config,
