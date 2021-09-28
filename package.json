@@ -1,10 +1,15 @@
 {
   "name": "@microsoft/overreact-root",
   "private": true,
-  "workspaces": [
-    "packages"
-  ],
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ]
+  },
   "devDependencies": {
+    "@babel/core": "^7.3.4",
+    "@babel/preset-env": "^7.15.6",
+    "@babel/preset-react": "^7.14.5",
     "eslint": "^7.2.0",
     "eslint-config-airbnb": "^18.2.1",
     "eslint-plugin-import": "^2.22.1",
@@ -14,6 +19,7 @@
     "lerna": "^4.0.0",
     "prettier": "^2.3.1",
     "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "react-dom": "^17.0.2",
+    "webpack-cli": "^4.8.0"
   }
 }
