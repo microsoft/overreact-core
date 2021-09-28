@@ -3,6 +3,16 @@ import _ from 'underscore';
 
 import { getTimestamp } from '../../utils/primitive-utilities';
 
+const errorToString = (error) => {
+  const stringError = error && error.toString();
+  const stringifiedJson = JSON.stringify(error);
+
+  if ((!_.isEmpty(stringifiedJson) && stringifiedJson !== '{}') || stringError === '[object Object]') {
+    return stringifiedJson;
+  }
+  return stringError;
+};
+
 export const defaultStubOptions = {
   serverErrorCodes: [-1],
 
@@ -117,12 +127,16 @@ export function errorHandler(
     instrumentationContext.error = `Overreact server response error: [${error.status}]`;
 
     if (error.textStatus && error.textStatus.trim() !== '') {
-      instrumentationContext.error += (`, ${error.textStatus}`);
-      if (error.responseText && error.responseText.trim() !== '') {
-        instrumentationContext.error += (`, ${error.responseText}`);
-      } else if (error.responseXML && error.responseXML.trim() !== '') {
-        instrumentationContext.error += (`, ${error.responseXML}`);
-      }
+      instrumentationContext.error += (`, textStatus: ${error.textStatus}`);
+    }
+    if (error.responseText && error.responseText.trim() !== '') {
+      instrumentationContext.error += (`, responseText: ${error.responseText}`);
+    }
+    if (error.responseXML && error.responseXML.trim() !== '') {
+      instrumentationContext.error += (`, responseXML: ${error.responseXML}`);
+    }
+    if (error.responseJSON) {
+      instrumentationContext.error += (`, responseJSON: ${errorToString(error.responseJSON)}`);
     }
 
     switch (error.status) {
