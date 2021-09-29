@@ -1,6 +1,6 @@
 // all primitive types https://docs.microsoft.com/en-us/dotnet/framework/data/adonet/entity-data-model-primitive-data-types
 const EDMPrimitivesMapping = {
-  Binary: {},
+  Binary: { type: 'integer' },
   Boolean: { type: 'boolean' },
   Byte: { type: 'integer' },
   DateTime: {},
