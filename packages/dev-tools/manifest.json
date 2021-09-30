@@ -4,14 +4,14 @@
   "version": "0.1",
   "manifest_version": 3,
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "src/extension/background.js"
   },
   "host_permissions": [
     "file:///*",
     "http://*/*",
     "https://*/*"
   ],
-  "devtools_page": "devtools.html",
+  "devtools_page": "pages/devtools.html",
   "content_scripts": [
     {
       "matches": [
