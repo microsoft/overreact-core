@@ -1,6 +1,6 @@
 {
   "name": "@microsoft/overreact-devtools",
-  "version": "0.1.0-alpha.22",
+  "version": "0.1.0-alpha.25",
   "private": true,
   "dependencies": {
     "react": ">=16.8.0",
