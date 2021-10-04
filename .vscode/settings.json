@@ -1,5 +1,5 @@
 {
-	"editor.renderWhitespace": "all",
+	"editor.renderWhitespace": "trailing",
 	"editor.tabSize": 2,
 	"editor.insertSpaces": true,
   "editor.codeActionsOnSave": {
