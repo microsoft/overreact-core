@@ -22,11 +22,11 @@ function initializeAgent(target) {
             }, '*');
           },
           onRequest: ({
-            url, verb, headers, payload,
+            id, url, verb, headers, payload, spec,
           }) => {
             window.postMessage({
               request: {
-                url, verb, headers, payload,
+                id, url, verb, headers, payload, spec,
               },
               source: 'overreact-devtools-agent',
             }, '*');

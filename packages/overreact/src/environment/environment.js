@@ -38,10 +38,12 @@ export class Environment {
       if (window.__OVERREACT_DEVTOOLS__) {
         const { onRequest } = window.__OVERREACT_DEVTOOLS__;
         onRequest({
+          id,
           url: uri,
           verb,
           headers: header,
           body: payload,
+          spec: spec.toString(),
         });
       }
 

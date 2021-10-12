@@ -8,7 +8,7 @@ export function DevToolsUI(props) {
   const requests = useSelector(state => state.request.requests);
 
   const handleMessageFromAgent = useCallback(msg => {
-    dispatch(addRequest({ request: msg }));
+    dispatch(addRequest({ request: msg.request }));
   }, [dispatch]);
 
   useEffect(() => {
@@ -17,7 +17,7 @@ export function DevToolsUI(props) {
 
   return (
     <div>
-      <h1>DevTools for overreact</h1>
+      <h1>Requests</h1>
       <ul>
         { requests && requests.map(request => (
           <li>{JSON.stringify(request, null, 2)}</li>
