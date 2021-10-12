@@ -15,7 +15,22 @@ function initializeAgent(target) {
       enumerable: false,
       get() {
         return {
-          test: () => { console.log('test'); },
+          test: () => {
+            window.postMessage({
+              test: 'test',
+              source: 'overreact-devtools-agent',
+            }, '*');
+          },
+          onRequest: ({
+            url, verb, headers, payload,
+          }) => {
+            window.postMessage({
+              request: {
+                url, verb, headers, payload,
+              },
+              source: 'overreact-devtools-agent',
+            }, '*');
+          },
         };
       },
     }),

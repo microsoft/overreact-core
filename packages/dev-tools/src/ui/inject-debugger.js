@@ -14,12 +14,11 @@ function injectDebugger() {
   chrome.devtools.inspectedWindow.eval(injectedGlobal, result => {
     if (!result) {
       const agentUrl = chrome.runtime.getURL('dist/agent.js');
-      console.log(agentUrl);
 
       let agentCode;
 
       const request = new XMLHttpRequest();
-      request.addEventListener('load', function () {
+      request.addEventListener('load', () => {
         agentCode = this.responseText;
       });
 

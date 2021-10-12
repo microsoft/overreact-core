@@ -17,8 +17,6 @@ chrome.runtime.onMessage.addListener((request, sender) => {
 chrome.runtime.onConnect.addListener(port => {
   // assign the listener function to a variable so we can remove it later
   const devToolsListener = (message, sender, sendResponse) => {
-    console.log('message received', message);
-
     if (message.name === 'init') {
       connections[message.tabId] = port;
       return;

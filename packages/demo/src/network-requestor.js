@@ -21,20 +21,6 @@ function tripPinNetworkRequestor(uri, requestVerb, headers, body) {
 }
 
 export function networkRequestor(uri, requestVerb, headers, body) {
-  if (window.__OVERREACT_DEVTOOLS__) {
-    const { postMessage } = window.__OVERREACT_DEVTOOLS__;
-
-    postMessage({
-      type: 'network-request',
-      message: {
-        uri,
-        requestVerb,
-        headers,
-        body,
-      },
-    });
-  }
-
   if (uri.startsWith('/People')) {
     return tripPinNetworkRequestor(uri, requestVerb, headers, body);
   }

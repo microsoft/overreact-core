@@ -6,7 +6,7 @@ module.exports = {
     agent: './src/agent/index.js',
   },
 
-  devtool: 'source-map',
+  devtool: 'eval-source-map',
 
   output: {
     path: path.resolve(__dirname, 'src/extension/dist/'),
