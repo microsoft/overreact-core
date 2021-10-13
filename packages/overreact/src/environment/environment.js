@@ -33,7 +33,7 @@ export class Environment {
     this.dataRefIdPool = {};
   }
 
-  getRequestor(id, spec, variables, middlewareStates) {
+  getRequestor(id, spec, variables, middlewareStates, mergedConfig) {
     return (uri, verb, header, payload) => ({
       execute: sink => {
         if (!this.middlewares || this.middlewares.length === 0) {
@@ -52,6 +52,7 @@ export class Environment {
             store: this.store,
             dataRefId: id,
             middlewareStates,
+            mergedConfig,
           });
           const res = requestWithMiddleware(wrappedRequestor, this.middlewares);
 

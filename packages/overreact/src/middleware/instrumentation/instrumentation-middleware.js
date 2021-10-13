@@ -45,7 +45,7 @@ export function createInstrumentationMiddleware(instrumentationOptions) {
       successHandler(instrumentationContext, res, errorFunc, perfFunc);
       return res;
     }).catch(error => {
-      errorHandler(instrumentationContext, error, isUserError, traceFunc, errorFunc, perfFunc);
+      errorHandler(instrumentationContext, error, isUserError, traceFunc, errorFunc, perfFunc, req.mergedConfig);
       throw error;
     });
 

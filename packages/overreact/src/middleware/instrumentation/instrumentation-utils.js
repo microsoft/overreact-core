@@ -115,7 +115,7 @@ export function successHandler(instrumentationContext, response, errorFunc, perf
 
 export function errorHandler(
   instrumentationContext, error, isUserError,
-  traceFunc, errorFunc, perfFunc,
+  traceFunc, errorFunc, perfFunc, mergedConfig,
 ) {
   const requestTimeTaken = getTimestamp() - instrumentationContext.requestStartTime;
   instrumentationContext.requestTimeTaken = requestTimeTaken;
@@ -178,4 +178,13 @@ export function errorHandler(
     pass: instrumentationContext.requestResult,
     statusCode: error.status,
   });
+
+  if (!_.isFunction(mergedConfig.onError)) {
+    errorFunc({
+      message: 'No error handling',
+      api: instrumentationContext.url,
+      requestId: instrumentationContext.requestId,
+      httpMethod: instrumentationContext.httpMethod,
+    });
+  }
 }
