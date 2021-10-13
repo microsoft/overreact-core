@@ -3,6 +3,7 @@
   "version": "0.1.0-alpha.25",
   "private": true,
   "dependencies": {
+    "@fluentui/react": "^8.36.5",
     "@reduxjs/toolkit": "^1.6.2",
     "react": ">=16.8.0",
     "react-dom": ">=16.8.0",

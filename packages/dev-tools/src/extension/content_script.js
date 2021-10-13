@@ -7,6 +7,37 @@ function injectCode(code) {
 }
 
 function initializeAgent(target) {
+  let store;
+
+  const agent = {
+    store,
+    test: () => {
+      window.postMessage({
+        type: 'test',
+        test: 'test',
+        source: 'overreact-devtools-agent',
+      }, '*');
+    },
+    onRequest: request => {
+      window.postMessage({
+        type: 'on-request',
+        request,
+        source: 'overreact-devtools-agent',
+      }, '*');
+    },
+    getStore: newStore => {
+      if (newStore) {
+        const data = Object.keys(newStore.recordGroups);
+
+        window.postMessage({
+          type: 'get-store',
+          store: data,
+          source: 'overreact-devtools-agent',
+        }, '*');
+      }
+    },
+  };
+
   Object.defineProperty(
     target,
     '__OVERREACT_DEVTOOLS__',
@@ -14,24 +45,7 @@ function initializeAgent(target) {
       configurable: true,
       enumerable: false,
       get() {
-        return {
-          test: () => {
-            window.postMessage({
-              test: 'test',
-              source: 'overreact-devtools-agent',
-            }, '*');
-          },
-          onRequest: ({
-            id, url, verb, headers, payload, spec,
-          }) => {
-            window.postMessage({
-              request: {
-                id, url, verb, headers, payload, spec,
-              },
-              source: 'overreact-devtools-agent',
-            }, '*');
-          },
-        };
+        return agent;
       },
     }),
   );
