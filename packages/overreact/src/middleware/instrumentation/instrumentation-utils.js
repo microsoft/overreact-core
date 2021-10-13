@@ -3,7 +3,7 @@ import _ from 'underscore';
 
 import { getTimestamp } from '../../utils/primitive-utilities';
 
-const errorToString = (error) => {
+const errorToString = error => {
   const stringError = error && error.toString();
   const stringifiedJson = JSON.stringify(error);
 

@@ -2,6 +2,7 @@ module.exports = {
   someSidebar: {
     'Getting Started': [
       'getting_started/quick_start',
+      'getting_started/using_the_generator',
       'getting_started/mutation',
       'getting_started/pagination',
       'getting_started/error',

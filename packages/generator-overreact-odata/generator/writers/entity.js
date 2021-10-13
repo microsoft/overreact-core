@@ -22,7 +22,23 @@ function composeSharedContext(metadata, scope, aliasHashMap) {
 
   const odataUriSegments = odataUriFactory(visitedSchemas, aliasHashMap, false);
   const descriptorList = generateDescriptorList(visitedSchemas, aliasHashMap);
-  const { $$ODataExtension } = rootSchema.schema;
+
+  function getRequestKeySelector(schema) {
+    const { $$ODataExtension: { Key: extensionKey, BaseType } } = schema;
+
+    if (extensionKey) {
+      return extensionKey[0];
+    }
+
+    // look for a base type
+    if (BaseType) {
+      return getRequestKeySelector(BaseType.schema);
+    }
+
+    return null;
+  }
+
+  const requestKeySelector = getRequestKeySelector(rootSchema.schema);
 
   const keySelector = descriptorList.length > 0
     ? descriptorList[descriptorList.length - 1]
@@ -38,7 +54,7 @@ function composeSharedContext(metadata, scope, aliasHashMap) {
     schemaLocation,
     descriptorList,
     odataUriSegments,
-    key: $$ODataExtension.Key[0],
+    key: requestKeySelector,
     keySelector,
     parentKey,
   };
