@@ -1,9 +1,11 @@
+import _ from 'underscore';
 // Use the basic APIs of ES6 Map. If your site supports browsers not
 // having Map natively, you should use a polyfill
 import { RecordGroup } from './record-group';
 
 export class Store {
-  constructor() {
+  constructor(uniqueId) {
+    this.uniqueId = uniqueId || _.uniqueId('Overreact_store_');
     this.recordGroups = {};
     this.preemptiveRecords = new Map();
 
@@ -12,7 +14,10 @@ export class Store {
 
   getRecordGroup(modelName) {
     if (!this.recordGroups[modelName]) {
-      this.recordGroups[modelName] = new RecordGroup(modelName);
+      this.recordGroups[modelName] = new RecordGroup({
+        schemaType: modelName,
+        store: this,
+      });
     }
     return this.recordGroups[modelName];
   }

@@ -31,6 +31,18 @@ function initializeAgent(target) {
               source: 'overreact-devtools-agent',
             }, '*');
           },
+          onRecordGroupChange: ({
+            storeId,
+            schemaType,
+            records,
+          }) => {
+            window.postMessage({
+              store: {
+                storeId, schemaType, records,
+              },
+              source: 'overreact-devtools-agent',
+            }, '*');
+          },
         };
       },
     }),
