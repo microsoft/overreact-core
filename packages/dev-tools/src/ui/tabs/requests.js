@@ -11,13 +11,13 @@ import {
   DetailsListLayoutMode,
 
   mergeStyleSets,
-  Depths,
 } from '@fluentui/react';
 
 const classNames = mergeStyleSets({
   tabContainer: {
     display: 'flex',
     flex: 1,
+    height: '100%',
   },
   listHeader: {
     fontSize: 12,
@@ -27,14 +27,19 @@ const classNames = mergeStyleSets({
   },
   leftPane: {
     display: 'flex',
+    flex: 1,
     flexDirection: 'column',
+    height: '100%',
+    overflowY: 'auto',
+    borderRight: '1px solid rgb(237, 235, 233)',
   },
   rightPane: {
     display: 'flex',
-    minWidth: 300,
+    flex: 1,
     flexDirection: 'column',
-    padding: 10,
-    boxShadow: Depths.depth4,
+    overflowY: 'auto',
+    minWidth: 300,
+    padding: 24,
   },
   fieldKey: {
     fontWeight: '600',
