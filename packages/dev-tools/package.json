@@ -3,9 +3,11 @@
   "version": "0.1.0-alpha.25",
   "private": true,
   "dependencies": {
+    "@fluentui/react": "^8.36.5",
     "@reduxjs/toolkit": "^1.6.2",
     "react": ">=16.8.0",
     "react-dom": ">=16.8.0",
+    "react-json-view": "^1.21.3",
     "react-redux": "^7.2.5",
     "web-vitals": "^1.0.1",
     "underscore": "*"

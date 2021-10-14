@@ -1,24 +1,34 @@
 import _ from 'underscore';
 import React, { useCallback, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
+
+import { Pivot, PivotItem } from '@fluentui/react';
+
 import { add as addRequest } from './slices/requests';
 import { updateStore } from './slices/store';
 import port from './port';
 
-export function DevToolsUI(props) {
+import { RequestsTab } from './tabs/requests';
+
+export function DevToolsUI() {
   const dispatch = useDispatch();
-  const requests = useSelector(state => state.request.requests);
   const stores = useSelector(state => state.store.stores);
 
   console.log(stores);
 
   const handleMessageFromAgent = useCallback(msg => {
+    const { type } = msg;
     if (msg.request) {
+
+    if (type === 'on-request' || type === 'on-error') {
       dispatch(addRequest({ request: msg.request }));
     }
 
     if (msg.store) {
       dispatch(updateStore({ store: msg.store }));
+    if (type === 'get-store') {
+      // TODO
+    }
     }
   }, [dispatch]);
 
@@ -43,12 +53,18 @@ export function DevToolsUI(props) {
       <ul>
         { stores && _.chain(stores).keys().map(key => renderStore(key, stores[key])).value() }
       </ul>
-      <h1>Requests</h1>
-      <ul>
-        { requests && requests.map(request => (
-          <li>{JSON.stringify(request, null, 2)}</li>
-        ))}
-      </ul>
+      <Pivot>
+        <PivotItem
+          headerText="Requests"
+        >
+          <RequestsTab />
+        </PivotItem>
+        <PivotItem
+          headerText="Store"
+        >
+          Placeholder for Store
+        </PivotItem>
+      </Pivot>
     </div>
   );
 }

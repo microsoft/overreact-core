@@ -10,6 +10,11 @@ export class Store {
     this.preemptiveRecords = new Map();
 
     this.getRecordGroup = this.getRecordGroup.bind(this);
+
+    if (window.__OVERREACT_DEVTOOLS__) {
+      window.__OVERREACT_DEVTOOLS__.store = this;
+      window.__OVERREACT_DEVTOOLS__.getStore(this);
+    }
   }
 
   getRecordGroup(modelName) {

@@ -16,7 +16,7 @@ function odataUriFactory(params) {
   const { descriptor } = locator;
   const { name } = descriptor;
 
-  return `/Cruise('${name})`;
+  return `/Cruise('${name}')`;
 }
 
 const odataHeaderFactory = () => {};
