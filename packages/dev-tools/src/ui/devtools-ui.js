@@ -28,7 +28,23 @@ export function DevToolsUI() {
 
   return (
     <div>
-      <Pivot>
+      <Pivot
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          height: '100%',
+          overflowY: 'hidden',
+        }}
+        styles={{
+          root: {
+            height: 44,
+            borderBottom: '1px solid rgb(237, 235, 233)',
+          },
+          itemContainer: {
+            height: 'calc(100% - 44px)',
+          },
+        }}
+      >
         <PivotItem
           headerText="Requests"
         >
