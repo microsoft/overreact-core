@@ -1,24 +1,29 @@
+import _ from 'underscore';
 import React, { useCallback, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { Pivot, PivotItem } from '@fluentui/react';
 
 import { add as addRequest } from './slices/requests';
+import { updateStore } from './slices/store';
 import port from './port';
 
 import { RequestsTab } from './tabs/requests';
+import { StoreTab } from './tabs/store';
 
 export function DevToolsUI() {
   const dispatch = useDispatch();
 
   const handleMessageFromAgent = useCallback(msg => {
     const { type } = msg;
-
-    if (type === 'on-request' || type === 'on-error') {
-      dispatch(addRequest({ request: msg.request }));
+    if (msg.request) {
+      if (type === 'on-request' || type === 'on-error') {
+        dispatch(addRequest({ request: msg.request }));
+      }
     }
-    if (type === 'get-store') {
-      // TODO
+
+    if (type === 'store-update') {
+      dispatch(updateStore({ store: msg.store }));
     }
   }, [dispatch]);
 
@@ -53,7 +58,7 @@ export function DevToolsUI() {
         <PivotItem
           headerText="Store"
         >
-          Placeholder for Store
+          <StoreTab />
         </PivotItem>
       </Pivot>
     </div>
