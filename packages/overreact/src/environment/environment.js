@@ -33,12 +33,13 @@ export class Environment {
     this.dataRefIdPool = {};
   }
 
-  getRequestor(id, spec, variables, middlewareStates) {
+  getRequestor(id, spec, variables, middlewareStates, additionalParams) {
     const requestorWithDevTools = (uri, verb, headers, payload) => {
       const requestor = this.networkRequestor(uri, verb, headers, payload);
 
       if (window.__OVERREACT_DEVTOOLS__) {
         const { onRequest, onError } = window.__OVERREACT_DEVTOOLS__;
+        const { componentName } = additionalParams;
         return requestor
           .then(value => {
             onRequest({
@@ -48,6 +49,7 @@ export class Environment {
               headers,
               payload,
               spec: spec.toString(),
+              componentName,
               responseValue: value,
             });
             return value;
@@ -60,6 +62,7 @@ export class Environment {
               headers,
               payload,
               spec: spec.toString(),
+              componentName,
               exception: ex,
             });
 

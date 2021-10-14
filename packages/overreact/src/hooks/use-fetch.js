@@ -10,12 +10,16 @@ import {
 import { OverreactRequest } from './overreact-request';
 import { getCacheIds } from './lookup-cache';
 import { getDataFromRecords, getLookupCacheFn } from './helper';
+import { useComponent } from './use-component';
 
 export function equalityFn(newData, oldData) {
   return _.isEqual(newData, oldData);
 }
 
 export function useFetch(dataRefId, spec, variables, config) {
+  // DEBUG ONLY
+  const componentName = useComponent();
+
   const {
     requestContract,
     responseContract,
@@ -134,6 +138,7 @@ export function useFetch(dataRefId, spec, variables, config) {
           spec,
           variables,
           data: null,
+          componentName,
         });
         environment.pushRequest(request);
       }

@@ -7,8 +7,12 @@ import { OverreactRequest } from './overreact-request';
 import { getMergedConfig } from './merge-config';
 import { getCacheIds } from './lookup-cache';
 import { getDataFromRecords, getLookupCacheFn } from './helper';
+import { useComponent } from './use-component';
 
 export function useRefetch(dataRefId, spec, config) {
+  // DEBUG ONLY
+  const componentName = useComponent();
+
   const {
     requestContract,
     responseContract,
@@ -64,6 +68,7 @@ export function useRefetch(dataRefId, spec, config) {
         dataCb: dataCallback,
         errorCb: errorCallback,
         mergedConfig,
+        componentName,
       });
 
       const lookupFn = getLookupCacheFn(lookupCacheByVariables, spec, fetchPolicy);
@@ -104,6 +109,7 @@ export function useRefetch(dataRefId, spec, config) {
     requestContract,
     responseContract,
     spec,
+    componentName,
   ]);
 
   return refetchFn;

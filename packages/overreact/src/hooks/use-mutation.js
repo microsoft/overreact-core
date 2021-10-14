@@ -9,6 +9,8 @@ import { responseTypes } from '../spec/response-types';
 import { OverreactRequest } from './overreact-request';
 import { getMergedConfig } from './merge-config';
 
+import { useComponent } from './use-component';
+
 function mutateRecords(
   store,
   requestContract,
@@ -91,6 +93,9 @@ function applyId(variables, spec, data, specType) {
 }
 
 export function useMutation(dataRefId, spec, config) {
+  // DEBUG ONLY
+  const componentName = useComponent();
+
   const {
     requestContract,
     responseContract,
@@ -224,6 +229,7 @@ export function useMutation(dataRefId, spec, config) {
         dataCb: dataCallback,
         errorCb: errorCallback,
         mergedConfig,
+        componentName,
       });
 
       // we can perform preemptive updates right now (before actual request)
@@ -256,7 +262,7 @@ export function useMutation(dataRefId, spec, config) {
       environment.pushRequest(request);
     }
   // eslint-disable-next-line max-len
-  }, [config, dataCallback, dataRefId, environment, errorCallback, requestContract, spec, specType]);
+  }, [config, dataCallback, dataRefId, environment, errorCallback, requestContract, spec, specType, componentName]);
 
   return mutateFn;
 }

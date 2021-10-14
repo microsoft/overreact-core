@@ -45,7 +45,7 @@ const classNames = mergeStyleSets({
 function RequestDetailPane(props) {
   const { request } = props;
   const {
-    id, uri, verb, headers, payload, spec, responseValue, exception,
+    id, uri, verb, headers, payload, spec, componentName, responseValue, exception,
   } = request;
 
   return (
@@ -55,6 +55,10 @@ function RequestDetailPane(props) {
         <li>
           <span className={classNames.fieldKey}>id:</span>
           {id}
+        </li>
+        <li>
+          <span className={classNames.fieldKey}>component:</span>
+          {componentName}
         </li>
         <li>
           <span className={classNames.fieldKey}>uri:</span>
