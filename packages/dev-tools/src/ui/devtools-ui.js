@@ -9,26 +9,21 @@ import { updateStore } from './slices/store';
 import port from './port';
 
 import { RequestsTab } from './tabs/requests';
+import { StoreTab } from './tabs/store';
 
 export function DevToolsUI() {
   const dispatch = useDispatch();
-  const stores = useSelector(state => state.store.stores);
-
-  console.log(stores);
 
   const handleMessageFromAgent = useCallback(msg => {
     const { type } = msg;
     if (msg.request) {
-
-    if (type === 'on-request' || type === 'on-error') {
-      dispatch(addRequest({ request: msg.request }));
+      if (type === 'on-request' || type === 'on-error') {
+        dispatch(addRequest({ request: msg.request }));
+      }
     }
 
-    if (msg.store) {
+    if (type === 'store-update') {
       dispatch(updateStore({ store: msg.store }));
-    if (type === 'get-store') {
-      // TODO
-    }
     }
   }, [dispatch]);
 
@@ -36,23 +31,8 @@ export function DevToolsUI() {
     port.onMessage.addListener(msg => handleMessageFromAgent(msg));
   }, [handleMessageFromAgent]);
 
-  const renderStore = useCallback((storeName, store) => (
-    <div>
-      <h2>{storeName}</h2>
-      <ul>
-        {store && _.keys(store).map(key => (
-          <li key={key}>{`${key}: ${JSON.stringify(store)}`}</li>
-        ))}
-      </ul>
-    </div>
-  ), []);
-
   return (
     <div>
-      <h1>Store</h1>
-      <ul>
-        { stores && _.chain(stores).keys().map(key => renderStore(key, stores[key])).value() }
-      </ul>
       <Pivot>
         <PivotItem
           headerText="Requests"
@@ -62,7 +42,7 @@ export function DevToolsUI() {
         <PivotItem
           headerText="Store"
         >
-          Placeholder for Store
+          <StoreTab />
         </PivotItem>
       </Pivot>
     </div>
