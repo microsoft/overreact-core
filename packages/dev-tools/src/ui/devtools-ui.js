@@ -14,7 +14,7 @@ export function DevToolsUI() {
   const handleMessageFromAgent = useCallback(msg => {
     const { type } = msg;
 
-    if (type === 'on-request') {
+    if (type === 'on-request' || type === 'on-error') {
       dispatch(addRequest({ request: msg.request }));
     }
     if (type === 'get-store') {

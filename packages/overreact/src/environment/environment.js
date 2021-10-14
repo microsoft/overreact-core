@@ -35,16 +35,36 @@ export class Environment {
 
   getRequestor(id, spec, variables, middlewareStates) {
     const requestorWithDevTools = (uri, verb, headers, payload) => {
+      const requestor = this.networkRequestor(uri, verb, headers, payload);
+
       if (window.__OVERREACT_DEVTOOLS__) {
-        const { onRequest } = window.__OVERREACT_DEVTOOLS__;
-        onRequest({
-          id,
-          uri,
-          verb,
-          headers,
-          payload,
-          spec: spec.toString(),
-        });
+        const { onRequest, onError } = window.__OVERREACT_DEVTOOLS__;
+        return requestor
+          .then(value => {
+            onRequest({
+              id,
+              uri,
+              verb,
+              headers,
+              payload,
+              spec: spec.toString(),
+              responseValue: value,
+            });
+            return value;
+          })
+          .catch(ex => {
+            onError({
+              id,
+              uri,
+              verb,
+              headers,
+              payload,
+              spec: spec.toString(),
+              exception: ex,
+            });
+
+            throw ex;
+          });
       }
 
       return this.networkRequestor(uri, verb, headers, payload);

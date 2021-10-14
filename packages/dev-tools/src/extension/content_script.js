@@ -25,6 +25,13 @@ function initializeAgent(target) {
         source: 'overreact-devtools-agent',
       }, '*');
     },
+    onError: request => {
+      window.postMessage({
+        type: 'on-error',
+        request,
+        source: 'overreact-devtools-agent',
+      }, '*');
+    },
     getStore: newStore => {
       if (newStore) {
         const data = Object.keys(newStore.recordGroups);

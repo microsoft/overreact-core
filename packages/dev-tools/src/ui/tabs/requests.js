@@ -2,7 +2,7 @@ import React, {
   useState, useCallback, useMemo, useReducer, useEffect,
 } from 'react';
 import { useSelector } from 'react-redux';
-
+import ReactJson from 'react-json-view';
 import {
   Label,
   DetailsList,
@@ -21,6 +21,9 @@ const classNames = mergeStyleSets({
   },
   listHeader: {
     fontSize: 12,
+  },
+  listContentFailed: {
+    color: 'red',
   },
   leftPane: {
     display: 'flex',
@@ -42,7 +45,7 @@ const classNames = mergeStyleSets({
 function RequestDetailPane(props) {
   const { request } = props;
   const {
-    id, uri, verb, headers, payload, spec,
+    id, uri, verb, headers, payload, spec, responseValue, exception,
   } = request;
 
   return (
@@ -61,6 +64,10 @@ function RequestDetailPane(props) {
           <span className={classNames.fieldKey}>verb:</span>
           {verb}
         </li>
+        <li>
+          <span className={classNames.fieldKey}>status:</span>
+          { exception ? 'FAILED' : 'OK'}
+        </li>
       </ul>
       <Label>Headers</Label>
       <ul>
@@ -71,6 +78,9 @@ function RequestDetailPane(props) {
           </li>
         ))}
       </ul>
+      <Label>Response</Label>
+      { responseValue && <ReactJson src={responseValue} />}
+      { exception && <ReactJson src={exception} />}
     </div>
   );
 }
@@ -92,7 +102,12 @@ export function RequestsTab() {
     isResizable: true,
     data: 'string',
     isPadded: true,
-    onRender: item => <span>{item.uri}</span>,
+    onRender: item => {
+      if (item.exception) {
+        return (<span className={classNames.listContentFailed}>{item.uri}</span>);
+      }
+      return <span>{item.uri}</span>;
+    },
   }, {
     key: 'verb',
     name: 'Verb',
@@ -103,7 +118,12 @@ export function RequestsTab() {
     isResizable: false,
     data: 'string',
     isPadded: true,
-    onRender: item => <span>{item.verb}</span>,
+    onRender: item => {
+      if (item.exception) {
+        return (<span className={classNames.listContentFailed}>{item.verb}</span>);
+      }
+      return <span>{item.verb}</span>;
+    },
   }], []);
 
   const getKey = useCallback(item => item.id, []);
