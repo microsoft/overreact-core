@@ -6,6 +6,8 @@ import { Pivot, PivotItem } from '@fluentui/react';
 
 import { add as addRequest } from './slices/requests';
 import { updateStore } from './slices/store';
+import { updateDataRef } from './slices/data-ref';
+
 import port from './port';
 
 import { RequestsTab } from './tabs/requests';
@@ -24,6 +26,10 @@ export function DevToolsUI() {
 
     if (type === 'store-update') {
       dispatch(updateStore({ store: msg.store }));
+    }
+
+    if (type === 'data-ref-update') {
+      dispatch(updateDataRef({ dataRef: msg.dataRef }));
     }
   }, [dispatch]);
 

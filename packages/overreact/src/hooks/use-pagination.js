@@ -80,6 +80,8 @@ export function usePagination(dataRefId, spec, config) {
     setInternalStateOnResponse(rawData);
     setData(rawData);
 
+    dataRef.registerComponent({ componentName });
+
     const {
       onComplete,
     } = (request && request.mergedConfig) || {};
@@ -87,7 +89,7 @@ export function usePagination(dataRefId, spec, config) {
     if (onComplete) {
       onComplete(rawData);
     }
-  }, [dataRefId, environment, requestContract, setData, setInternalStateOnResponse]);
+  }, [componentName, dataRefId, environment, requestContract, setInternalStateOnResponse]);
 
   const onErrorCallback = useCallback((__, err, request) => {
     if (environment) {

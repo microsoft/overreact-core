@@ -1,3 +1,4 @@
+import _ from 'underscore';
 import React, {
   useState, useCallback, useMemo, useReducer, useEffect,
 } from 'react';
@@ -29,11 +30,12 @@ const classNames = mergeStyleSets({
 });
 
 function Store(props) {
-  const { stores } = props;
+  const { stores, setId } = props;
 
   const onSelect = useCallback(select => {
-    window._select = select;
-    console.log(select);
+    if (select.name === 'id' || select.name === '_OVERREACT_ID') {
+      setId(select.value);
+    }
   }, []);
 
   return (
@@ -49,18 +51,38 @@ function Store(props) {
   );
 }
 
+function DataRefs(props) {
+  const { dataRefs, selectedDataId } = props;
+  let filterResult = null;
+  if (selectedDataId) {
+    filterResult = _.pick(dataRefs, ref => _.contains(ref.idRefs, selectedDataId));
+  }
+
+  return (
+    <div>
+      <Label>{`Selected data: ${selectedDataId || 'store'}`}</Label>
+      <Label>Components subscribe to this data:</Label>
+      <ReactJson
+        src={filterResult || dataRefs}
+        name={null}
+      />
+    </div>
+  );
+}
+
 export function StoreTab() {
-  // const [tick, forceRerender] = useReducer(x => x + 1, 0);
+  const [selectedDataId, setId] = useState(null);
 
   const stores = useSelector(state => state.store.stores);
+  const dataRefs = useSelector(state => state.dataRef.dataRefs);
 
   return (
     <div className={classNames.tabContainer}>
       <div className={classNames.leftPane}>
-        <Store stores={stores} />
+        <Store stores={stores} setId={setId} />
       </div>
       <div className={classNames.rightPane}>
-        datarefs
+        <DataRefs dataRefs={dataRefs} selectedDataId={selectedDataId} />
       </div>
     </div>
   );
