@@ -47,6 +47,8 @@ export function useFetch(dataRefId, spec, variables, config) {
       const { store } = environment;
 
       const records = getRecords(store, requestContract, dataRefId);
+      const dataRef = getDataRef(store, requestContract, dataRefId);
+      dataRef.registerComponent({ componentName });
 
       if (records) {
         const data = getDataFromRecords(records, responseContract);
@@ -59,7 +61,7 @@ export function useFetch(dataRefId, spec, variables, config) {
         forceRender();
       }
     }
-  }, [dataRefId, environment, requestContract, responseContract]);
+  }, [componentName, dataRefId, environment, requestContract, responseContract]);
 
   const errorCallback = useCallback(() => {
     if (environment) {

@@ -56,6 +56,19 @@ function initializeAgent(target) {
         source: 'overreact-devtools-agent',
       }, '*');
     },
+    onDataRefChange: ({
+      components,
+      key,
+      idRefs,
+    }) => {
+      window.postMessage({
+        type: 'data-ref-update',
+        dataRef: {
+          components, key, idRefs,
+        },
+        source: 'overreact-devtools-agent',
+      }, '*');
+    },
     getSchema: schema => {
       if (!schema) {
         return;
