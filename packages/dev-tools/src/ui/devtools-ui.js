@@ -1,5 +1,5 @@
 import _ from 'underscore';
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { Pivot, PivotItem } from '@fluentui/react';
@@ -17,6 +17,8 @@ import { SchemaTab } from './tabs/schema';
 
 export function DevToolsUI() {
   const dispatch = useDispatch();
+  const [selectedDataId, setId] = useState(null);
+  const [currentItem, setItem] = useState('request');
 
   const handleMessageFromAgent = useCallback(msg => {
     const { type } = msg;
@@ -43,9 +45,15 @@ export function DevToolsUI() {
     port.onMessage.addListener(msg => handleMessageFromAgent(msg));
   }, [handleMessageFromAgent]);
 
+  const onLinkClick = useCallback(item => {
+    setItem(item.props.itemKey);
+  }, []);
+
   return (
     <div>
       <Pivot
+        onLinkClick={onLinkClick}
+        selectedKey={currentItem}
         style={{
           display: 'flex',
           flexDirection: 'column',
@@ -63,19 +71,28 @@ export function DevToolsUI() {
         }}
       >
         <PivotItem
+          itemKey="request"
           headerText="Requests"
         >
           <RequestsTab />
         </PivotItem>
         <PivotItem
+          itemKey="store"
           headerText="Store"
         >
-          <StoreTab />
+          <StoreTab
+            selectedDataId={selectedDataId}
+            setId={setId}
+          />
         </PivotItem>
         <PivotItem
+          itemKey="schema"
           headerText="Schema"
         >
-          <SchemaTab />
+          <SchemaTab
+            setItem={setItem}
+            setId={setId}
+          />
         </PivotItem>
       </Pivot>
     </div>

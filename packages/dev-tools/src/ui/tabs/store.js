@@ -40,8 +40,10 @@ function Store(props) {
   const onSelect = useCallback(select => {
     if (select.name === 'id' || select.name === '_OVERREACT_ID') {
       setId(select.value);
+    } else {
+      setId(null);
     }
-  }, []);
+  }, [setId]);
 
   return (
     <div>
@@ -75,9 +77,10 @@ function DataRefs(props) {
   );
 }
 
-export function StoreTab() {
-  const [selectedDataId, setId] = useState(null);
-
+export function StoreTab({
+  selectedDataId,
+  setId,
+}) {
   const stores = useSelector(state => state.store.stores);
   const dataRefs = useSelector(state => state.dataRef.dataRefs);
 

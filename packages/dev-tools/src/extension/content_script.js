@@ -80,7 +80,6 @@ function initializeAgent(target) {
         source: 'overreact-devtools-agent',
       }, '*');
     },
-    },
   };
 
   Object.defineProperty(

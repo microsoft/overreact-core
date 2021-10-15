@@ -16,7 +16,10 @@ const classNames = mergeStyleSets({
   },
 });
 
-export function SchemaTab() {
+export function SchemaTab({
+  setId,
+  setItem,
+}) {
   const schema = useSelector(state => state.schema.schema);
 
   const onSelect = useCallback(
@@ -30,6 +33,11 @@ export function SchemaTab() {
       if (name === 'key' && namespace.length >= 2 && namespace[namespace.length - 2] === 'dataRefs') {
         // TODO
         console.log('USER SELECTED DATAREF: %s', value);
+      }
+
+      if (name === '0' && namespace[namespace.length - 1] === 'idRefs') {
+        setId(value);
+        setItem('store');
       }
     },
     [],
