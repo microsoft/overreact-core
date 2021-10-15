@@ -33,4 +33,10 @@ export class DataNode {
   entitiesDeleted(recordGroup, ids) {
     Object.keys(this.dataRefs).forEach(key => this.dataRefs[key].onEntitiesDeleted(ids));
   }
+
+  toJson() {
+    return ({
+      dataRefs: Object.keys(this.dataRefs).map(k => this.dataRefs[k].toJson()),
+    });
+  }
 }

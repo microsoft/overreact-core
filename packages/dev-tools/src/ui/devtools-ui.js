@@ -7,11 +7,13 @@ import { Pivot, PivotItem } from '@fluentui/react';
 import { add as addRequest } from './slices/requests';
 import { updateStore } from './slices/store';
 import { updateDataRef } from './slices/data-ref';
+import { update as updateSchema } from './slices/schema';
 
 import port from './port';
 
 import { RequestsTab } from './tabs/requests';
 import { StoreTab } from './tabs/store';
+import { SchemaTab } from './tabs/schema';
 
 export function DevToolsUI() {
   const dispatch = useDispatch();
@@ -22,6 +24,10 @@ export function DevToolsUI() {
       if (type === 'on-request' || type === 'on-error') {
         dispatch(addRequest({ request: msg.request }));
       }
+    }
+
+    if (type === 'get-schema') {
+      dispatch(updateSchema({ schema: msg.schema }));
     }
 
     if (type === 'store-update') {
@@ -65,6 +71,11 @@ export function DevToolsUI() {
           headerText="Store"
         >
           <StoreTab />
+        </PivotItem>
+        <PivotItem
+          headerText="Schema"
+        >
+          <SchemaTab />
         </PivotItem>
       </Pivot>
     </div>

@@ -69,6 +69,18 @@ function initializeAgent(target) {
         source: 'overreact-devtools-agent',
       }, '*');
     },
+    getSchema: schema => {
+      if (!schema) {
+        return;
+      }
+
+      window.postMessage({
+        type: 'get-schema',
+        schema,
+        source: 'overreact-devtools-agent',
+      }, '*');
+    },
+    },
   };
 
   Object.defineProperty(
