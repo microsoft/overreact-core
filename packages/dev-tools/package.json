@@ -1,6 +1,6 @@
 {
   "name": "@microsoft/overreact-devtools",
-  "version": "0.1.0-alpha.25",
+  "version": "0.1.0-alpha.26",
   "private": true,
   "dependencies": {
     "@fluentui/react": "^8.36.5",
@@ -9,8 +9,8 @@
     "react-dom": ">=16.8.0",
     "react-json-view": "^1.21.3",
     "react-redux": "^7.2.5",
-    "web-vitals": "^1.0.1",
-    "underscore": "*"
+    "underscore": "*",
+    "web-vitals": "^1.0.1"
   },
   "devDependencies": {
     "babel-core": "^6.26.3",
