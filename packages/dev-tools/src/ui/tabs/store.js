@@ -8,24 +8,29 @@ import {
   Label,
 
   mergeStyleSets,
-  Depths,
 } from '@fluentui/react';
 
 const classNames = mergeStyleSets({
   tabContainer: {
     display: 'flex',
     flex: 1,
+    height: '100%',
   },
   leftPane: {
     display: 'flex',
+    flex: 1,
     flexDirection: 'column',
+    padding: 24,
+    height: '100%',
+    borderRight: '1px solid rgb(237, 235, 233)',
   },
   rightPane: {
     display: 'flex',
+    flex: 1,
     minWidth: 300,
     flexDirection: 'column',
-    padding: 10,
-    boxShadow: Depths.depth4,
+    padding: 24,
+    height: '100%',
   },
 });
 
