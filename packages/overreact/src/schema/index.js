@@ -58,6 +58,12 @@ export class Schema {
       }
     }
 
+    if (window.__OVERREACT_DEVTOOLS__) {
+      const { getSchema } = window.__OVERREACT_DEVTOOLS__;
+
+      getSchema(this.root.toJson());
+    }
+
     return currentNode;
   }
 }

@@ -98,4 +98,12 @@ export class DataRef extends Subject {
       this.notify('update', this.idRefs);
     }
   }
+
+  toJson() {
+    return ({
+      key: this.key,
+      idRefs: this.idRefs,
+      status: this.status,
+    });
+  }
 }

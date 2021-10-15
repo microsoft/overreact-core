@@ -41,10 +41,6 @@ const classNames = mergeStyleSets({
     minWidth: 300,
     padding: 24,
   },
-  fieldKey: {
-    fontWeight: '600',
-    marginRight: 6,
-  },
 });
 
 function RequestDetailPane(props) {
@@ -56,40 +52,24 @@ function RequestDetailPane(props) {
   return (
     <div>
       <Label>Request details</Label>
-      <ul>
-        <li>
-          <span className={classNames.fieldKey}>id:</span>
-          {id}
-        </li>
-        <li>
-          <span className={classNames.fieldKey}>component:</span>
-          {componentName}
-        </li>
-        <li>
-          <span className={classNames.fieldKey}>uri:</span>
-          {uri}
-        </li>
-        <li>
-          <span className={classNames.fieldKey}>verb:</span>
-          {verb}
-        </li>
-        <li>
-          <span className={classNames.fieldKey}>status:</span>
-          { exception ? 'FAILED' : 'OK'}
-        </li>
-      </ul>
+      <ReactJson
+        src={{
+          id,
+          component: `<${componentName} />`,
+          uri,
+          verb,
+          status: exception ? 'FAILED' : 'OK',
+        }}
+        name={false}
+        displayDataTypes={false}
+      />
+
       <Label>Headers</Label>
-      <ul>
-        {Object.entries(headers).map(([key, value]) => (
-          <li>
-            <span className={classNames.fieldKey}>{`${key}:`}</span>
-            {value}
-          </li>
-        ))}
-      </ul>
+      <ReactJson src={headers} name={false} displayDataTypes={false} />
+
       <Label>Response</Label>
-      { responseValue && <ReactJson src={responseValue} />}
-      { exception && <ReactJson src={exception} />}
+      { responseValue && <ReactJson src={responseValue} name={false} displayDataTypes={false} />}
+      { exception && <ReactJson src={exception} name={false} displayDataTypes={false} />}
     </div>
   );
 }
