@@ -29,4 +29,15 @@ export class SchemaNode {
   getExtension(name) {
     return this.extensions[name];
   }
+
+  toJson() {
+    return ({
+      name: this.name,
+      modelName: this.modelName,
+      modelSchema: this.modelSchema,
+      childNodes: this.childNodes.length > 0 ? this.childNodes.map(c => c.toJson()) : undefined,
+      extensions: Object.keys(this.extensions).length > 0
+        ? Object.keys(this.extensions).map(k => this.extensions[k].toJson()) : undefined,
+    });
+  }
 }
