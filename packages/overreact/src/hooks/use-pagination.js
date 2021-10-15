@@ -13,6 +13,8 @@ import { getMergedConfig } from './merge-config';
 import { getLookupCacheFn } from './helper';
 import { getCacheIds } from './lookup-cache';
 
+import { useComponent } from './use-component';
+
 const getRecordsDataInDataRef = (store, requestContract, dataRefId) => {
   const records = getRecords(store, requestContract, dataRefId);
 
@@ -27,6 +29,9 @@ const getRecordsDataById = (store, requestContract, ids) => {
 };
 
 export function usePagination(dataRefId, spec, config) {
+  // DEBUG ONLY
+  const componentName = useComponent();
+
   const {
     fetchVariables,
     strictMode = false,
@@ -75,6 +80,8 @@ export function usePagination(dataRefId, spec, config) {
     setInternalStateOnResponse(rawData);
     setData(rawData);
 
+    dataRef.registerComponent({ componentName });
+
     const {
       onComplete,
     } = (request && request.mergedConfig) || {};
@@ -82,7 +89,7 @@ export function usePagination(dataRefId, spec, config) {
     if (onComplete) {
       onComplete(rawData);
     }
-  }, [dataRefId, environment, requestContract, setData, setInternalStateOnResponse]);
+  }, [componentName, dataRefId, environment, requestContract, setInternalStateOnResponse]);
 
   const onErrorCallback = useCallback((__, err, request) => {
     if (environment) {
@@ -204,6 +211,7 @@ export function usePagination(dataRefId, spec, config) {
       variables: requestVars,
       data: null,
       mergedConfig,
+      componentName,
     });
     environment.pushRequest(request);
   }, [
@@ -215,6 +223,7 @@ export function usePagination(dataRefId, spec, config) {
     requestContract,
     spec,
     strictMode,
+    componentName,
   ]);
 
   const ret = useMemo(() => [{ data, error }, {

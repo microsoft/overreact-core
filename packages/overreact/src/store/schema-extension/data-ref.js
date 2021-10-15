@@ -26,6 +26,33 @@ export class DataRef extends Subject {
 
     // TODO: use "cursor" for specific pagination needs
     this.cursor = {};
+
+    this.UiComponents = [];
+  }
+
+  registerComponent({
+    componentName,
+  }) {
+    this.UiComponents = _.uniq([...this.UiComponents, componentName]);
+    this.updateDevTools();
+  }
+
+  unregisterComponent({
+    componentName,
+  }) {
+    this.UiComponents = _.without(this.UiComponents, componentName);
+    this.updateDevTools();
+  }
+
+  updateDevTools() {
+    if (window.__OVERREACT_DEVTOOLS__) {
+      const { onDataRefChange } = window.__OVERREACT_DEVTOOLS__;
+      onDataRefChange({
+        components: this.UiComponents,
+        key: this.key,
+        idRefs: this.idRefs,
+      });
+    }
   }
 
   includes(id) {
@@ -97,5 +124,13 @@ export class DataRef extends Subject {
       this.delete(ids);
       this.notify('update', this.idRefs);
     }
+  }
+
+  toJson() {
+    return ({
+      key: this.key,
+      idRefs: this.idRefs,
+      status: this.status,
+    });
   }
 }

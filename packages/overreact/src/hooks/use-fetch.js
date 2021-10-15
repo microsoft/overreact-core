@@ -10,12 +10,16 @@ import {
 import { OverreactRequest } from './overreact-request';
 import { getCacheIds } from './lookup-cache';
 import { getDataFromRecords, getLookupCacheFn } from './helper';
+import { useComponent } from './use-component';
 
 export function equalityFn(newData, oldData) {
   return _.isEqual(newData, oldData);
 }
 
 export function useFetch(dataRefId, spec, variables, config) {
+  // DEBUG ONLY
+  const componentName = useComponent();
+
   const {
     requestContract,
     responseContract,
@@ -43,6 +47,8 @@ export function useFetch(dataRefId, spec, variables, config) {
       const { store } = environment;
 
       const records = getRecords(store, requestContract, dataRefId);
+      const dataRef = getDataRef(store, requestContract, dataRefId);
+      dataRef.registerComponent({ componentName });
 
       if (records) {
         const data = getDataFromRecords(records, responseContract);
@@ -55,7 +61,7 @@ export function useFetch(dataRefId, spec, variables, config) {
         forceRender();
       }
     }
-  }, [dataRefId, environment, requestContract, responseContract]);
+  }, [componentName, dataRefId, environment, requestContract, responseContract]);
 
   const errorCallback = useCallback(() => {
     if (environment) {
@@ -134,6 +140,7 @@ export function useFetch(dataRefId, spec, variables, config) {
           spec,
           variables,
           data: null,
+          componentName,
         });
         environment.pushRequest(request);
       }

@@ -21,6 +21,7 @@ function executeRequests(environment, requests) {
       variables,
       data,
       id,
+      componentName,
     } = req;
 
     req.middlewareStates = {
@@ -36,7 +37,13 @@ function executeRequests(environment, requests) {
     const header = headerFactoryFn && headerFactoryFn({ requestContract, variables, data });
     const payload = payloadFactoryFn && payloadFactoryFn({ requestContract, variables, data });
 
-    const requestor = environment.getRequestor(id, spec, variables, req.middlewareStates);
+    const requestor = environment.getRequestor(
+      id,
+      spec,
+      variables,
+      req.middlewareStates,
+      { componentName },
+    );
 
     requestor(uri, verb, header, payload).execute({
       onComplete: response => {
