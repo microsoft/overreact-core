@@ -59,6 +59,11 @@ export default function handler(environment, processedResponse, request) {
       store.getRecordGroup(context.schemaNode.modelName)
         .addOrUpdateRecords(dataWithId, request);
 
+      // when the return value is empty, we still need to notify the hook who trigger this call
+      if (dataWithId.length === 0) {
+        dataRef.notify('update', [], request);
+      }
+
       dataCb(dataWithId, request);
     }
 
