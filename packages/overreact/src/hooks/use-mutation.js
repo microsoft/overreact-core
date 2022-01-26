@@ -1,3 +1,4 @@
+import _ from 'underscore';
 import { useCallback, useRef } from 'react';
 import { useEnvironment } from '../environment';
 import {
@@ -10,6 +11,8 @@ import { OverreactRequest } from './overreact-request';
 import { getMergedConfig } from './merge-config';
 
 import { useComponent } from './use-component';
+
+const getRawData = data => data && _.map(data, d => _.omit(d, OVERREACT_ID_FIELD_NAME));
 
 function mutateRecords(
   store,
@@ -155,8 +158,10 @@ export function useMutation(dataRefId, spec, config) {
         deleteRecords(store, requestContract, recordsData);
       }
 
+      const data = getRawData(processedResponse);
+
       if (onComplete) {
-        onComplete(processedResponse);
+        onComplete(data);
       }
     }
   }, [dataRefId, environment, requestContract, responseContract, spec, specType]);
