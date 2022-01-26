@@ -70,7 +70,7 @@ export class Environment {
           });
       }
 
-      return this.networkRequestor(uri, verb, headers, payload);
+      return requestor;
     };
 
     return (uri, verb, headers, payload) => ({
