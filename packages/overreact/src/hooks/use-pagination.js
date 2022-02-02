@@ -86,7 +86,7 @@ export function usePagination(dataRefId, spec, config) {
       onComplete,
     } = (request && request.mergedConfig) || {};
 
-    if (onComplete) {
+    if (onComplete && request.id === dataRefId) {
       onComplete(rawData);
     }
   }, [componentName, dataRefId, environment, requestContract, setInternalStateOnResponse]);
@@ -112,7 +112,7 @@ export function usePagination(dataRefId, spec, config) {
         onError,
       } = (request && request.mergedConfig) || {};
 
-      if (onError && !_.isUndefined(err)) {
+      if (onError && request.id === dataRefId && !_.isUndefined(err)) {
         onError(err);
       }
     }
