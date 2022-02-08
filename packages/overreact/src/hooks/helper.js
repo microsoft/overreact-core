@@ -1,10 +1,9 @@
 import _ from 'underscore';
 import { responseTypes } from '../spec';
 import { FetchPolicy } from '../middleware';
-import { OVERREACT_ID_FIELD_NAME } from '../store/consts';
 
 export function getDataFromRecords(records, responseContract) {
-  const values = _.map(records, record => _.omit(record.getData(), OVERREACT_ID_FIELD_NAME));
+  const values = _.map(records, record => record.getData());
   return responseContract.responseType === responseTypes.COLL ? values : values[0];
 }
 

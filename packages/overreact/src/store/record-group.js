@@ -33,10 +33,10 @@ export class RecordGroup extends Subject {
 
     if (recordId > -1) {
       // we're updating
-      this.records[recordId].setData(data);
+      this.records[recordId].setData(data.rawData);
     } else {
       // "add" record - because we'll be appending
-      const newRecord = new Record(dataId, this.schemaType, data);
+      const newRecord = new Record(dataId, this.schemaType, data.rawData);
       this.records.push(newRecord);
     }
 

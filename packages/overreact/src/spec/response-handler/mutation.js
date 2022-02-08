@@ -9,7 +9,7 @@ export default function handler(environment, processedResponse, request) {
     const { requestContract, sideEffectFn } = spec;
     const { parentKeySelector } = requestContract;
     let parentId = parentKeySelector ? parentKeySelector(variables) : undefined;
-    let dataWithId = null;
+    let dataWithOverrectId = null;
 
     const { descriptor, order } = locator;
     if (context.responseType === responseTypes.COLL || request.spec.specType === specTypes.ADD) {
@@ -20,18 +20,18 @@ export default function handler(environment, processedResponse, request) {
       const responseArr = Array.isArray(processedResponse)
         ? processedResponse
         : [processedResponse];
-      dataWithId = responseArr.map(entity => context.applyId(entity, parentId));
+      dataWithOverrectId = responseArr.map(entity => context.applyId(entity, parentId));
 
-      dataCb(dataWithId, request);
+      dataCb(dataWithOverrectId, request);
     } else if (context.responseType === responseTypes.ENTITY) {
       if (!parentId && order.length > 1) {
         parentId = descriptor[order[order.length - 2]];
       }
 
       // step 1 - generate _overreact_id
-      dataWithId = context.applyId(processedResponse, parentId);
+      dataWithOverrectId = context.applyId(processedResponse, parentId);
 
-      dataCb([dataWithId], request);
+      dataCb([dataWithOverrectId], request);
     } else if (context.responseType === responseTypes.NONE) {
       // TODO: we need to deal with DELETE
       dataCb(null, request);
@@ -39,7 +39,7 @@ export default function handler(environment, processedResponse, request) {
 
     if (sideEffectFn) {
       const cacheStoreHelper = getSideEffectCacheStoreHelpers(environment);
-      sideEffectFn(dataWithId, request, spec, cacheStoreHelper);
+      sideEffectFn(processedResponse, request, spec, cacheStoreHelper);
     }
   };
 }

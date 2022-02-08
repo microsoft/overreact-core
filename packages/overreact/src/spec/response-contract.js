@@ -31,8 +31,8 @@ export class ResponseContract {
   }
 
   applyId(entity, parentId) {
-    // create a new OVERREACT_ID_FIELD in the entity object,
-    // to uniquely identify a record.
+    // create a new OVERREACT_ID_FIELD,
+    // this will be used to uniquely identify a Record instance.
     // Basically we'll append the entity's parent type and ID
     // to the ID of the entity itself, which will comes handy
     // during the clean-up if the parent entity is deleted.
@@ -44,7 +44,7 @@ export class ResponseContract {
     );
 
     return {
-      ...entity,
+      rawData: entity,
       [OVERREACT_ID_FIELD_NAME]: overreactId,
     };
   }
