@@ -22,7 +22,7 @@ export function getSideEffectCacheStoreHelpers(environment) {
       );
 
       return {
-        ...item,
+        rawData: item,
         [OVERREACT_ID_FIELD_NAME]: overreactId,
       };
     });
@@ -36,8 +36,10 @@ export function getSideEffectCacheStoreHelpers(environment) {
       const records = recordGroup.getRecordsByEntityKeys(itemKeySelector, [key]);
 
       return {
-        ...records[0].data,
-        ...itemToMerge,
+        rawData: {
+          ...records[0].data,
+          ...itemToMerge,
+        },
         [OVERREACT_ID_FIELD_NAME]: records[0].id,
       };
     });

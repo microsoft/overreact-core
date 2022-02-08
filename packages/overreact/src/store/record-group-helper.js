@@ -23,6 +23,13 @@ export function getRecordsByEntityKey(store, spec, keys) {
   return recordGroup.getRecordsByEntityKeys(keySelector, keys);
 }
 
+export function getRecordsFromResponseDataArray(store, spec, dataArray) {
+  const { responseContract } = spec;
+  const { keySelector } = responseContract;
+  const entityKeys = _.map(dataArray, d => keySelector(d));
+  return getRecordsByEntityKey(store, spec, entityKeys);
+}
+
 export function getRecords(store, requestContract, key) {
   if (store) {
     const schemaNode = requestContract.getSchemaNode();

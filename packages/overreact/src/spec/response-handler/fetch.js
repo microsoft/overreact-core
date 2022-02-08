@@ -24,7 +24,7 @@ export default function handler(environment, processedResponse, request) {
     const { requestContract, sideEffectFn } = spec;
     const { parentKeySelector } = requestContract;
     let parentId = parentKeySelector ? parentKeySelector(variables) : undefined;
-    let dataWithId = null;
+    let dataWithOverrectId = null;
 
     // after the response has been processed, it will either be
     //   - a single entity
@@ -35,8 +35,8 @@ export default function handler(environment, processedResponse, request) {
       }
 
       // step 1 - generate _overreact_id
-      dataWithId = context.applyId(processedResponse, parentId);
-      const overreactId = dataWithId[OVERREACT_ID_FIELD_NAME];
+      dataWithOverrectId = context.applyId(processedResponse, parentId);
+      const overreactId = dataWithOverrectId[OVERREACT_ID_FIELD_NAME];
 
       // step 2 - add/merge _overreact_id to current dataRef
       dataRef.add(overreactId);
@@ -44,13 +44,13 @@ export default function handler(environment, processedResponse, request) {
       // step 3 - insert the data into store, this will trigger callbacks
       // in data nodes, which will in turn trigger dataRef refresh.
       store.getRecordGroup(context.schemaNode.modelName)
-        .addOrUpdateRecords([dataWithId], request);
+        .addOrUpdateRecords([dataWithOverrectId], request);
     } else if (context.responseType === responseTypes.COLL) {
       // when requests for COLL, the parentId is the last element in the locator
       if (!parentId && order.length > 0) {
         parentId = descriptor[order[order.length - 1]];
       }
-      dataWithId = processedResponse.map(entity => {
+      dataWithOverrectId = processedResponse.map(entity => {
         const data = context.applyId(entity, parentId);
         const overreactId = data[OVERREACT_ID_FIELD_NAME];
 
@@ -60,17 +60,17 @@ export default function handler(environment, processedResponse, request) {
       });
 
       store.getRecordGroup(context.schemaNode.modelName)
-        .addOrUpdateRecords(dataWithId, request);
+        .addOrUpdateRecords(dataWithOverrectId, request);
 
       // when the return value is empty, we still need to notify the hook who trigger this call
-      if (dataWithId.length === 0) {
+      if (dataWithOverrectId.length === 0) {
         dataRef.notify('update', [], request);
       }
     }
 
-    if (sideEffectFn && !_.isEmpty(dataWithId)) {
+    if (sideEffectFn && !_.isEmpty(dataWithOverrectId)) {
       const cacheStoreHelper = getSideEffectCacheStoreHelpers(environment);
-      sideEffectFn(dataWithId, request, spec, cacheStoreHelper);
+      sideEffectFn(processedResponse, request, spec, cacheStoreHelper);
     }
   };
 }
