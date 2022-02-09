@@ -4,7 +4,7 @@ export class WrappedRequestor {
       requestor,
       uri,
       verb,
-      header,
+      headers,
       payload,
       spec,
       variables,
@@ -16,7 +16,7 @@ export class WrappedRequestor {
     this.requestor = requestor;
     this.uri = uri;
     this.verb = verb;
-    this.header = header;
+    this.headers = headers;
     this.payload = payload;
     this.variables = variables;
     this.spec = spec;
@@ -28,6 +28,6 @@ export class WrappedRequestor {
   }
 
   executeRequest() {
-    return this.requestor(this.uri, this.verb, this.header, this.payload);
+    return this.requestor(this.uri, this.verb, this.headers, this.payload);
   }
 }
