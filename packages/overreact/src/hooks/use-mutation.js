@@ -252,11 +252,23 @@ export function useMutation(dataRefId, spec, config) {
           const recordsBeforeMutation = recordsBeforeMutationRef.current || [];
           const dataBeforeWithId = getDataWithOverreactIdFromRecords(recordsBeforeMutation);
           const dataBefore = _.map(dataBeforeWithId, d => d.rawData);
+          const preemptiveData = preemptiveResponseFn(dataBefore, mutationData);
+
+          const { keySelector } = responseContract;
+          const dataWithOverreactId = _.map(preemptiveData, d => {
+            const key = keySelector(d);
+            const [record] = getRecordsByEntityKey(store, spec, [key]);
+            return {
+              rawData: d,
+              [OVERREACT_ID_FIELD_NAME]: record.id,
+            };
+          });
+
           mutateRecords(
             store,
             requestContract,
             dataBeforeWithId,
-            preemptiveResponseFn(dataBefore, mutationData),
+            dataWithOverreactId,
           );
         } else if (specType === specTypes.ADD) {
           const data = preemptiveResponseFn(mutationData);
@@ -276,7 +288,7 @@ export function useMutation(dataRefId, spec, config) {
       environment.pushRequest(request);
     }
   // eslint-disable-next-line max-len
-  }, [config, dataCallback, dataRefId, environment, errorCallback, requestContract, spec, specType, componentName]);
+  }, [environment, config, dataRefId, requestContract, spec, dataCallback, errorCallback, componentName, specType, responseContract]);
 
   return mutateFn;
 }
