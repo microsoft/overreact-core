@@ -21,13 +21,14 @@ export function useComponent() {
         const stackSegs = stacks[i].trim().split(' ');
 
         // we only need the 2nd segment, which is the function name
-        const funcName = stackSegs[1];
+        const funcName = stackSegs[1] || '';
 
         // we'll ignore anything that is a React hook
-        if (funcName.startsWith('use')
+        if (!funcName
         || funcName === 'eval'
         || funcName === 'mountMemo'
-        || funcName === 'Object.useMemo') {
+        || funcName === 'Object.useMemo'
+        || funcName.startsWith('use')) {
           continue;
         }
 
