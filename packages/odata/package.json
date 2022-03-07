@@ -1,6 +1,6 @@
 {
   "name": "@microsoft/overreact-odata",
-  "version": "0.1.0-alpha.25",
+  "version": "0.1.0-alpha.31",
   "description": "OData binding generator for overreact",
   "main": "dist/index.js",
   "scripts": {
@@ -21,7 +21,7 @@
   },
   "homepage": "https://github.com/microsoft/overreact-core#readme",
   "dependencies": {
-    "@microsoft/overreact": "^0.1.0-alpha.25",
+    "@microsoft/overreact": "^0.1.0-alpha.31",
     "query-string": "^7.0.1"
   },
   "peerDependencies": {

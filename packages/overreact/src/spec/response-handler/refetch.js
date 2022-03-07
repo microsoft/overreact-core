@@ -27,27 +27,27 @@ export default function handler(environment, processedResponse, request) {
     const { requestContract, sideEffectFn } = spec;
     const { parentKeySelector } = requestContract;
     let parentId = parentKeySelector ? parentKeySelector(variables) : undefined;
-    let dataWithId = null;
+    let dataWithOverrectId = null;
 
     if (context.responseType === responseTypes.ENTITY) {
       if (!parentId && order.length > 1) {
         parentId = descriptor[order[order.length - 2]];
       }
 
-      dataWithId = context.applyId(processedResponse, parentId);
-      const overreactId = dataWithId[OVERREACT_ID_FIELD_NAME];
+      dataWithOverrectId = context.applyId(processedResponse, parentId);
+      const overreactId = dataWithOverrectId[OVERREACT_ID_FIELD_NAME];
 
       dataRef.add(overreactId);
 
       store.getRecordGroup(context.schemaNode.modelName)
-        .addOrUpdateRecords([dataWithId], request);
+        .addOrUpdateRecords([dataWithOverrectId], request);
 
-      dataCb(dataWithId, request);
+      dataCb(processedResponse, request);
     } else if (context.responseType === responseTypes.COLL) {
       if (!parentId && order.length > 0) {
         parentId = descriptor[order[order.length - 1]];
       }
-      dataWithId = processedResponse.map(entity => {
+      dataWithOverrectId = processedResponse.map(entity => {
         const data = context.applyId(entity, parentId);
         const overreactId = data[OVERREACT_ID_FIELD_NAME];
 
@@ -57,14 +57,19 @@ export default function handler(environment, processedResponse, request) {
       });
 
       store.getRecordGroup(context.schemaNode.modelName)
-        .addOrUpdateRecords(dataWithId, request);
+        .addOrUpdateRecords(dataWithOverrectId, request);
 
-      dataCb(dataWithId, request);
+      // when the return value is empty, we still need to notify the hook who trigger this call
+      if (dataWithOverrectId.length === 0) {
+        dataRef.notify('update', [], request);
+      }
+
+      dataCb(processedResponse, request);
     }
 
     if (sideEffectFn) {
       const cacheStoreHelper = getSideEffectCacheStoreHelpers(environment);
-      sideEffectFn(dataWithId, request, spec, cacheStoreHelper);
+      sideEffectFn(processedResponse, request, spec, cacheStoreHelper);
     }
   };
 }

@@ -6,12 +6,14 @@ import {
 import { useEnvironment } from '../environment';
 import {
   getDataNode, createDataNode, getRecords, getDataRef, getRecordsById, updateDataRefWithIds,
+  getRecordsFromResponseDataArray,
 } from '../store';
-import { OVERREACT_ID_FIELD_NAME } from '../store/consts';
 import { OverreactRequest } from './overreact-request';
 import { getMergedConfig } from './merge-config';
 import { getLookupCacheFn } from './helper';
 import { getCacheIds } from './lookup-cache';
+
+import { useComponent } from './use-component';
 
 const getRecordsDataInDataRef = (store, requestContract, dataRefId) => {
   const records = getRecords(store, requestContract, dataRefId);
@@ -19,14 +21,15 @@ const getRecordsDataInDataRef = (store, requestContract, dataRefId) => {
   return records && records.map(record => record.getData());
 };
 
-const getRawData = data => data && _.map(data, d => _.omit(d, OVERREACT_ID_FIELD_NAME));
-
 const getRecordsDataById = (store, requestContract, ids) => {
   const records = getRecordsById(store, requestContract, ids);
   return records && records.map(record => record.getData());
 };
 
 export function usePagination(dataRefId, spec, config) {
+  // DEBUG ONLY
+  const componentName = useComponent();
+
   const {
     fetchVariables,
     strictMode = false,
@@ -69,20 +72,21 @@ export function usePagination(dataRefId, spec, config) {
 
     const { store } = environment;
     const recordsData = getRecordsDataInDataRef(store, requestContract, dataRefId);
-    const rawData = getRawData(recordsData);
     const dataRef = getDataRef(store, requestContract, dataRefId);
     dataRef.clearError();
-    setInternalStateOnResponse(rawData);
-    setData(rawData);
+    setInternalStateOnResponse(recordsData);
+    setData(recordsData);
+
+    dataRef.registerComponent({ componentName });
 
     const {
       onComplete,
     } = (request && request.mergedConfig) || {};
 
-    if (onComplete) {
-      onComplete(rawData);
+    if (onComplete && request.id === dataRefId) {
+      onComplete(recordsData);
     }
-  }, [dataRefId, environment, requestContract, setData, setInternalStateOnResponse]);
+  }, [componentName, dataRefId, environment, requestContract, setInternalStateOnResponse]);
 
   const onErrorCallback = useCallback((__, err, request) => {
     if (environment) {
@@ -105,7 +109,7 @@ export function usePagination(dataRefId, spec, config) {
         onError,
       } = (request && request.mergedConfig) || {};
 
-      if (onError && !_.isUndefined(err)) {
+      if (onError && request.id === dataRefId && !_.isUndefined(err)) {
         onError(err);
       }
     }
@@ -117,11 +121,12 @@ export function usePagination(dataRefId, spec, config) {
       const records = getRecordsDataInDataRef(store, requestContract, dataRefId);
       const newRecords = getRecordsDataById(store, requestContract, newIds);
       const recordsToShow = mergeNewRecords(records, newRecords);
-      const ids = recordsToShow.map(record => record[OVERREACT_ID_FIELD_NAME]);
+      const storeRecordsToShow = getRecordsFromResponseDataArray(store, spec, recordsToShow);
+      const overreactIds = _.map(storeRecordsToShow, r => r.id);
 
-      dataRef.reset(ids);
+      dataRef.reset(overreactIds);
     }
-  }, [dataRefId, environment, mergeNewRecords, requestContract]);
+  }, [dataRefId, environment, mergeNewRecords, requestContract, spec]);
 
   const dataObserver = useMemo(() => ({
     update: loadMoreCallback,
@@ -153,11 +158,10 @@ export function usePagination(dataRefId, spec, config) {
     const { pageSize } = fetchVariables;
     const { store } = environment;
     const recordsData = getRecordsDataInDataRef(store, requestContract, dataRefId);
-    const rawData = getRawData(recordsData);
 
-    if (rawData && rawData.length >= cursorIndex.current + pageSize) {
-      cursorIndex.current = rawData.length;
-      setData(rawData);
+    if (recordsData && recordsData.length >= cursorIndex.current + pageSize) {
+      cursorIndex.current = recordsData.length;
+      setData(recordsData);
       return;
     }
 
@@ -204,6 +208,7 @@ export function usePagination(dataRefId, spec, config) {
       variables: requestVars,
       data: null,
       mergedConfig,
+      componentName,
     });
     environment.pushRequest(request);
   }, [
@@ -215,6 +220,7 @@ export function usePagination(dataRefId, spec, config) {
     requestContract,
     spec,
     strictMode,
+    componentName,
   ]);
 
   const ret = useMemo(() => [{ data, error }, {

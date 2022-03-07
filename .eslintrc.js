@@ -27,9 +27,14 @@ module.exports = {
     'react-hooks/exhaustive-deps': 'warn',
     'linebreak-style': 0,
     'import/prefer-default-export': 0,
+    'no-underscore-dangle': 0,
+    'no-prototype-builtins': 0,
     'react/jsx-filename-extension': ['error', {
       extensions: ['.js'],
     }],
     'arrow-parens': ['error', 'as-needed'],
+  },
+  globals: {
+    chrome: 'readonly',
   },
 };

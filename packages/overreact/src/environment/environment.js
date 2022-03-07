@@ -33,19 +33,58 @@ export class Environment {
     this.dataRefIdPool = {};
   }
 
-  getRequestor(id, spec, variables, middlewareStates, mergedConfig) {
-    return (uri, verb, header, payload) => ({
+  getRequestor(id, spec, variables, middlewareStates, additionalParams) {
+    const requestorWithDevTools = (uri, verb, headers, payload) => {
+      const requestor = this.networkRequestor(uri, verb, headers, payload);
+
+      if (window.__OVERREACT_DEVTOOLS__) {
+        const { onRequest, onError } = window.__OVERREACT_DEVTOOLS__;
+        const { componentName } = additionalParams;
+        return requestor
+          .then(value => {
+            onRequest({
+              id,
+              uri,
+              verb,
+              headers,
+              payload,
+              spec: spec.toString(),
+              componentName,
+              responseValue: value,
+            });
+            return value;
+          })
+          .catch(ex => {
+            onError({
+              id,
+              uri,
+              verb,
+              headers,
+              payload,
+              spec: spec.toString(),
+              componentName,
+              exception: ex,
+            });
+
+            throw ex;
+          });
+      }
+
+      return requestor;
+    };
+
+    return (uri, verb, headers, payload) => ({
       execute: sink => {
         if (!this.middlewares || this.middlewares.length === 0) {
-          this.networkRequestor(uri, verb, header, payload)
+          requestorWithDevTools(uri, verb, headers, payload)
             .then(value => sink.onComplete(value))
             .catch(err => sink.onError(err));
         } else {
           const wrappedRequestor = new WrappedRequestor({
-            requestor: this.networkRequestor,
+            requestor: requestorWithDevTools,
             uri,
             verb,
-            header,
+            headers,
             payload,
             spec,
             variables,

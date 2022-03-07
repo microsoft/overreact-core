@@ -1,3 +1,4 @@
+import _ from 'underscore';
 import { useCallback, useRef } from 'react';
 import { useEnvironment } from '../environment';
 import {
@@ -8,6 +9,15 @@ import { OVERREACT_ID_FIELD_NAME } from '../store/consts';
 import { responseTypes } from '../spec/response-types';
 import { OverreactRequest } from './overreact-request';
 import { getMergedConfig } from './merge-config';
+
+import { useComponent } from './use-component';
+
+const getRawData = data => data && _.map(data, d => d.rawData);
+
+const getDataWithOverreactIdFromRecords = records => _.map(records, r => ({
+  rawData: r.getData(),
+  [OVERREACT_ID_FIELD_NAME]: r.id,
+}));
 
 function mutateRecords(
   store,
@@ -91,16 +101,19 @@ function applyId(variables, spec, data, specType) {
 }
 
 export function useMutation(dataRefId, spec, config) {
+  // DEBUG ONLY
+  const componentName = useComponent();
+
   const {
     requestContract,
     responseContract,
     specType,
     environmentLookupFn,
   } = spec;
-  const dataItemsBeforeMutation = useRef();
+  const recordsBeforeMutationRef = useRef();
   const environment = useEnvironment(environmentLookupFn);
 
-  const dataCallback = useCallback((processedResponse, request) => {
+  const dataCallback = useCallback((dataWithOverreactId, request) => {
     if (environment) {
       const { store } = environment;
       const dataRef = getDataRef(store, requestContract, dataRefId);
@@ -113,29 +126,30 @@ export function useMutation(dataRefId, spec, config) {
 
       if (preemptiveResponseFn) {
         if (specType === specTypes.MUTATION) {
-          const current = dataItemsBeforeMutation.current || [];
+          const recordsBeforeMutation = recordsBeforeMutationRef.current || [];
+          const dataBeforeWithId = getDataWithOverreactIdFromRecords(recordsBeforeMutation);
           mutateRecords(
             store,
             requestContract,
-            current,
-            processedResponse,
+            dataBeforeWithId,
+            dataWithOverreactId,
           );
         } else if (specType === specTypes.ADD) {
           replacePreemptiveRecords(
             store,
             requestContract,
             request,
-            processedResponse,
+            dataWithOverreactId,
           );
         }
       } else if (specType === specTypes.ADD) {
-        addRecords(store, requestContract, processedResponse);
+        addRecords(store, requestContract, dataWithOverreactId);
       } else if (specType === specTypes.MUTATION) {
         mutateRecords(
           store,
           requestContract,
           [],
-          processedResponse,
+          dataWithOverreactId,
         );
       }
 
@@ -145,13 +159,15 @@ export function useMutation(dataRefId, spec, config) {
         const { keySelector } = responseContract;
         const keys = dataArray.map(d => keySelector(d));
         const records = getRecordsByEntityKey(store, spec, keys);
-        const recordsData = records && records.map(record => record.getData());
+        const dataWithId = getDataWithOverreactIdFromRecords(records);
 
-        deleteRecords(store, requestContract, recordsData);
+        deleteRecords(store, requestContract, dataWithId);
       }
 
+      const data = getRawData(dataWithOverreactId);
+
       if (onComplete) {
-        onComplete(processedResponse);
+        onComplete(data);
       }
     }
   }, [dataRefId, environment, requestContract, responseContract, spec, specType]);
@@ -164,23 +180,24 @@ export function useMutation(dataRefId, spec, config) {
         preemptiveResponseFn,
       } = (request && request.mergedConfig) || {};
 
-      if (dataItemsBeforeMutation.current) {
+      const recordsBeforeMutation = recordsBeforeMutationRef.current || [];
+      const dataBeforeWithId = getDataWithOverreactIdFromRecords(recordsBeforeMutation);
+      if (recordsBeforeMutationRef.current) {
         // revert change
         mutateRecords(
           store,
           requestContract,
-          dataItemsBeforeMutation.current,
+          dataBeforeWithId,
           [],
         );
       }
 
       if (preemptiveResponseFn) {
         if (specType === specTypes.MUTATION) {
-          const current = dataItemsBeforeMutation.current || [];
           mutateRecords(
             store,
             requestContract,
-            current,
+            dataBeforeWithId,
             [],
           );
         } else if (specType === specTypes.ADD) {
@@ -211,7 +228,7 @@ export function useMutation(dataRefId, spec, config) {
       if (dataRefId) {
         const recordsBeforeMutation = getRecords(store, requestContract, dataRefId);
         if (recordsBeforeMutation) {
-          dataItemsBeforeMutation.current = recordsBeforeMutation.map(r => r.getData());
+          recordsBeforeMutationRef.current = recordsBeforeMutation;
         }
       }
 
@@ -224,6 +241,7 @@ export function useMutation(dataRefId, spec, config) {
         dataCb: dataCallback,
         errorCb: errorCallback,
         mergedConfig,
+        componentName,
       });
 
       // we can perform preemptive updates right now (before actual request)
@@ -231,12 +249,26 @@ export function useMutation(dataRefId, spec, config) {
       // comes back.
       if (preemptiveResponseFn) {
         if (specType === specTypes.MUTATION) {
-          const current = dataItemsBeforeMutation.current || [];
+          const recordsBeforeMutation = recordsBeforeMutationRef.current || [];
+          const dataBeforeWithId = getDataWithOverreactIdFromRecords(recordsBeforeMutation);
+          const dataBefore = _.map(dataBeforeWithId, d => d.rawData);
+          const preemptiveData = preemptiveResponseFn(dataBefore, mutationData);
+
+          const { keySelector } = responseContract;
+          const dataWithOverreactId = _.map(preemptiveData, d => {
+            const key = keySelector(d);
+            const [record] = getRecordsByEntityKey(store, spec, [key]);
+            return {
+              rawData: d,
+              [OVERREACT_ID_FIELD_NAME]: record.id,
+            };
+          });
+
           mutateRecords(
             store,
             requestContract,
-            current,
-            preemptiveResponseFn(current, mutationData),
+            dataBeforeWithId,
+            dataWithOverreactId,
           );
         } else if (specType === specTypes.ADD) {
           const data = preemptiveResponseFn(mutationData);
@@ -256,7 +288,7 @@ export function useMutation(dataRefId, spec, config) {
       environment.pushRequest(request);
     }
   // eslint-disable-next-line max-len
-  }, [config, dataCallback, dataRefId, environment, errorCallback, requestContract, spec, specType]);
+  }, [environment, config, dataRefId, requestContract, spec, dataCallback, errorCallback, componentName, specType, responseContract]);
 
   return mutateFn;
 }

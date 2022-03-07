@@ -4,6 +4,7 @@ export {
   getRecordGroup,
   getRecordsById,
   getRecordsByEntityKey,
+  getRecordsFromResponseDataArray,
   getRecords,
   getDataRef,
   updateDataRefWithIds,
