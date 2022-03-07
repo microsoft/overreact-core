@@ -25,7 +25,7 @@ export function createInstrumentationMiddleware(instrumentationOptions) {
 
   return next => async req => {
     const {
-      header: {
+      headers: {
         'x-ms-requestid': requestId = uuidv4(),
       } = {},
     } = req;
