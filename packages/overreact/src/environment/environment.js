@@ -91,7 +91,6 @@ export class Environment {
             store: this.store,
             dataRefId: id,
             middlewareStates,
-            mergedConfig,
           });
           const res = requestWithMiddleware(wrappedRequestor, this.middlewares);
 
